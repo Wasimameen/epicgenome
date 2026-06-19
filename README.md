@@ -1,15 +1,26 @@
-# EPIGENOME.COM — Animated Landing Theme
+# Domain Landing Themes — Animated WordPress Landers
 
-A premium, highly-animated WordPress theme for the single-page **EPIGENOME.COM**
-domain-sale landing page. Dark editorial-luxury styling (Fraunces + Inter Tight,
-gold-on-near-black), an on-brand animated **DNA double-helix** hero, a sticky
-header with a top contact bar, and motion throughout — all built on the original
-markup and the working AJAX offer form.
+Premium, highly-animated single-page **WordPress themes for domain-sale landing
+pages**. Dark editorial-luxury styling (Fraunces + Inter Tight, gold-on-near-black),
+an on-brand animated **DNA double-helix** hero, a sticky header with a top contact
+bar, and motion throughout — all built on the original markup and a working AJAX
+offer form.
 
-## What's in this repo
+Each domain gets its own self-contained theme so it can be installed independently.
+All themes share the same design and copy; only the **domain name, contact email,
+and price** differ.
+
+## Domains in this repo
+
+| Domain | Theme folder | Installable zip | Standalone preview | Buy-now |
+|---|---|---|---|---|
+| **EPIGENOME.COM** | `epigenome-theme/` | `epigenome-theme.zip` | `preview.html` | $14,888 / $1,241·mo |
+| **EPIGENETIC.COM** | `epigenetic-theme/` | `epigenetic-theme.zip` | `epigenetic-preview.html` | $14,888 / $1,241·mo |
+
+## What's in each theme
 
 ```
-epigenome-theme/        ← the installable WordPress theme
+<domain>-theme/         ← the installable WordPress theme
 ├── style.css           ← theme header (name, version, etc.)
 ├── functions.php       ← assets, "Offers" CPT, AJAX form handler
 ├── header.php          ← top contact bar + sticky animated nav
@@ -18,22 +29,31 @@ epigenome-theme/        ← the installable WordPress theme
 └── assets/
     ├── style.css       ← all presentation + animation styling
     └── main.js         ← interactions (helix canvas, count-ups, etc.)
-preview.html            ← self-contained preview (open directly in a browser)
+<domain>-preview.html   ← self-contained preview (open directly in a browser)
 ```
 
-## How to install
+## How to install (per domain)
 
-1. Download **`epigenome-theme.zip`**.
+1. Download the matching `…-theme.zip` (e.g. `epigenetic-theme.zip`).
 2. In WordPress: **Appearance → Themes → Add New → Upload Theme**.
 3. Choose the zip, **Install**, then **Activate**.
 4. Set this template as your front page if needed
    (**Settings → Reading → Your homepage displays**).
 
 Offers submitted through the form are saved under **Offers** in the WP admin and
-emailed to the owner address defined in `functions.php`
-(`EPIGENOME_OWNER_EMAIL`).
+emailed to the owner address defined in that theme's `functions.php`
+(e.g. `EPIGENETIC_OWNER_EMAIL`).
 
-## What's new vs. the original
+## Adding a new domain
+
+Each theme is a faithful clone with the domain content swapped. To spin up a new
+one, copy an existing theme folder and replace every occurrence of the old domain
+word (all casings — `EPIGENOME`, `Epigenome`, `epigenome`) with the new one, then
+update the contact email and price. The function prefixes, the `Offers` custom
+post type slug, the AJAX action/nonce, and the JS wordmark all use that same
+prefix, so a clean find-and-replace keeps everything wired correctly.
+
+## Features
 
 **Top contact bar (left & right).** Email + phone sit top-left; a live
 "Available now · owner-direct" status with a pulsing dot and a reply-time note
@@ -52,9 +72,6 @@ sit top-right. The bar collapses and the nav frosts into a glass bar on scroll.
 
 **Polish & accessibility.** `wp_body_open()`, a skip link, semantic `<main>`,
 and full **`prefers-reduced-motion`** support (heavy effects disable cleanly).
-
-All original copy, the Offers custom post type, and the AJAX form behaviour are
-preserved unchanged.
 
 ## Customising
 
