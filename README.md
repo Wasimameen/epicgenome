@@ -1,10 +1,10 @@
 # Domain Landing Themes — Animated WordPress Landers
 
 Premium, highly-animated single-page **WordPress themes for domain-sale landing
-pages**. Dark editorial-luxury styling (Fraunces + Inter Tight, gold-on-near-black),
-an on-brand animated **DNA double-helix** hero, a sticky header with a top contact
-bar, and motion throughout — all built on the original markup and a working AJAX
-offer form.
+pages**. A minimal, spacious, modern-dark style (Space Grotesk + Inter Tight, gold
+accents on near-black), an on-brand animated **DNA double-helix** hero, a sticky
+header with a top contact bar, and restrained motion throughout — all built on the
+original markup and a working AJAX offer form.
 
 Each domain gets its own self-contained theme so it can be installed independently.
 All themes share the same design and copy; only the **domain name, contact email,

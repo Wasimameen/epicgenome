@@ -19,7 +19,7 @@ define( 'EPIGENETIC_OWNER_EMAIL', 'contact@epigenetic.com' );
 function epigenetic_assets() {
 	wp_enqueue_style(
 		'epigenetic-fonts',
-		'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter+Tight:wght@300;400;500;600&display=swap',
+		'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap',
 		array(),
 		null
 	);
