@@ -1,0 +1,13 @@
+/*
+Theme Name: OCEANMARKETING.COM Lander
+Theme URI: https://oceanmarketing.com/
+Author: Owner-direct
+Description: Single-page domain sales landing page for OCEANMARKETING.COM. Dark editorial luxury. Registers an "Offers" post type and wires the on-page offer form to save submissions to the database and email the owner via AJAX.
+Version: 1.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+Text Domain: oceanmarketing
+*/
+
+/* All presentation styles are enqueued from assets/style.css via functions.php. */
