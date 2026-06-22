@@ -100,7 +100,7 @@ Text Domain: epigenetic-com
   .hero-grid{
     display:flex;justify-content:center;width:100%;
   }
-  .hero-text{min-width:0;max-width:880px;text-align:center}
+  .hero-text{min-width:0;max-width:1080px;text-align:center}
 
   /* ---- broker block (after hero) ---- */
   .broker-block{
@@ -132,10 +132,10 @@ Text Domain: epigenetic-com
   }
   .word{
     text-align:center;font-family:var(--serif);font-weight:400;
-    font-size:clamp(2rem,9vw,11rem);
+    font-size:clamp(1.7rem,7.2vw,7.4rem);
     line-height:.95;letter-spacing:-.02em;
     color:var(--bone);
-    margin:0 auto;
+    margin:0 auto;max-width:100%;
     white-space:nowrap;position:relative;
     animation:wordFloat 7s ease-in-out 1.6s infinite;
   }
