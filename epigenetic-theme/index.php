@@ -170,7 +170,7 @@
     <div class="offer-card reveal" id="offer">
       <div class="oc-head">
         <span class="oc-eyebrow">Make an Offer · Private Inquiry</span>
-        <span class="oc-to">Direct to <a href="mailto:contact@epigenetic.com">contact@epigenetic.com</a> · <a href="tel:+14807582520">480-758-2520</a></span>
+        <span class="oc-to">Direct to <a href="mailto:contact@epigenetic.com">contact@epigenetic.com</a> · <a href="tel:+13108183835">310-818-3835</a></span>
       </div>
       <form class="offer-form" id="offerForm" novalidate>
         <div class="of-row">
@@ -201,7 +201,7 @@
         <span class="bn">Sarah William</span>
         <span class="brole">Owner · EPIGENETIC.COM</span>
         <span class="be"><a href="mailto:contact@epigenetic.com">contact@epigenetic.com</a></span>
-        <span class="be"><a href="tel:+14807582520">480-758-2520</a></span>
+        <span class="be"><a href="tel:+13108183835">310-818-3835</a></span>
       </div>
     </div>
   </div>

@@ -17,7 +17,7 @@
   <div class="nav-contact">
     <span class="nc-name">Sarah&nbsp;William&nbsp;·&nbsp;Domain Owner</span>
     <a class="nc-email" href="mailto:contact@epigenetic.com">contact@epigenetic.com</a>
-    <a class="nc-phone" href="tel:+14807582520">480-758-2520</a>
+    <a class="nc-phone" href="tel:+13108183835">310-818-3835</a>
   </div>
 </nav>
 

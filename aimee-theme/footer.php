@@ -5,7 +5,7 @@
     </div>
     <div class="foot-meta">
       <b>Marcus Wells</b> · Domain Broker, Independent for AIMEE.AI<br>
-      <a href="mailto:contact@aimee.ai">contact@aimee.ai</a> · 480-758-2520 · Private &amp; confidential · Operators preferred<br>
+      <a href="mailto:contact@aimee.ai">contact@aimee.ai</a> · 310-818-3835 · Private &amp; confidential · Operators preferred<br>
       AIMEE.AI · Independent listing N° 01 / 2026
     </div>
   </div>

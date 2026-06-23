@@ -13,7 +13,7 @@
   <div class="nav-contact">
     <span class="nc-name">Marcus Wells&nbsp;·&nbsp;Domain Broker</span>
     <a class="nc-email" href="mailto:contact@aimee.ai">contact@aimee.ai</a>
-    <a class="nc-phone" href="tel:+14807582520">480-758-2520</a>
+    <a class="nc-phone" href="tel:+13108183835">310-818-3835</a>
   </div>
 </nav>
 

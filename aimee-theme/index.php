@@ -152,7 +152,7 @@
     <div class="bb-inner reveal">
       <span class="bb-eyebrow">Independent Broker · This Asset</span>
       <div class="bb-name">Marcus Wells</div>
-      <div class="bb-contact">Domain Broker · Independent for AIMEE.AI &nbsp;·&nbsp; <a href="mailto:contact@aimee.ai">contact@aimee.ai</a> &nbsp;·&nbsp; <a href="tel:+14807582520">480-758-2520</a></div>
+      <div class="bb-contact">Domain Broker · Independent for AIMEE.AI &nbsp;·&nbsp; <a href="mailto:contact@aimee.ai">contact@aimee.ai</a> &nbsp;·&nbsp; <a href="tel:+13108183835">310-818-3835</a></div>
       <div class="bb-body">
         <p>Marcus is representing AIMEE.AI independently for this transaction, with more than a decade on the ultra-premium domain desk and a hand in a number of the named seven- and eight-figure transactions in the category. <b>Forty names cross the desk in a typical week; almost none earn an outbound. This one did.</b></p>
         <p>The seller's instruction is to place AIMEE.AI with an operator — a team building the product the name will eventually carry — rather than with a holder who plans to resell. Send an offer or a question below and it reaches Marcus directly: every credible inquiry receives the full comparable set, the seller's actual position, and a realistic ninety-day outlook.</p>
@@ -174,7 +174,7 @@
     <div class="offer-card reveal" id="offer">
       <div class="oc-head">
         <span class="oc-eyebrow">Make an Offer · Private Inquiry</span>
-        <span class="oc-to">Direct to <a href="mailto:contact@aimee.ai">contact@aimee.ai</a> · <a href="tel:+14807582520">480-758-2520</a></span>
+        <span class="oc-to">Direct to <a href="mailto:contact@aimee.ai">contact@aimee.ai</a> · <a href="tel:+13108183835">310-818-3835</a></span>
       </div>
       <form class="offer-form" id="offerForm" novalidate>
         <div class="of-row">

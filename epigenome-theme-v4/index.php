@@ -24,7 +24,7 @@
   <div class="hero-contact">
     <div class="hc-name">Jordan <span class="dot">·</span> Domain Owner</div>
     <span class="hc-email"><a href="mailto:contact@epigenome.com">contact@epigenome.com</a></span>
-    <span class="hc-phone"><a href="tel:+14807582520">480-758-2520</a></span>
+    <span class="hc-phone"><a href="tel:+13108183835">310-818-3835</a></span>
   </div>
   <div class="wrap">
     <div class="hero-eyebrow eyebrow">Owner-direct &nbsp;·&nbsp; One-word .com</div>
@@ -189,7 +189,7 @@
           </div>
           <div class="cmeta-item">
             <div class="ck">Phone</div>
-            <a href="tel:+14807582520">480-758-2520</a>
+            <a href="tel:+13108183835">310-818-3835</a>
           </div>
           <div class="cmeta-item">
             <div class="ck">Seller</div>
@@ -246,7 +246,7 @@
       <div class="foot-meta">
         Jordan · owner-direct<br>
         <a href="mailto:contact@epigenome.com">contact@epigenome.com</a><br>
-        <a href="tel:+14807582520">480-758-2520</a>
+        <a href="tel:+13108183835">310-818-3835</a>
       </div>
     </div>
   </div>
