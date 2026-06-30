@@ -1,0 +1,28 @@
+/*
+Theme Name: Counsel
+Theme URI: https://example.com/counsel
+Author: Counsel
+Author URI: https://example.com
+Description: An editorial-prestige WordPress theme for Counsel — an independent legal-directory and legal-marketing publication ("Forbes meets Zillow meets LinkedIn for the legal industry"). Classic PHP theme with a Firm Profiles custom post type, Practice Area and City taxonomies, a Sponsored disclosure system, and a calm, magazine-grade design. Works on a clean WordPress install with no plugins.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.5
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: counsel
+Tags: editorial, magazine, directory, custom-post-type, custom-colors, custom-menu, featured-images, threaded-comments, translation-ready, accessibility-ready, full-width-template, two-columns, right-sidebar
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+
+Counsel is based on best practices from Underscores (_s), https://underscores.me/, (C) 2012-2024 Automattic, Inc., GPL v2 or later.
+
+------------------------------------------------------------
+The actual presentation lives in /assets/css/main.css, which is
+enqueued (with filemtime cache-busting) in functions.php. This file
+exists to satisfy the WordPress theme header requirement and to hold
+any small overrides. We deliberately do NOT @import main.css here to
+avoid render-blocking; it is enqueued properly instead.
+------------------------------------------------------------
+*/

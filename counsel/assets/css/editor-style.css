@@ -1,0 +1,53 @@
+/**
+ * Counsel — block editor styles.
+ *
+ * Mirrors the front-end reading experience inside the editor so authors see a
+ * faithful preview of headings, prose, and quotes.
+ *
+ * @package Counsel
+ */
+
+:root {
+	--oxblood: #8A2326;
+	--brass: #B68A4E;
+	--parchment: #F1E8D8;
+	--ink: #14110F;
+	--paper: #FBF9F5;
+	--muted: #57534E;
+	--line: #E4DDD0;
+	--font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+	--font-sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+	--radius: 4px;
+}
+
+.editor-styles-wrapper {
+	background: var(--paper);
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: 18px;
+	line-height: 1.7;
+}
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4 {
+	font-family: var(--font-serif);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	color: var(--ink);
+}
+
+.editor-styles-wrapper .wp-block {
+	max-width: 68ch;
+}
+
+.editor-styles-wrapper .wp-block-quote {
+	border-left: 4px solid var(--brass);
+	padding-left: 1.4rem;
+	font-family: var(--font-serif);
+	font-style: italic;
+	color: var(--ink);
+}
+
+.editor-styles-wrapper a { color: var(--oxblood); }
