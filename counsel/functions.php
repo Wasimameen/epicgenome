@@ -228,6 +228,7 @@ require COUNSEL_DIR . '/inc/taxonomies.php';
 require COUNSEL_DIR . '/inc/meta-boxes.php';
 require COUNSEL_DIR . '/inc/template-tags.php';
 require COUNSEL_DIR . '/inc/customizer.php';
+require COUNSEL_DIR . '/inc/page-setup.php';
 
 /**
  * On theme activation: seed starter terms and flush rewrite rules.
@@ -244,6 +245,12 @@ function counsel_after_switch_theme() {
 	counsel_register_taxonomies();
 
 	counsel_seed_taxonomy_terms();
+
+	// Create the core Pages, supporting categories, and nav menus so the site
+	// works immediately. Idempotent — see inc/page-setup.php.
+	if ( function_exists( 'counsel_run_content_setup' ) ) {
+		counsel_run_content_setup();
+	}
 
 	flush_rewrite_rules();
 }
