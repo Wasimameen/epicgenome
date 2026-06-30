@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  * The bump key. Increment COUNSEL_CONTENT_VERSION to re-run the seeder once
  * after a future change.
  */
-define( 'COUNSEL_CONTENT_VERSION', '1' );
+define( 'COUNSEL_CONTENT_VERSION', '2' );
 
 /**
  * The pages Counsel creates, in menu order.
@@ -58,6 +58,18 @@ function counsel_default_pages() {
 			'title'    => __( 'Contact', 'counsel' ),
 			'slug'     => 'contact',
 			'template' => 'page-templates/template-contact.php',
+			'content'  => '',
+		),
+		array(
+			'title'    => __( 'Ask Counsel', 'counsel' ),
+			'slug'     => 'advice',
+			'template' => 'page-templates/template-advice.php',
+			'content'  => '',
+		),
+		array(
+			'title'    => __( 'Guides', 'counsel' ),
+			'slug'     => 'guides',
+			'template' => 'page-templates/template-guides.php',
 			'content'  => '',
 		),
 	);
