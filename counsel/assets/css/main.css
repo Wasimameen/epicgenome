@@ -275,6 +275,8 @@ h4 { font-size: var(--step-1); }
 	top: 0;
 	z-index: 100;
 }
+/* Sticky header is toggleable from the Customizer. */
+.no-sticky-header .site-header { position: static; }
 .site-header__inner {
 	display: flex;
 	align-items: center;

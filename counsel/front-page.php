@@ -18,7 +18,9 @@ get_header();
 ?>
 <main id="primary" class="site-main front-page" role="main">
 
-	<?php get_template_part( 'template-parts/hero-search' ); ?>
+	<?php if ( counsel_mod( 'counsel_show_hero' ) ) : ?>
+		<?php get_template_part( 'template-parts/hero-search' ); ?>
+	<?php endif; ?>
 
 	<?php
 	// Optional editor-owned intro content from the assigned front page.
@@ -39,10 +41,13 @@ get_header();
 	endif;
 	?>
 
-	<?php get_template_part( 'template-parts/section-three-lanes' ); ?>
+	<?php if ( counsel_mod( 'counsel_show_lanes' ) ) : ?>
+		<?php get_template_part( 'template-parts/section-three-lanes' ); ?>
+	<?php endif; ?>
 
 	<?php
 	// Why Counsel is different — trust row.
+	if ( counsel_mod( 'counsel_show_trust' ) ) :
 	$counsel_trust = array(
 		array(
 			'title' => __( 'Independent by design', 'counsel' ),
@@ -71,6 +76,7 @@ get_header();
 			</div>
 		</div>
 	</section>
+	<?php endif; // End counsel_show_trust. ?>
 
 	<?php
 	// Practice-areas grid linking to each practice_area term.
@@ -81,7 +87,7 @@ get_header();
 			'number'     => 12,
 		)
 	);
-	if ( ! empty( $counsel_pa_terms ) && ! is_wp_error( $counsel_pa_terms ) ) :
+	if ( counsel_mod( 'counsel_show_areas' ) && ! empty( $counsel_pa_terms ) && ! is_wp_error( $counsel_pa_terms ) ) :
 		?>
 		<section class="counsel-areas" aria-labelledby="counsel-areas-title">
 			<div class="counsel-container">
@@ -102,24 +108,26 @@ get_header();
 	endif;
 	?>
 
-	<section class="counsel-closing-cta">
-		<div class="counsel-container counsel-closing-cta__inner">
-			<h2 class="counsel-closing-cta__title">
-				<?php esc_html_e( 'Start with the right questions.', 'counsel' ); ?>
-			</h2>
-			<p class="counsel-closing-cta__lede">
-				<?php esc_html_e( 'Find a firm, read an honest profile, and walk into your first call knowing what to ask.', 'counsel' ); ?>
-			</p>
-			<div class="counsel-closing-cta__actions">
-				<a class="counsel-btn counsel-btn--primary" href="<?php echo esc_url( get_post_type_archive_link( 'firm' ) ); ?>">
-					<?php esc_html_e( 'Find a Lawyer', 'counsel' ); ?>
-				</a>
-				<a class="counsel-btn counsel-btn--ghost" href="<?php echo esc_url( home_url( '/how-it-works/' ) ); ?>">
-					<?php esc_html_e( 'How it works', 'counsel' ); ?>
-				</a>
+	<?php if ( counsel_mod( 'counsel_show_closing' ) ) : ?>
+		<section class="counsel-closing-cta">
+			<div class="counsel-container counsel-closing-cta__inner">
+				<h2 class="counsel-closing-cta__title">
+					<?php echo esc_html( counsel_mod( 'counsel_closing_title' ) ); ?>
+				</h2>
+				<p class="counsel-closing-cta__lede">
+					<?php echo esc_html( counsel_mod( 'counsel_closing_lede' ) ); ?>
+				</p>
+				<div class="counsel-closing-cta__actions">
+					<a class="counsel-btn counsel-btn--primary" href="<?php echo esc_url( get_post_type_archive_link( 'firm' ) ); ?>">
+						<?php esc_html_e( 'Find a Lawyer', 'counsel' ); ?>
+					</a>
+					<a class="counsel-btn counsel-btn--ghost" href="<?php echo esc_url( home_url( '/how-it-works/' ) ); ?>">
+						<?php esc_html_e( 'How it works', 'counsel' ); ?>
+					</a>
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	<?php endif; ?>
 
 </main>
 <?php

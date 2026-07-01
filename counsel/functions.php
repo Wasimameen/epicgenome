@@ -156,14 +156,6 @@ add_action( 'widgets_init', 'counsel_widgets_init' );
  * @return void
  */
 function counsel_enqueue_assets() {
-	// Google Fonts: Fraunces (display/headings) + Inter (body/UI), display=swap.
-	wp_enqueue_style(
-		'counsel-fonts',
-		'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap',
-		array(),
-		null // No version for external font URL.
-	);
-
 	// Required theme stylesheet (header block).
 	wp_enqueue_style(
 		'counsel-style',
@@ -172,12 +164,21 @@ function counsel_enqueue_assets() {
 		COUNSEL_VERSION
 	);
 
-	// Main compiled stylesheet (cache-busted with filemtime).
+	// Google Fonts, built from the Customizer font choices (display=swap).
+	$main_deps  = array( 'counsel-style' );
+	$fonts_url  = function_exists( 'counsel_google_fonts_url' ) ? counsel_google_fonts_url() : '';
+	if ( $fonts_url ) {
+		wp_enqueue_style( 'counsel-fonts', $fonts_url, array(), null ); // No version for external URL.
+		$main_deps[] = 'counsel-fonts';
+	}
+
+	// Main compiled stylesheet (cache-busted with filemtime). The Customizer's
+	// dynamic token overrides are attached to this handle in inc/dynamic-css.php.
 	$main_css = COUNSEL_DIR . '/assets/css/main.css';
 	wp_enqueue_style(
 		'counsel-main',
 		COUNSEL_URI . '/assets/css/main.css',
-		array( 'counsel-fonts', 'counsel-style' ),
+		$main_deps,
 		file_exists( $main_css ) ? filemtime( $main_css ) : COUNSEL_VERSION
 	);
 
@@ -227,6 +228,7 @@ require COUNSEL_DIR . '/inc/post-types.php';
 require COUNSEL_DIR . '/inc/taxonomies.php';
 require COUNSEL_DIR . '/inc/meta-boxes.php';
 require COUNSEL_DIR . '/inc/template-tags.php';
+require COUNSEL_DIR . '/inc/dynamic-css.php';
 require COUNSEL_DIR . '/inc/customizer.php';
 require COUNSEL_DIR . '/inc/page-setup.php';
 

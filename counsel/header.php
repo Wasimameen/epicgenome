@@ -94,11 +94,13 @@ defined( 'ABSPATH' ) || exit;
 			?>
 		</nav>
 
-		<div class="site-header__cta">
-			<a class="counsel-btn counsel-btn--primary" href="<?php echo esc_url( get_post_type_archive_link( 'firm' ) ); ?>">
-				<?php esc_html_e( 'Find a Lawyer', 'counsel' ); ?>
-			</a>
-		</div>
+		<?php if ( ! function_exists( 'counsel_mod' ) || counsel_mod( 'counsel_show_header_cta' ) ) : ?>
+			<div class="site-header__cta">
+				<a class="counsel-btn counsel-btn--primary" href="<?php echo esc_url( function_exists( 'counsel_header_cta_url' ) ? counsel_header_cta_url() : get_post_type_archive_link( 'firm' ) ); ?>">
+					<?php echo esc_html( function_exists( 'counsel_mod' ) ? counsel_mod( 'counsel_header_cta_label' ) : __( 'Find a Lawyer', 'counsel' ) ); ?>
+				</a>
+			</div>
+		<?php endif; ?>
 
 	</div><!-- .site-header__inner -->
 </header><!-- #masthead -->

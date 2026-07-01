@@ -141,16 +141,36 @@ template's code comments.
 
 ---
 
-## 7. Customizer (non-developer settings)
+## 7. Customize everything (no code)
 
-**Appearance → Customize → Counsel Settings:**
-- General contact email · Attorney-inquiry email · Contact phone
-- Social links (LinkedIn, X, Facebook, Instagram)
-- Footer disclaimer text (leave blank for the default) + a toggle to show/hide it
+**Appearance → Customize → Counsel Theme** is a full theme-options panel with
+**live preview** — colours and text update as you type. Sections:
+
+| Section | What you can change |
+| --- | --- |
+| **Brand Colours** | Colour pickers for all eight brand tokens — oxblood, brass, parchment, ink, paper, muted, hairline, and the Sponsored label. Hover shades are derived automatically. |
+| **Typography** | Heading + body font (Fraunces, Playfair Display, Lora, Cormorant, Libre Baskerville, Georgia / Inter, Work Sans, Source Sans 3, Nunito Sans, System), base body size, heading weight, and reading width. Google Fonts load automatically for your picks; "system" options download nothing. |
+| **Layout** | Site max width and global corner radius (0 = sharp → 40 = rounded). |
+| **Header** | Sticky-on-scroll toggle, show/hide the header button, and its label + link. |
+| **Homepage Hero** | Show/hide the hero and its search form; edit the kicker, headline, intro, and trust line. |
+| **Homepage Sections** | Toggle the three-lanes, "why Counsel is different," practice-areas grid, and closing CTA; edit the closing headline + text. |
+| **Footer** | Tagline, footer-disclaimer text, and a show/hide toggle. |
+| **Contact & Social** | Contact + attorney-inquiry emails, phone, and LinkedIn / X / Facebook / Instagram links. |
+
+Everything is driven by CSS custom properties, so your colour/typography/layout
+choices apply site-wide instantly. Defaults exactly match the original design, so
+an untouched install looks identical to the hand-built theme.
+
+**To switch the whole type system to the "article side" (Georgia / system sans)**
+in one click: Typography → Heading font = *Georgia*, Body font = *System UI*.
 
 The **For Attorneys** "check availability" form emails the *attorney-inquiry
 email*; the **Contact** page routes consumers to the general email and attorneys
 to the For Attorneys page.
+
+> Want even more granular control (drag-and-drop sections, per-page layouts)?
+> The theme is fully compatible with page builders and block plugins, but the
+> Customizer above covers the whole design without any extra plugin.
 
 ---
 

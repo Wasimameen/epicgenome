@@ -19,7 +19,7 @@ $counsel_socials = function_exists( 'counsel_get_social_links' ) ? counsel_get_s
 				<?php esc_html_e( 'COUNSEL', 'counsel' ); ?>
 			</a>
 			<p class="site-footer__tagline">
-				<?php esc_html_e( 'An independent guide to hiring a lawyer.', 'counsel' ); ?>
+				<?php echo esc_html( function_exists( 'counsel_mod' ) ? counsel_mod( 'counsel_footer_tagline' ) : __( 'An independent guide to hiring a lawyer.', 'counsel' ) ); ?>
 			</p>
 
 			<?php if ( ! empty( $counsel_socials ) ) : ?>
