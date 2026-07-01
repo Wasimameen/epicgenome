@@ -230,6 +230,7 @@ require COUNSEL_DIR . '/inc/meta-boxes.php';
 require COUNSEL_DIR . '/inc/template-tags.php';
 require COUNSEL_DIR . '/inc/dynamic-css.php';
 require COUNSEL_DIR . '/inc/customizer.php';
+require COUNSEL_DIR . '/inc/elementor.php';
 require COUNSEL_DIR . '/inc/page-setup.php';
 
 /**

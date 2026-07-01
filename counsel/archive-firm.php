@@ -13,6 +13,12 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+
+// If Elementor Pro has an archive template assigned, let it render.
+if ( function_exists( 'counsel_do_elementor_location' ) && counsel_do_elementor_location( 'archive' ) ) {
+	get_footer();
+	return;
+}
 ?>
 <main id="primary" class="site-main counsel-directory" role="main">
 	<div class="counsel-container">

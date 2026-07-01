@@ -29,6 +29,12 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+// If Elementor Pro has a single template assigned for firm profiles, use it.
+if ( function_exists( 'counsel_do_elementor_location' ) && counsel_do_elementor_location( 'single' ) ) {
+	get_footer();
+	return;
+}
+
 while ( have_posts() ) :
 	the_post();
 

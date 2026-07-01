@@ -22,6 +22,11 @@ defined( 'ABSPATH' ) || exit;
 
 <a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'counsel' ); ?></a>
 
+<?php
+// If Elementor Pro has a header assigned, let it render and skip the theme's
+// header entirely. Otherwise the theme header below is the fallback.
+if ( ! function_exists( 'counsel_do_elementor_location' ) || ! counsel_do_elementor_location( 'header' ) ) :
+	?>
 <header id="masthead" class="site-header" role="banner">
 	<div class="site-header__inner counsel-container">
 
@@ -104,5 +109,6 @@ defined( 'ABSPATH' ) || exit;
 
 	</div><!-- .site-header__inner -->
 </header><!-- #masthead -->
+<?php endif; // End Elementor header fallback. ?>
 
 <div id="content" class="site-content">

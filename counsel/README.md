@@ -174,6 +174,35 @@ to the For Attorneys page.
 
 ---
 
+## 7b. Building with Elementor (or any page builder)
+
+Counsel is Elementor-ready and works with the free plugin, Elementor Pro, or no
+builder at all.
+
+**Build any page 100% in Elementor**
+1. Install **Elementor** (free) → **Plugins → Add New → "Elementor"**.
+2. Edit a Page → **Page Attributes → Template** → choose one of:
+   - **Full Width (page builder)** — keeps the Counsel header + footer, but the
+     content area is edge-to-edge with no title, sidebar, or width limit.
+   - **Blank Canvas (page builder)** — a totally blank page (no header/footer) for
+     standalone landing pages. Your Customizer colours/fonts are still loaded.
+   *(Elementor's own "Elementor Full Width" and "Elementor Canvas" work too.)*
+3. Click **Edit with Elementor** and design freely.
+
+**Design the header, footer, and single/archive templates visually (Elementor
+Pro).** The theme registers all core Theme Builder locations, so with **Elementor
+Pro** you can go to **Templates → Theme Builder** and build a custom **Header**,
+**Footer**, **Single** (including Firm Profiles), or **Archive** (the directory).
+When you publish one, it automatically replaces the theme's built-in version;
+where you don't, Counsel's own design is the fallback — so nothing ever breaks.
+
+**Firm data inside Elementor.** Firm custom fields are standard post meta, so
+Elementor Pro's **Dynamic Tags** (or a Post Meta widget) can pull `firm_phone`,
+`firm_best_for`, `firm_is_sponsored`, etc. into a builder-designed profile.
+
+> You don't need Elementor — the theme is fully designed and Customizer-editable
+> on its own. Elementor is there if you want drag-and-drop control.
+
 ## 8. Custom fields & ACF
 
 Firm fields are stored as plain post meta (no leading underscore) so they're

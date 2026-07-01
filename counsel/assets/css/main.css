@@ -166,6 +166,13 @@ h4 { font-size: var(--step-1); }
 
 .site-main { padding-block: var(--space-lg); }
 
+/* Page-builder canvases: no theme padding/width so Elementor controls layout. */
+.site-main--full { padding-block: 0; }
+.site-main--full > .elementor,
+.site-main--full > * { max-width: none; }
+.site-main--canvas { padding: 0; margin: 0; }
+.counsel-full-width #primary { max-width: none; }
+
 .counsel-section-heading { margin-bottom: 2rem; }
 .counsel-section-heading__title { margin: 0; }
 .counsel-section-heading { position: relative; padding-top: 1.25rem; }

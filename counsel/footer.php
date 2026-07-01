@@ -11,6 +11,11 @@ $counsel_socials = function_exists( 'counsel_get_social_links' ) ? counsel_get_s
 ?>
 </div><!-- #content -->
 
+<?php
+// If Elementor Pro has a footer assigned, let it render and skip the theme's
+// footer entirely. Otherwise the theme footer below is the fallback.
+if ( ! function_exists( 'counsel_do_elementor_location' ) || ! counsel_do_elementor_location( 'footer' ) ) :
+	?>
 <footer id="colophon" class="site-footer" role="contentinfo">
 	<div class="counsel-container site-footer__inner">
 
@@ -91,6 +96,7 @@ $counsel_socials = function_exists( 'counsel_get_social_links' ) ? counsel_get_s
 		</div>
 	</div>
 </footer><!-- #colophon -->
+<?php endif; // End Elementor footer fallback. ?>
 
 <?php wp_footer(); ?>
 </body>

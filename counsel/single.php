@@ -23,6 +23,12 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+// If Elementor Pro has a single template assigned for this post, let it render.
+if ( function_exists( 'counsel_do_elementor_location' ) && counsel_do_elementor_location( 'single' ) ) {
+	get_footer();
+	return;
+}
+
 // Detect Ask Counsel columns by category slug 'advice' or name match.
 $counsel_is_advice = has_category( 'advice' ) || has_category( __( 'Ask Counsel', 'counsel' ) );
 // Detect Guides by category slug 'guides'.
