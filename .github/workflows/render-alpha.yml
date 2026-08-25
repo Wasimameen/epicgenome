@@ -1,0 +1,101 @@
+name: Render transparent MOV
+
+# Renders the alpha-channel version of the reel on GitHub's runners and
+# publishes it as a downloadable artifact, so the file can be collected from a
+# browser without installing Node or rendering locally.
+#
+# This repository is public, so Actions minutes and artifact storage are free.
+
+on:
+  workflow_dispatch:
+    inputs:
+      format:
+        description: 'Alpha codec'
+        required: true
+        default: prores4444
+        type: choice
+        options: [prores4444, png, qtrle]
+      scale:
+        description: 'Resolution'
+        required: true
+        default: full
+        type: choice
+        options: [full, half]
+  push:
+    branches: [claude/remotion-installation-mp1dkv]
+    paths:
+      - 'video/**'
+      - '.github/workflows/render-alpha.yml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    defaults:
+      run:
+        working-directory: video
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: video/package-lock.json
+
+      # chrome-headless-shell needs these; ubuntu-latest does not ship them all.
+      - name: Install browser libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+            libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+            libgbm1 libasound2t64 libpango-1.0-0 libcairo2
+
+      - run: npm ci
+
+      - name: Download Remotion's headless shell
+        run: npx remotion browser ensure
+
+      - name: Render alpha pass
+        env:
+          FORMAT: ${{ inputs.format || 'prores4444' }}
+          SCALE: ${{ inputs.scale || 'full' }}
+        run: |
+          mkdir -p out
+          SCALE_ARG=""
+          if [ "$SCALE" = "half" ]; then SCALE_ARG="--scale=0.5"; fi
+
+          case "$FORMAT" in
+            prores4444)
+              npx remotion render ReelAlpha out/reel-alpha.mov \
+                --codec=prores --prores-profile=4444 \
+                --pixel-format=yuva444p10le --image-format=png $SCALE_ARG
+              ;;
+            png|qtrle)
+              # Remotion has no encoder for these, so render ProRes then transcode.
+              npx remotion render ReelAlpha out/tmp-alpha.mov \
+                --codec=prores --prores-profile=4444 \
+                --pixel-format=yuva444p10le --image-format=png $SCALE_ARG
+              PIXFMT=rgba; [ "$FORMAT" = "qtrle" ] && PIXFMT=argb
+              ffmpeg -hide_banner -loglevel error -i out/tmp-alpha.mov \
+                -c:v "$FORMAT" -pix_fmt "$PIXFMT" -c:a copy -y out/reel-alpha.mov
+              rm -f out/tmp-alpha.mov
+              ;;
+          esac
+
+      # A ProRes file can report profile 4444 while carrying no alpha plane at
+      # all. Fail the job rather than publish a silently opaque "transparent" MOV.
+      - name: Verify the alpha plane exists
+        run: npm run verify:alpha
+
+      - name: Report size
+        run: ls -lh out/reel-alpha.mov
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reel-alpha-mov
+          path: video/out/reel-alpha.mov
+          retention-days: 30
+          compression-level: 0
