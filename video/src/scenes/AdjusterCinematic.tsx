@@ -1,34 +1,21 @@
-import React, {useMemo} from 'react';
-import {
-  AbsoluteFill,
-  Audio,
-  Easing,
-  interpolate,
-  random,
-  staticFile,
-  useCurrentFrame,
-} from 'remotion';
+import React from 'react';
+import {AbsoluteFill, Audio, Easing, interpolate, random, staticFile, useCurrentFrame} from 'remotion';
 import {useTransparent} from '../alpha';
-import {Grain} from '../components/Grain';
-import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
 
 /**
- * "Adjuster" — cinematic rebuild. 60fps, 14.1s.
+ * "Adjuster" — kinetic typography rebuild. 60fps, 14.1s.
  *
- * Motion language: one continuous floating camera (slow push-in plus a gentle
- * two-frequency drift), three parallax planes, rack-focus handoffs between the
- * two acts, and ease-in-out curves everywhere. No springs, no shake, no hard
- * cuts — nothing in this file moves linearly and nothing snaps.
- *
- * Element inventory: gradient-mesh background, god rays, three-depth bokeh
- * field, fine dust, two flowing silk ribbons, slow-rotating geometric rings,
- * drifting light streaks, anamorphic flares on title landings, film grain,
- * vignette. Background-only layers (mesh, rays, bokeh, vignette, grain) drop
- * out of the alpha pass; ribbons, rings, streaks, flares and type are the
- * graphics layer and survive it. Type keeps to the upper and lower thirds so
- * the alpha version still leaves the middle clear for footage — with no
- * drawn frame marking it.
+ * Built to the professional kinetic-type standard, not the slow-cinematic one:
+ *  - entries are FAST (12-16 frames ≈ 0.2-0.27s) on a strong ease-out curve
+ *    (0.16, 1, 0.3, 1), then the type holds DEAD STILL — the research rule is
+ *    readable-and-static within half a second of landing;
+ *  - every reveal is a masked baseline rise and every exit is a push up:
+ *    one motion axis, one motion language, no blur-fades;
+ *  - palette is two colors on near-black — off-white type, one gold accent —
+ *    with red reserved for the single strike moment;
+ *  - no camera drift, no shake: a locked-off frame with one barely
+ *    perceptible push across the whole piece.
  *
  * Cues are word timestamps of public/audio/vo-adjuster.mp3:
  *   "So an adjuster told you you're 40% at fault."  0.00 - 2.38
@@ -44,593 +31,427 @@ export const ADJUSTER_CINE_FPS = FPS;
 export const ADJUSTER_CINE_FRAMES = at(14.106) + 8;
 
 const B = {
-  kicker: at(0.25),
+  kicker: at(0.3),
   forty: at(1.42),
-  atFault: at(2.1),
-  opening: at(3.4),
-  finding: at(4.76),
-  actTwo: at(6.4),
-  brand: at(6.62),
-  phoenix: at(8.72),
-  matched: at(10.36),
-  paid: at(11.22),
-  url: at(12.26),
+  atFault: at(2.08),
+  opening: at(3.38),
+  strike: at(4.78),
+  finding: at(4.9),
+  act1Out: at(6.28),
+  brand: at(6.56),
+  phoenix: at(8.68),
+  matched: at(10.32),
+  paid: at(11.18),
+  ctaOut: at(12.1),
+  url: at(12.3),
 };
 
-const io = Easing.inOut(Easing.cubic);
-const out = Easing.out(Easing.cubic);
+const INK = '#0b0b0d';
+const PAPER = '#f5f2ea';
+const GOLD = '#e3b34c';
+const RED = '#e5484d';
 
-/** Eased interpolate with clamping — the only motion primitive in this scene. */
-const ease = (
-  frame: number,
-  from: number,
-  dur: number,
-  a: number,
-  b: number,
-  curve = io,
-) =>
+/** The professional entry curve — fast start, long soft settle, no bounce. */
+const OUT = Easing.bezier(0.16, 1, 0.3, 1);
+/** Exit curve — accelerates away. */
+const IN = Easing.bezier(0.55, 0, 0.9, 0.2);
+
+const ease = (frame: number, from: number, dur: number, a: number, b: number, curve = OUT) =>
   interpolate(frame, [from, from + dur], [a, b], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: curve,
   });
 
-/* ------------------------------------------------------------------ camera */
+/* ---------------------------------------------------------------- reveals */
 
-const useCamera = (frame: number) => {
-  // One unbroken push across the whole piece; drift is two slow sines summed
-  // so it never reads as a loop.
-  const push = ease(frame, 0, ADJUSTER_CINE_FRAMES, 1.02, 1.085);
-  const dx = Math.sin(frame * 0.004) * 9 + Math.sin(frame * 0.0017 + 1.7) * 6;
-  const dy = Math.sin(frame * 0.0031 + 0.6) * 7 + Math.sin(frame * 0.0013) * 5;
-  return {push, dx, dy};
-};
+/**
+ * Masked baseline rise, per word. Each word lives in an overflow-hidden box
+ * and rises from below its own baseline — the signature kinetic-type reveal.
+ */
+const Rise: React.FC<{
+  text: string;
+  atFrame: number;
+  /** Frames each word takes to land. */
+  dur?: number;
+  stagger?: number;
+  exitAt?: number;
+  style: React.CSSProperties;
+}> = ({text, atFrame, dur = 14, stagger = 4, exitAt, style}) => {
+  const frame = useCurrentFrame();
+  if (frame < atFrame) return null;
 
-/** Parallax plane: depth 1 = background (moves most), 0 = screen-locked. */
-const Plane: React.FC<{
-  depth: number;
-  cam: {push: number; dx: number; dy: number};
-  children: React.ReactNode;
-}> = ({depth, cam, children}) => {
-  const scale = 1 + (cam.push - 1) * (0.6 + depth * 0.55);
+  const gone =
+    exitAt !== undefined ? ease(frame, exitAt, 10, 0, 1, IN) : 0;
+  if (gone >= 1) return null;
+
   return (
-    <AbsoluteFill
+    <div
       style={{
-        transform: `scale(${scale}) translate(${cam.dx * depth}px, ${cam.dy * depth}px)`,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        columnGap: '0.28em',
+        ...style,
       }}
     >
-      {children}
-    </AbsoluteFill>
+      {text.split(' ').map((word, i) => {
+        const y = ease(frame, atFrame + i * stagger, dur, 108, 0);
+        return (
+          <span key={i} style={{display: 'inline-block', overflow: 'hidden', verticalAlign: 'top'}}>
+            <span
+              style={{
+                display: 'inline-block',
+                transform: `translateY(${y - gone * -0 + gone * -112}%)`,
+              }}
+            >
+              {word}
+            </span>
+          </span>
+        );
+      })}
+    </div>
   );
 };
 
-/* -------------------------------------------------------------- background */
-
-/** Slow-morphing gradient mesh — the dark teal/gold ground. Opaque pass only. */
-const GradientMesh: React.FC = () => {
+/** A thin gold rule that sweeps to full width on its cue. */
+const Rule: React.FC<{atFrame: number; width: number; exitAt?: number; color?: string}> = ({
+  atFrame,
+  width,
+  exitAt,
+  color = GOLD,
+}) => {
   const frame = useCurrentFrame();
-  const blob = (
-    x: number,
-    y: number,
-    r: number,
-    color: string,
-    rate: number,
-    phase: number,
-  ) => (
+  const w = ease(frame, atFrame, 16, 0, width);
+  const gone = exitAt !== undefined ? ease(frame, exitAt, 10, 1, 0, IN) : 1;
+  if (frame < atFrame || gone <= 0) return null;
+  return (
     <div
       style={{
-        position: 'absolute',
-        left: `${x + Math.sin(frame * rate + phase) * 6}%`,
-        top: `${y + Math.cos(frame * rate * 0.8 + phase) * 5}%`,
-        width: r,
-        height: r,
-        transform: 'translate(-50%, -50%)',
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${color} 0%, transparent 70%)`,
-        filter: 'blur(70px)',
+        width: w,
+        height: 3,
+        background: color,
+        opacity: gone,
+        borderRadius: 2,
       }}
     />
   );
-
-  return (
-    <AbsoluteFill style={{backgroundColor: '#05060a', overflow: 'hidden'}}>
-      {blob(30, 22, 900, 'rgba(22,88,100,0.8)', 0.0021, 0)}
-      {blob(78, 64, 1100, 'rgba(150,108,40,0.6)', 0.0016, 2.1)}
-      {blob(20, 84, 850, 'rgba(14,62,80,0.72)', 0.0025, 4.2)}
-      {blob(64, 8, 700, 'rgba(180,128,52,0.4)', 0.0019, 1.2)}
-      <AbsoluteFill
-        style={{
-          background:
-            'linear-gradient(180deg, rgba(4,5,9,0.6) 0%, transparent 30%, transparent 62%, rgba(4,5,9,0.75) 100%)',
-        }}
-      />
-    </AbsoluteFill>
-  );
 };
 
-/** Volumetric shafts from top-left, breathing slowly. Opaque pass only. */
-const GodRays: React.FC = () => {
-  const frame = useCurrentFrame();
-  const breathe = 0.6 + Math.sin(frame * 0.006) * 0.25;
-  return (
-    <AbsoluteFill style={{pointerEvents: 'none', mixBlendMode: 'screen', opacity: 0.24 * breathe}}>
-      <AbsoluteFill
-        style={{
-          transformOrigin: '18% -8%',
-          transform: `rotate(${-14 + Math.sin(frame * 0.0035) * 2.2}deg)`,
-          background:
-            'repeating-linear-gradient(101deg, rgba(255,230,180,0.5) 0px, rgba(255,230,180,0.5) 2px, transparent 2px, transparent 70px, rgba(255,230,180,0.26) 70px, rgba(255,230,180,0.26) 82px, transparent 82px, transparent 170px)',
-          filter: 'blur(14px)',
-        }}
-      />
-    </AbsoluteFill>
-  );
-};
+/* ------------------------------------------------------------- background */
 
-/** Out-of-focus discs on a given depth band. Opaque pass only. */
-const BokehField: React.FC<{seed: string; count?: number}> = ({seed, count = 22}) => {
+/** Minimal premium ground: dark radial, a whisper of warm bokeh, grain. */
+const Ground: React.FC = () => {
   const frame = useCurrentFrame();
-  const discs = useMemo(
+  const discs = React.useMemo(
     () =>
-      new Array(count).fill(0).map((_, i) => ({
-        x: random(`bkx-${seed}-${i}`) * 100,
-        y: random(`bky-${seed}-${i}`) * 100,
-        r: 14 + random(`bkr-${seed}-${i}`) * 58,
-        rise: 0.006 + random(`bks-${seed}-${i}`) * 0.012,
-        sway: random(`bkw-${seed}-${i}`) * 2.4,
-        phase: random(`bkp-${seed}-${i}`) * Math.PI * 2,
-        warm: random(`bkc-${seed}-${i}`) > 0.45,
-        o: 0.09 + random(`bko-${seed}-${i}`) * 0.16,
-      })),
-    [count, seed],
-  );
-
-  return (
-    <AbsoluteFill style={{pointerEvents: 'none'}}>
-      {discs.map((d, i) => {
-        const y = (((d.y - frame * d.rise) % 112) + 112) % 112 - 6;
-        const x = d.x + Math.sin(frame * 0.005 + d.phase) * d.sway;
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `${x}%`,
-              top: `${y}%`,
-              width: d.r,
-              height: d.r,
-              borderRadius: '50%',
-              background: d.warm ? 'rgba(235,190,120,1)' : 'rgba(130,190,205,1)',
-              opacity: d.o * (0.75 + Math.sin(frame * 0.01 + d.phase) * 0.25),
-              filter: `blur(${d.r * 0.35}px)`,
-            }}
-          />
-        );
-      })}
-    </AbsoluteFill>
-  );
-};
-
-/* -------------------------------------------------- graphics-layer elements */
-
-/** Flowing silk ribbon — a wide bezier sheet, slowly undulating. */
-const Ribbon: React.FC<{
-  y: number;
-  amp: number;
-  rate: number;
-  phase: number;
-  opacity?: number;
-  hue?: string;
-}> = ({y, amp, rate, phase, opacity = 0.4, hue = '215,175,105'}) => {
-  const frame = useCurrentFrame();
-  const t = frame * rate + phase;
-
-  const y0 = y + Math.sin(t) * amp;
-  const y1 = y + Math.sin(t + 1.4) * amp * 1.35;
-  const y2 = y + Math.sin(t + 2.9) * amp * 0.9;
-  const y3 = y + Math.sin(t + 4.1) * amp * 1.2;
-  const w = 130 + Math.sin(t * 0.7 + 1) * 45;
-
-  const d = `M -80 ${y0} C 340 ${y1}, 700 ${y2}, 1180 ${y3}`;
-  const gid = `rib-${y}-${phase}`;
-
-  return (
-    <AbsoluteFill style={{pointerEvents: 'none', opacity}}>
-      <svg viewBox="0 0 1080 1920" style={{width: '100%', height: '100%'}} preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id={gid} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={`rgba(${hue},0)`} />
-            <stop offset="30%" stopColor={`rgba(${hue},0.55)`} />
-            <stop offset="55%" stopColor={`rgba(255,240,210,0.8)`} />
-            <stop offset="78%" stopColor={`rgba(${hue},0.45)`} />
-            <stop offset="100%" stopColor={`rgba(${hue},0)`} />
-          </linearGradient>
-        </defs>
-        <path d={d} fill="none" stroke={`url(#${gid})`} strokeWidth={w} strokeLinecap="round" style={{filter: 'blur(26px)'}} />
-        <path d={d} fill="none" stroke={`url(#${gid})`} strokeWidth={Math.max(3, w * 0.06)} style={{filter: 'blur(2px)', opacity: 0.85}} />
-      </svg>
-    </AbsoluteFill>
-  );
-};
-
-/** Thin geometric rings, slowly rotating and breathing. */
-const Rings: React.FC = () => {
-  const frame = useCurrentFrame();
-  const ring = (x: number, y: number, r: number, rate: number, o: number, dash?: string) => (
-    <div
-      style={{
-        position: 'absolute',
-        left: `${x}%`,
-        top: `${y}%`,
-        transform: `translate(-50%,-50%) rotate(${frame * rate}deg) scale(${1 + Math.sin(frame * 0.008 + r) * 0.03})`,
-        opacity: o,
-      }}
-    >
-      <svg width={r * 2} height={r * 2} viewBox={`0 0 ${r * 2} ${r * 2}`}>
-        <circle
-          cx={r}
-          cy={r}
-          r={r - 3}
-          fill="none"
-          stroke={THEME.gold}
-          strokeWidth="1.6"
-          strokeDasharray={dash}
-        />
-      </svg>
-    </div>
-  );
-
-  return (
-    <AbsoluteFill style={{pointerEvents: 'none'}}>
-      {ring(87, 15, 150, 0.05, 0.4)}
-      {ring(87, 15, 108, -0.08, 0.3, '5 9')}
-      {ring(10, 82, 190, -0.04, 0.32)}
-      {ring(10, 82, 132, 0.06, 0.24, '2 12')}
-      {ring(6, 12, 70, 0.09, 0.25, '4 7')}
-    </AbsoluteFill>
-  );
-};
-
-/** Slow diagonal glints drifting through the frame. */
-const LightStreaks: React.FC = () => {
-  const frame = useCurrentFrame();
-  const streaks = useMemo(
-    () =>
-      new Array(5).fill(0).map((_, i) => ({
-        y: 8 + random(`sty-${i}`) * 84,
-        len: 24 + random(`stl-${i}`) * 30,
-        period: 480 + random(`stp-${i}`) * 420,
-        offset: random(`sto-${i}`) * 900,
-        tilt: -18 - random(`stt-${i}`) * 10,
-        w: 1.6 + random(`stw-${i}`) * 2.2,
+      new Array(9).fill(0).map((_, i) => ({
+        x: random(`gx-${i}`) * 100,
+        y: random(`gy-${i}`) * 100,
+        r: 90 + random(`gr-${i}`) * 200,
+        rate: 0.004 + random(`gs-${i}`) * 0.006,
+        phase: random(`gp-${i}`) * 6.28,
       })),
     [],
   );
 
   return (
-    <AbsoluteFill style={{pointerEvents: 'none', opacity: 0.5}}>
-      {streaks.map((s, i) => {
-        const p = ((frame + s.offset) % s.period) / s.period;
-        const x = interpolate(p, [0, 1], [-40, 130]);
-        const fade = Math.sin(p * Math.PI);
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `${x}%`,
-              top: `${s.y}%`,
-              width: `${s.len}%`,
-              height: s.w,
-              transform: `rotate(${s.tilt}deg)`,
-              background: 'linear-gradient(90deg, transparent, rgba(255,238,200,0.8), transparent)',
-              filter: 'blur(1.5px)',
-              opacity: fade * 0.6,
-            }}
-          />
-        );
-      })}
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill
+        style={{
+          background: `radial-gradient(ellipse 120% 70% at 50% 38%, #16161a 0%, ${INK} 68%, #070708 100%)`,
+        }}
+      />
+      {discs.map((d, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${d.x + Math.sin(frame * d.rate + d.phase) * 3}%`,
+            top: `${d.y + Math.cos(frame * d.rate * 0.7 + d.phase) * 2.5}%`,
+            width: d.r,
+            height: d.r,
+            transform: 'translate(-50%,-50%)',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(227,179,76,0.05) 0%, transparent 70%)',
+            filter: 'blur(30px)',
+          }}
+        />
+      ))}
+      <AbsoluteFill
+        style={{
+          background:
+            'radial-gradient(ellipse 90% 62% at 50% 46%, transparent 55%, rgba(0,0,0,0.55) 100%)',
+        }}
+      />
     </AbsoluteFill>
   );
 };
 
-/** Anamorphic flare that blooms behind a title landing, then decays. */
-const Flare: React.FC<{atFrame: number; y: number; hold?: number}> = ({atFrame, y, hold = 70}) => {
+/** Fine, fast-cycling monochrome grain — texture, not noise. */
+const FilmGrain: React.FC = () => {
   const frame = useCurrentFrame();
-  const rise = ease(frame, atFrame, 22, 0, 1, out);
-  const fall = ease(frame, atFrame + hold, 60, 1, 0);
-  const o = rise * fall;
-  if (o <= 0.01) return null;
-
+  const seed = Math.floor(frame / 2);
+  const specks = React.useMemo(
+    () =>
+      new Array(240).fill(0).map((_, i) => ({
+        x: random(`fx-${seed}-${i}`) * 100,
+        y: random(`fy-${seed}-${i}`) * 100,
+        o: random(`fo-${seed}-${i}`),
+      })),
+    [seed],
+  );
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: `${y}%`, pointerEvents: 'none', opacity: o}}>
-      <div
-        style={{
-          margin: '0 auto',
-          width: `${44 + rise * 40}%`,
-          height: 3,
-          background: 'linear-gradient(90deg, transparent, rgba(160,215,235,0.9), rgba(255,246,220,1), rgba(160,215,235,0.9), transparent)',
-          filter: 'blur(2px)',
-          boxShadow: '0 0 40px rgba(190,225,240,0.6)',
-        }}
-      />
-      <div
-        style={{
-          margin: '-30px auto 0',
-          width: 300,
-          height: 60,
-          background: 'radial-gradient(ellipse, rgba(255,244,214,0.5) 0%, transparent 70%)',
-          filter: 'blur(10px)',
-        }}
-      />
-    </div>
+    <AbsoluteFill style={{pointerEvents: 'none', opacity: 0.05, mixBlendMode: 'overlay'}}>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{width: '100%', height: '100%'}}>
+        {specks.map((s, i) => (
+          <rect key={i} x={s.x} y={s.y} width={0.22} height={0.22} fill="#fff" opacity={s.o} />
+        ))}
+      </svg>
+    </AbsoluteFill>
   );
 };
 
-/* --------------------------------------------------------------------- type */
-
-/** Cinematic text: fades up through a tracking ease with a soft focus pull. */
-const CineText: React.FC<{
-  text: string;
-  atFrame: number;
-  dur?: number;
-  size: number;
-  display?: boolean;
-  color?: string;
-  trackFrom?: number;
-  trackTo?: number;
-  glow?: number;
-}> = ({text, atFrame, dur = 46, size, display, color = THEME.paper, trackFrom = 0.42, trackTo = 0.14, glow = 0}) => {
-  const frame = useCurrentFrame();
-  if (frame < atFrame) return null;
-
-  const p = ease(frame, atFrame, dur, 0, 1);
-  const track = trackFrom + (trackTo - trackFrom) * p;
-
-  return (
-    <div
-      style={{
-        fontFamily: display ? 'var(--display), sans-serif' : 'var(--body), sans-serif',
-        fontWeight: display ? 400 : 600,
-        fontSize: size,
-        lineHeight: 1.06,
-        color,
-        letterSpacing: `${track}em`,
-        textIndent: `${track}em`,
-        textAlign: 'center',
-        opacity: p,
-        transform: `translateY(${(1 - p) * 34}px) scale(${1.035 - p * 0.035})`,
-        filter: `blur(${(1 - p) * 7}px)`,
-        textShadow: glow
-          ? `0 0 ${28 + glow * 26}px rgba(245,217,138,${0.3 + glow * 0.3}), 0 8px 44px rgba(0,0,0,0.7)`
-          : '0 8px 44px rgba(0,0,0,0.7)',
-        whiteSpace: 'pre-line',
-      }}
-    >
-      {text}
-    </div>
-  );
-};
-
-/* -------------------------------------------------------------------- scene */
+/* ------------------------------------------------------------------ scene */
 
 export const AdjusterCinematic: React.FC<{withAudio?: boolean}> = ({withAudio = true}) => {
   const alpha = useTransparent();
   const frame = useCurrentFrame();
-  const cam = useCamera(frame);
 
-  // Rack-focus handoff between the two acts — a defocus, never a cut.
-  const act1Out = ease(frame, B.actTwo - 26, 40, 0, 1);
-  const act2In = ease(frame, B.actTwo, 48, 0, 1);
+  // Locked-off with one imperceptible push — premium stillness.
+  const push = ease(frame, 0, ADJUSTER_CINE_FRAMES, 1.0, 1.028, Easing.inOut(Easing.quad));
 
-  // The invalidation: the claim softens and recedes as the truth arrives.
-  const invalidate = ease(frame, B.finding, 50, 0, 1);
-  const lineSweep = ease(frame, B.finding + 6, 34, 0, 1);
+  // Act 1 exits as a block: a fast push up, gone in a quarter second.
+  const act1Y = ease(frame, B.act1Out, 16, 0, -110, IN);
+  const act1O = ease(frame, B.act1Out + 4, 12, 1, 0, IN);
 
-  const glowPulse = 0.5 + Math.sin(frame * 0.02) * 0.5;
+  // CTA lines clear before the URL takes the frame.
+  const strike = ease(frame, B.strike, 9, 0, 1);
+  const dimmed = ease(frame, B.strike, 12, 1, 0.3);
 
   return (
-    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#05060a'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : INK}}>
       {withAudio ? <Audio src={staticFile('audio/vo-adjuster.mp3')} /> : null}
+      {!alpha && <Ground />}
 
-      {/* background planes — opaque render only */}
-      {!alpha && (
-        <>
-          <Plane depth={1} cam={cam}>
-            <GradientMesh />
-          </Plane>
-          <Plane depth={0.85} cam={cam}>
-            <BokehField seed="far" count={16} />
-          </Plane>
-          <GodRays />
-          <Plane depth={0.55} cam={cam}>
-            <BokehField seed="mid" count={12} />
-          </Plane>
-        </>
-      )}
-
-      {!alpha && (
+      <AbsoluteFill style={{transform: `scale(${push})`}}>
+        {/* ============================ ACT 1 ============================ */}
         <AbsoluteFill
           style={{
-            background:
-              'radial-gradient(ellipse 70% 26% at 50% 18%, rgba(214,178,110,0.16) 0%, transparent 70%), radial-gradient(ellipse 64% 20% at 50% 82%, rgba(214,178,110,0.1) 0%, transparent 70%)',
-          }}
-        />
-      )}
-
-      {/* graphics ambience — survives the alpha pass */}
-      <Plane depth={0.5} cam={cam}>
-        <Ribbon y={330} amp={60} rate={0.011} phase={0} opacity={0.44} />
-        <Ribbon y={1610} amp={72} rate={0.009} phase={2.6} opacity={0.38} hue="150,185,195" />
-        <Rings />
-      </Plane>
-      <Plane depth={0.35} cam={cam}>
-        <LightStreaks />
-      </Plane>
-
-      {/* ============================== ACT 1 ============================== */}
-      <Plane depth={0.22} cam={cam}>
-        <AbsoluteFill
-          style={{
-            opacity: 1 - act1Out,
-            filter: `blur(${act1Out * 12}px)`,
-            transform: `scale(${1 + act1Out * 0.04})`,
+            alignItems: 'center',
+            justifyContent: 'center',
+            transform: `translateY(${act1Y}%)`,
+            opacity: act1O,
           }}
         >
-          <Flare atFrame={B.forty + 16} y={17.5} />
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 30}}>
+            <Rule atFrame={B.kicker} width={64} />
+            <Rise
+              text="THE ADJUSTER SAYS"
+              atFrame={B.kicker + 3}
+              stagger={3}
+              style={{
+                fontFamily: 'var(--body), sans-serif',
+                fontWeight: 700,
+                fontSize: 38,
+                letterSpacing: '0.34em',
+                textIndent: '0.34em',
+                color: GOLD,
+              }}
+            />
 
-          {/* upper third */}
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: '8%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 22,
-            }}
-          >
-            <CineText text="THE ADJUSTER SAYS" atFrame={B.kicker} size={34} color={THEME.gold} trackFrom={0.6} trackTo={0.3} />
-            <div style={{position: 'relative'}}>
-              <div
-                style={{
-                  opacity: 1 - invalidate * 0.62,
-                  filter: `blur(${invalidate * 2.5}px) saturate(${1 - invalidate * 0.5})`,
-                  transform: `scale(${1 - invalidate * 0.05})`,
-                }}
-              >
-                <CineText text={'40%\nAT FAULT'} atFrame={B.forty} size={132} display glow={glowPulse * 0.5} />
+            {/* the claim */}
+            <div style={{position: 'relative', marginTop: 8}}>
+              <div style={{opacity: dimmed}}>
+                <Rise
+                  text="40%"
+                  atFrame={B.forty}
+                  dur={16}
+                  style={{
+                    fontFamily: 'var(--display), sans-serif',
+                    fontSize: 360,
+                    lineHeight: 0.96,
+                    color: PAPER,
+                    letterSpacing: '-0.01em',
+                  }}
+                />
               </div>
-              {/* a single gold line draws through the claim — graceful, not violent */}
+              {/* the strike — one clean red line, drawn in 0.15s */}
               <div
                 style={{
                   position: 'absolute',
-                  left: '-8%',
-                  top: '48%',
-                  width: `${lineSweep * 116}%`,
-                  height: 5,
-                  transform: 'rotate(-6deg)',
-                  background: `linear-gradient(90deg, transparent, ${THEME.goldBright}, transparent)`,
-                  boxShadow: `0 0 24px ${THEME.goldBright}aa`,
-                  opacity: lineSweep > 0 ? 0.95 : 0,
+                  left: '50%',
+                  top: '50%',
+                  width: strike * 620,
+                  height: 14,
+                  transform: 'translate(-50%,-50%) rotate(-8deg)',
+                  background: RED,
+                  borderRadius: 7,
+                  opacity: strike > 0 ? 1 : 0,
                 }}
               />
             </div>
-            <CineText
-              text="THEIR OPENING POSITION"
-              atFrame={B.opening}
-              size={33}
-              color={THEME.gold}
-              trackFrom={0.5}
-              trackTo={0.26}
-            />
-          </div>
+            <div style={{opacity: dimmed, marginTop: -14}}>
+              <Rise
+                text="AT FAULT"
+                atFrame={B.atFault}
+                stagger={4}
+                style={{
+                  fontFamily: 'var(--display), sans-serif',
+                  fontSize: 96,
+                  color: PAPER,
+                  letterSpacing: '0.04em',
+                }}
+              />
+            </div>
 
-          {/* lower third */}
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: '76%',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <CineText
-              text="NOT A LEGAL FINDING"
-              atFrame={B.finding}
-              dur={54}
-              size={72}
-              display
-              color={THEME.goldBright}
-              glow={1}
-            />
+            <div style={{marginTop: 14}}>
+              <Rise
+                text="THAT'S THEIR OPENING POSITION"
+                atFrame={B.opening}
+                stagger={3}
+                exitAt={B.strike - 2}
+                style={{
+                  fontFamily: 'var(--body), sans-serif',
+                  fontWeight: 700,
+                  fontSize: 36,
+                  letterSpacing: '0.22em',
+                  textIndent: '0.22em',
+                  color: GOLD,
+                }}
+              />
+            </div>
+
+            {/* the truth */}
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22, marginTop: 4}}>
+              <Rise
+                text="NOT A LEGAL FINDING"
+                atFrame={B.finding}
+                dur={13}
+                stagger={4}
+                style={{
+                  fontFamily: 'var(--display), sans-serif',
+                  fontSize: 104,
+                  color: PAPER,
+                  letterSpacing: '0.015em',
+                }}
+              />
+              <Rule atFrame={B.finding + 14} width={420} color={RED} />
+            </div>
           </div>
         </AbsoluteFill>
-      </Plane>
 
-      {/* ============================== ACT 2 ============================== */}
-      <Plane depth={0.22} cam={cam}>
-        <AbsoluteFill
-          style={{
-            opacity: act2In,
-            filter: `blur(${(1 - act2In) * 12}px)`,
-            transform: `scale(${1.05 - act2In * 0.05})`,
-          }}
-        >
-          <Flare atFrame={B.brand + 14} y={15.5} hold={110} />
-          <Flare atFrame={B.url + 10} y={83} hold={90} />
+        {/* ============================ ACT 2 ============================ */}
+        {frame >= B.act1Out + 10 ? (
+          <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 30}}>
+              <Rise
+                text="AWESOME"
+                atFrame={B.brand}
+                dur={15}
+                exitAt={B.ctaOut}
+                style={{
+                  fontFamily: 'var(--display), sans-serif',
+                  fontSize: 176,
+                  lineHeight: 0.98,
+                  color: PAPER,
+                  letterSpacing: '0.01em',
+                }}
+              />
+              <Rise
+                text="ATTORNEYS"
+                atFrame={B.brand + 6}
+                dur={15}
+                exitAt={B.ctaOut}
+                style={{
+                  fontFamily: 'var(--display), sans-serif',
+                  fontSize: 176,
+                  lineHeight: 0.98,
+                  color: GOLD,
+                  letterSpacing: '0.01em',
+                }}
+              />
+              <Rule atFrame={B.brand + 16} width={340} exitAt={B.ctaOut} />
+              <Rise
+                text="PHOENIX INJURY ATTORNEY"
+                atFrame={B.phoenix}
+                stagger={3}
+                exitAt={B.ctaOut}
+                style={{
+                  fontFamily: 'var(--body), sans-serif',
+                  fontWeight: 700,
+                  fontSize: 36,
+                  letterSpacing: '0.28em',
+                  textIndent: '0.28em',
+                  color: PAPER,
+                  opacity: 0.85,
+                }}
+              />
 
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: '9%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 26,
-            }}
-          >
-            <CineText text={'AWESOME\nATTORNEYS'} atFrame={B.brand} dur={56} size={112} display glow={glowPulse * 0.7} />
-            <CineText
-              text="PHOENIX INJURY ATTORNEY"
-              atFrame={B.phoenix}
-              size={31}
-              color={THEME.gold}
-              trackFrom={0.55}
-              trackTo={0.3}
-            />
-          </div>
-
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: '74%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 20,
-            }}
-          >
-            <div style={{display: 'flex', alignItems: 'center', gap: 26}}>
-              <CineText text="GET MATCHED" atFrame={B.matched} size={52} display color={THEME.paper} />
-              {frame >= B.paid ? (
-                <div
+              <div style={{display: 'flex', gap: 34, marginTop: 16}}>
+                <Rise
+                  text="GET MATCHED."
+                  atFrame={B.matched}
+                  dur={13}
+                  exitAt={B.ctaOut}
                   style={{
-                    width: 7,
-                    height: 7,
-                    borderRadius: '50%',
-                    background: THEME.gold,
-                    opacity: ease(frame, B.paid, 30, 0, 0.9),
+                    fontFamily: 'var(--display), sans-serif',
+                    fontSize: 76,
+                    color: PAPER,
                   }}
                 />
-              ) : null}
-              <CineText text="GET PAID" atFrame={B.paid} size={52} display color={THEME.paper} />
+                <Rise
+                  text="GET PAID."
+                  atFrame={B.paid}
+                  dur={13}
+                  exitAt={B.ctaOut}
+                  style={{
+                    fontFamily: 'var(--display), sans-serif',
+                    fontSize: 76,
+                    color: GOLD,
+                  }}
+                />
+              </div>
             </div>
-            <CineText
-              text="AwesomeAttorneys.com"
-              atFrame={B.url}
-              dur={52}
-              size={47}
-              color={THEME.goldBright}
-              trackFrom={0.2}
-              trackTo={0.03}
-              glow={0.8}
-            />
-          </div>
-        </AbsoluteFill>
-      </Plane>
+          </AbsoluteFill>
+        ) : null}
 
-      {/* finishing — opaque render only (both early-return in alpha) */}
-      <Vignette strength={0.55} />
-      <Grain opacity={0.07} cycle={2} />
+        {/* ============================ URL CARD ============================ */}
+        {frame >= B.url ? (
+          <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26}}>
+              <Rise
+                text="AwesomeAttorneys.com"
+                atFrame={B.url}
+                dur={15}
+                style={{
+                  fontFamily: 'var(--body), sans-serif',
+                  fontWeight: 800,
+                  fontSize: 76,
+                  letterSpacing: '-0.01em',
+                  color: PAPER,
+                }}
+              />
+              <Rule atFrame={B.url + 12} width={560} />
+              <Rise
+                text="GET MATCHED · GET PAID"
+                atFrame={B.url + 18}
+                stagger={2}
+                style={{
+                  fontFamily: 'var(--body), sans-serif',
+                  fontWeight: 700,
+                  fontSize: 33,
+                  letterSpacing: '0.3em',
+                  textIndent: '0.3em',
+                  color: GOLD,
+                }}
+              />
+            </div>
+          </AbsoluteFill>
+        ) : null}
+      </AbsoluteFill>
+
+      {!alpha && <FilmGrain />}
     </AbsoluteFill>
   );
 };
