@@ -12,9 +12,9 @@ on:
       composition:
         description: 'Composition to render'
         required: true
-        default: AdjusterAlpha
+        default: AdjusterCinematicAlpha
         type: choice
-        options: [AdjusterAlpha, ReelAlpha]
+        options: [AdjusterCinematicAlpha, AdjusterAlpha, ReelAlpha]
       scale:
         description: 'Resolution'
         required: true
@@ -67,7 +67,7 @@ jobs:
 
       - name: Render alpha pass
         env:
-          COMPOSITION: ${{ inputs.composition || 'AdjusterAlpha' }}
+          COMPOSITION: ${{ inputs.composition || 'AdjusterCinematicAlpha' }}
           FORMAT: ${{ matrix.format }}
           SCALE: ${{ inputs.scale || 'full' }}
         run: |
@@ -103,7 +103,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.composition || 'AdjusterAlpha' }}-${{ matrix.format }}-mov
+          name: ${{ inputs.composition || 'AdjusterCinematicAlpha' }}-${{ matrix.format }}-mov
           path: video/out/reel-alpha.mov
           retention-days: 30
           compression-level: 0

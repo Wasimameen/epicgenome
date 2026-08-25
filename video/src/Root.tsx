@@ -4,6 +4,7 @@ import {FONT_STACK, loadFonts} from './fonts';
 import {Reel} from './Reel';
 import {TransparentContext} from './alpha';
 import {Adjuster, ADJUSTER_FRAMES} from './scenes/Adjuster';
+import {AdjusterCinematic, ADJUSTER_CINE_FPS, ADJUSTER_CINE_FRAMES} from './scenes/AdjusterCinematic';
 import {Scene01Hook} from './scenes/Scene01Hook';
 import {VIDEO} from './theme';
 import {TOTAL_FRAMES} from './timeline';
@@ -78,6 +79,39 @@ export const RemotionRoot: React.FC = () => (
       )}
       durationInFrames={TOTAL_FRAMES}
       fps={VIDEO.fps}
+      width={VIDEO.width}
+      height={VIDEO.height}
+    />
+
+    {/*
+      Cinematic rebuild of the Adjuster spot: 60fps, floating camera, parallax
+      planes, rack-focus act changes. AdjusterCinematic previews on the full
+      gradient-mesh background; AdjusterCinematicAlpha is the transparent
+      deliverable (background planes drop, graphics layer survives).
+    */}
+    <Composition
+      id="AdjusterCinematic"
+      component={() => (
+        <FontVars>
+          <AdjusterCinematic />
+        </FontVars>
+      )}
+      durationInFrames={ADJUSTER_CINE_FRAMES}
+      fps={ADJUSTER_CINE_FPS}
+      width={VIDEO.width}
+      height={VIDEO.height}
+    />
+    <Composition
+      id="AdjusterCinematicAlpha"
+      component={() => (
+        <TransparentContext.Provider value={true}>
+          <FontVars>
+            <AdjusterCinematic />
+          </FontVars>
+        </TransparentContext.Provider>
+      )}
+      durationInFrames={ADJUSTER_CINE_FRAMES}
+      fps={ADJUSTER_CINE_FPS}
       width={VIDEO.width}
       height={VIDEO.height}
     />
