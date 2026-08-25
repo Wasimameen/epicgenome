@@ -36,7 +36,7 @@ export const Stamp: React.FC<{
         fontSize: 92,
         letterSpacing: '0.02em',
         lineHeight: 1,
-        background: 'rgba(0,0,0,0.28)',
+        background: 'rgba(6,5,8,0.62)',
         boxShadow: `0 0 60px ${color}55`,
         textShadow: `0 0 30px ${color}66`,
         whiteSpace: 'nowrap',

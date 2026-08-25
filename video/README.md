@@ -55,3 +55,34 @@ moment is the point.
   preinstalled Playwright Chromium has old-headless removed and will not launch.
 - The headline figure is set to `17_000_000` in `Scene01Hook.tsx` to match the
   "nearly seventeen million" read. Change the `target` prop for the exact verdict.
+
+## Voiceover sync
+
+`src/timeline.ts` is derived from word-level timestamps of `public/audio/vo.mp3`
+(62.04s), not estimated. Scene boundaries come from `BOUNDS`, and inside a scene
+every cue is written as `cue('sceneId', <seconds into the VO>)` so it reads
+against the script rather than as a magic frame number.
+
+Titles are placed a few frames *ahead* of the word they illustrate — a title
+landing exactly on its read feels late.
+
+If the voiceover is re-recorded, re-derive the timings rather than nudging them:
+
+```bash
+pip install faster-whisper
+python3 -c "
+from faster_whisper import WhisperModel
+m = WhisperModel('base.en', device='cpu', compute_type='int8')
+segs, _ = m.transcribe('public/audio/vo.mp3', word_timestamps=True)
+for s in segs:
+    for w in s.words: print(f'{w.start:6.2f} {w.word}')
+"
+```
+
+## Live footage
+
+`public/video/capitol.mp4` is the supplied Capitol dome plate, used in the
+appeal and verdict beats. It is 720x1080 daylight on blue sky, so `FootagePlate`
+both upscales it to cover 9:16 and crushes/warms it into the reel's palette —
+dropped in raw it tears a hole in a dark cut. Its own audio track is stripped;
+only the voiceover sits on the timeline.

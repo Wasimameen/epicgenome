@@ -1,56 +1,47 @@
 import React from 'react';
-import {
-  AbsoluteFill,
-  Easing,
-  interpolate,
-  Sequence,
-  useCurrentFrame,
-  useVideoConfig,
-} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, Sequence, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Bloom} from '../components/Bloom';
 import {DustMotes} from '../components/DustMotes';
-import {Grain} from '../components/Grain';
 import {LightRays} from '../components/LightRays';
+import {Grain} from '../components/Grain';
 import {LightSweep} from '../components/LightSweep';
+import {MaskReveal} from '../components/MaskReveal';
 import {MoneyBackdrop} from '../components/MoneyBackdrop';
 import {MoneyCounter} from '../components/MoneyCounter';
 import {Vignette} from '../components/Vignette';
 import {WalmartLogo} from '../components/WalmartLogo';
 import {WordRise} from '../components/WordRise';
+import {cue} from '../timeline';
 import {THEME} from '../theme';
 
 /**
- * Beat map for the 5s hook, keyed to the read:
- *   "[dramatic][slow] Nearly seventeen million dollars…
- *    because a grandmother went shopping at Walmart."
+ * "Nearly $17 million, because a grandmother went shopping at Walmart."
  *
- * Visuals lead the voiceover by a few frames throughout — a title that lands on
- * the word feels late, one that lands just before it feels intentional.
+ * Cues below are the frames at which each word is actually spoken, taken from
+ * the voiceover transcript. Titles are placed a few frames ahead of their word —
+ * a title landing exactly on its read feels late.
  */
-const BEAT = {
-  fadeUp: 0,
-  counterIn: 8,
-  counterCount: 48, // lands on frame 56, well before "dollars" at ~2.3s
-  counterOut: 78, // the read's first real pause sits at 2.56s
-  grandmother: 88,
-  shoppingAt: 122,
-  logo: 146,
-} as const;
+const B = {
+  rollStart: 2,
+  rollEnd: 38, // figure is still by the time "$17 million" is said at 0.46-1.38s
+  because: cue('hook', 2.6) - 6,
+  shopping: cue('hook', 3.82) - 5,
+  logo: cue('hook', 4.86) - 8,
+};
 
 export const Scene01Hook: React.FC = () => {
   const frame = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
 
-  const fadeUp = interpolate(frame, [BEAT.fadeUp, 12], [0, 1], {extrapolateRight: 'clamp'});
+  const fadeUp = interpolate(frame, [0, 14], [0, 1], {extrapolateRight: 'clamp'});
 
-  // The number does not cut — it recedes, blurs and hands the frame to the copy.
-  const exit = interpolate(frame, [BEAT.counterOut, BEAT.counterOut + 12], [0, 1], {
+  const exit = interpolate(frame, [B.because - 12, B.because], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.quad),
   });
 
-  // Brand blue seeps in only for the final beat, under the logo.
-  const blueWash = interpolate(frame, [BEAT.logo - 8, BEAT.logo + 16], [0, 0.22], {
+  const blueWash = interpolate(frame, [B.logo - 8, B.logo + 18], [0, 0.24], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -59,77 +50,77 @@ export const Scene01Hook: React.FC = () => {
     <AbsoluteFill style={{backgroundColor: THEME.ink}}>
       <AbsoluteFill style={{opacity: fadeUp}}>
         <MoneyBackdrop durationInFrames={durationInFrames} />
+        <LightRays opacity={0.2} origin="50% -12%" angle={-8} />
 
         <AbsoluteFill
           style={{
-            background: `radial-gradient(ellipse 78% 40% at 50% 74%, ${THEME.walmartBlue} 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse 78% 40% at 50% 76%, ${THEME.walmartBlue} 0%, transparent 70%)`,
             opacity: blueWash,
             mixBlendMode: 'screen',
           }}
         />
 
-        {/* Beat 1 — the number. */}
-        <Sequence from={BEAT.counterIn} durationInFrames={BEAT.counterOut + 14 - BEAT.counterIn}>
+        <Bloom strength={0.42} radius={30}>
+          <Sequence from={B.rollStart} durationInFrames={B.because + 12 - B.rollStart}>
+            <AbsoluteFill
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: 1 - exit,
+                filter: `blur(${exit * 16}px)`,
+                transform: `scale(${1 - exit * 0.14})`,
+              }}
+            >
+              <MoneyCounter startAt={0} countFrames={B.rollEnd - B.rollStart} target={17_000_000} />
+            </AbsoluteFill>
+          </Sequence>
+
           <AbsoluteFill
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: 1 - exit,
-              filter: `blur(${exit * 14}px)`,
-              transform: `scale(${1 - exit * 0.13})`,
+              flexDirection: 'column',
+              padding: '0 90px',
+              gap: 32,
             }}
           >
-            <MoneyCounter startAt={0} countFrames={BEAT.counterCount} target={17_000_000} />
+            <WordRise
+              text="BECAUSE A GRANDMOTHER"
+              startAt={B.because}
+              stagger={3}
+              style={{
+                fontFamily: 'var(--display), sans-serif',
+                fontSize: 94,
+                lineHeight: 1.02,
+                color: THEME.paper,
+                textAlign: 'center',
+                textShadow: '0 8px 40px rgba(0,0,0,0.85)',
+              }}
+            />
+            <MaskReveal startAt={B.shopping} frames={16}>
+              <span
+                style={{
+                  fontFamily: 'var(--body), sans-serif',
+                  fontSize: 44,
+                  fontWeight: 600,
+                  letterSpacing: '0.22em',
+                  color: THEME.gold,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                WENT SHOPPING AT
+              </span>
+            </MaskReveal>
+            <div style={{marginTop: 8}}>
+              <WalmartLogo startAt={B.logo} />
+            </div>
           </AbsoluteFill>
-        </Sequence>
+        </Bloom>
 
-        {/* Beats 2 and 3 — the cause, then the brand. */}
-        <AbsoluteFill
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            padding: '0 90px',
-            gap: 34,
-          }}
-        >
-          <WordRise
-            text="BECAUSE A GRANDMOTHER"
-            startAt={BEAT.grandmother}
-            style={{
-              fontFamily: 'var(--display), sans-serif',
-              fontSize: 96,
-              lineHeight: 1.02,
-              color: THEME.paper,
-              letterSpacing: '-0.015em',
-              textAlign: 'center',
-              textShadow: '0 8px 40px rgba(0,0,0,0.8)',
-            }}
-          />
-          <WordRise
-            text="WENT SHOPPING AT"
-            startAt={BEAT.shoppingAt}
-            stagger={2}
-            style={{
-              fontFamily: 'var(--body), sans-serif',
-              fontSize: 46,
-              fontWeight: 600,
-              letterSpacing: '0.22em',
-              textIndent: '0.22em',
-              color: THEME.gold,
-              textAlign: 'center',
-            }}
-          />
-          <div style={{marginTop: 10}}>
-            <WalmartLogo startAt={BEAT.logo} />
-          </div>
-        </AbsoluteFill>
-
-        <LightSweep startAt={BEAT.logo + 2} />
+        <LightSweep startAt={B.logo + 3} />
+        <DustMotes count={34} seed="hook" opacity={0.42} />
       </AbsoluteFill>
 
-      <LightRays />
-      <DustMotes seed="hook" />
       <Vignette />
       <Grain />
     </AbsoluteFill>

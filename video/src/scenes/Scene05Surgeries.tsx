@@ -4,6 +4,7 @@ import {Caption} from '../components/Caption';
 import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
+import {cue} from '../timeline';
 import {THEME} from '../theme';
 
 /** A slow cardiac trace — the only motion in an otherwise still, heavy beat. */
@@ -99,9 +100,9 @@ export const Scene05Surgeries: React.FC = () => {
       <AbsoluteFill
         style={{alignItems: 'center', justifyContent: 'center', gap: 60, padding: '0 80px'}}
       >
-        <Caption text="MULTIPLE SURGERIES" startAt={4} tone="display" stagger={3} />
-        <Heartline startAt={18} />
-        <BigStat value="20+" label="HOSPITAL VISITS" startAt={112} />
+        <Caption text="MULTIPLE SURGERIES" startAt={cue('surgeries', 26.26) + 2} tone="display" stagger={3} />
+        <Heartline startAt={cue('surgeries', 27.74)} />
+        <BigStat value="20+" label="HOSPITAL VISITS" startAt={cue('surgeries', 29.88) - 10} />
       </AbsoluteFill>
 
       <DustMotes seed="surg" count={30} opacity={0.3} />

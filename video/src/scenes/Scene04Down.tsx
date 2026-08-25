@@ -9,9 +9,26 @@ import {FlashCut} from '../components/FlashCut';
 import {Grain} from '../components/Grain';
 import {GrandmaFigure} from '../components/GrandmaFigure';
 import {Vignette} from '../components/Vignette';
+import {cue} from '../timeline';
 import {THEME} from '../theme';
 
-const LANDING = 96; // "went down hard" lands at 23.7s
+/**
+ * Cues from the voiceover transcript:
+ *   "The little girl was completely fine,"        19.32 - 20.46
+ *   "but grandma went down hard"                  21.44 - 22.76
+ *   "and the cart came down right on top of her." 23.10 - 25.56
+ *
+ * The two falls are deliberately separated — the script lands them as separate
+ * events, and dropping both at once wastes the second half of the line.
+ */
+const LANDING = cue('down', 22.6); // "down hard"
+const CART_LAND = cue('down', 25.2); // "on top of her"
+const B = {
+  girl: cue('down', 19.32) + 1,
+  girlOut: cue('down', 21.1),
+  grandmaFrom: cue('down', 21.44),
+  cartFrom: cue('down', 23.1),
+};
 
 /**
  * "The little girl was completely fine — but grandma went down hard, and the
@@ -24,12 +41,12 @@ export const Scene04Down: React.FC = () => {
   const frame = useCurrentFrame();
 
   // Grandmother rotates to the floor with gravity easing, not a linear tip.
-  const fall = interpolate(frame, [62, LANDING], [0, 1], {
+  const fall = interpolate(frame, [B.grandmaFrom, LANDING], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.quad),
   });
-  const cartFall = interpolate(frame, [96, LANDING + 54], [0, 1], {
+  const cartFall = interpolate(frame, [B.cartFrom, CART_LAND], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.cubic),
@@ -96,13 +113,13 @@ export const Scene04Down: React.FC = () => {
         />
         <Caption
           text="GRANDMA WENT DOWN HARD"
-          startAt={LANDING + 4}
+          startAt={LANDING - 2}
           tone="heavy"
           stagger={2}
         />
         <Caption
           text="THE CART CAME DOWN ON TOP OF HER"
-          startAt={LANDING + 56}
+          startAt={B.cartFrom + 6}
           tone="kicker"
           stagger={1}
           style={{fontSize: 38, marginTop: 28}}
@@ -110,6 +127,8 @@ export const Scene04Down: React.FC = () => {
       </AbsoluteFill>
 
       <FlashCut at={LANDING} frames={4} color="#ffd9d9" />
+      <FlashCut at={CART_LAND} frames={3} color="#ffd9d9" />
+      <DustMotes count={20} seed="down" opacity={0.28} />
       <DustMotes seed="down" opacity={0.4} />
       <Vignette />
       <Grain />

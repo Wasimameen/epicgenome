@@ -1,22 +1,55 @@
 /**
- * Beat map, derived from the supplied voiceover rather than estimated.
+ * Beat map derived from the actual voiceover, not estimated.
  *
- * Scene boundaries were taken from the long pauses in the read (silence
- * detection at -34dB), so every cut lands in a breath instead of over a word.
- * Frame counts below are those boundaries at 30fps; the VO runs 62.04s.
+ * Scene boundaries and every in-scene cue below were taken from word-level
+ * timestamps of public/audio/vo.mp3 (62.04s). `at()` converts a VO timestamp in
+ * seconds to a frame, so cues stay readable against the script.
  *
- * Retime by editing only this table — scenes read their own length from it.
+ * If the voiceover is ever re-recorded, re-derive these numbers rather than
+ * nudging them by eye — the whole reel hangs off this table.
  */
-export const SCENES = [
-  {id: 'hook', frames: 183, at: '0.00–6.11'},
-  {id: 'crazier', frames: 128, at: '6.11–10.36'},
-  {id: 'impact', frames: 335, at: '10.36–21.52'},
-  {id: 'down', frames: 208, at: '21.52–28.45'},
-  {id: 'surgeries', frames: 208, at: '28.45–35.41'},
-  {id: 'court', frames: 261, at: '35.41–44.09'},
-  {id: 'online', frames: 74, at: '44.09–46.55'},
-  {id: 'verdict', frames: 253, at: '46.55–54.99'},
-  {id: 'cta', frames: 211, at: '54.99–62.04'},
+export const FPS = 30;
+
+/** Seconds in the voiceover -> absolute frame in the reel. */
+export const at = (seconds: number) => Math.round(seconds * FPS);
+
+type Scene = {
+  id: string;
+  /** VO timestamp this scene cuts in on. */
+  startSec: number;
+  frames: number;
+  line: string;
+};
+
+const BOUNDS = [0, 6.1, 10.12, 19.32, 26.26, 31.96, 40.7, 44.04, 52.32, 62.5];
+
+const LINES = [
+  ['hook', 'Nearly seventeen million dollars… because a grandmother went shopping at Walmart.'],
+  ['crazier', 'And honestly — how it happened is even crazier than the number.'],
+  ['impact', 'So security tries to stop a shoplifter — the guy BOLTS — runs straight into her shopping cart — and her granddaughter is sitting in that cart.'],
+  ['down', 'The little girl was completely fine — but grandma went down hard, and the cart came down right on top of her.'],
+  ['surgeries', "She needed multiple surgeries. She's been in the hospital more than twenty times."],
+  ['court', "So she takes Walmart to court — and she WINS — but Walmart isn't done — they appeal it all the way to the state Supreme Court —"],
+  ['online', 'and now every single dollar is on the line.'],
+  ['verdict', 'The court said… the verdict stands. All of it — nearly seventeen million dollars — upheld by the highest court in the state.'],
+  ['cta', "That's what happens when the facts hold up. Awesome Attorneys matches you directly with a Phoenix injury attorney. Get Matched. Get Paid. AwesomeAttorneys dot com."],
 ] as const;
 
-export const TOTAL_FRAMES = SCENES.reduce((n, s) => n + s.frames, 0);
+export const SCENES: Scene[] = LINES.map(([id, line], i) => ({
+  id,
+  line,
+  startSec: BOUNDS[i],
+  frames: at(BOUNDS[i + 1]) - at(BOUNDS[i]),
+}));
+
+export const SCENE_START: Record<string, number> = Object.fromEntries(
+  SCENES.map((s) => [s.id, at(s.startSec)]),
+);
+
+/**
+ * Turns an absolute VO timestamp into a frame local to the given scene, so a cue
+ * can be written as the moment a word is actually spoken.
+ */
+export const cue = (sceneId: string, seconds: number) => at(seconds) - SCENE_START[sceneId];
+
+export const TOTAL_FRAMES = at(BOUNDS[BOUNDS.length - 1]);

@@ -5,6 +5,7 @@ import {CashStacks} from '../components/CashStacks';
 import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
+import {cue} from '../timeline';
 import {THEME} from '../theme';
 
 /**
@@ -36,17 +37,24 @@ export const Scene07OnTheLine: React.FC = () => {
 
       <AbsoluteFill
         style={{
+          background:
+            'radial-gradient(ellipse 74% 22% at 50% 30%, rgba(6,5,8,0.72) 0%, transparent 72%)',
+        }}
+      />
+
+      <AbsoluteFill
+        style={{
           alignItems: 'center',
           justifyContent: 'center',
-          paddingBottom: 420,
+          paddingBottom: 760,
           transform: glitch ? `translateX(${(random(`gx-${frame}`) - 0.5) * 30}px)` : undefined,
         }}
       >
-        <Caption text="EVERY SINGLE DOLLAR" startAt={4} tone="display" stagger={2} />
+        <Caption text="EVERY SINGLE DOLLAR" startAt={cue('online', 41.0) - 5} tone="display" stagger={2} />
         <div style={{height: 20}} />
         <Caption
           text="ON THE LINE"
-          startAt={18}
+          startAt={cue('online', 42.66) - 5}
           tone="heavy"
           stagger={2}
           color={THEME.goldBright}

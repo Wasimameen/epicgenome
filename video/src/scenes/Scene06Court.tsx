@@ -8,7 +8,17 @@ import {LightRays} from '../components/LightRays';
 import {Stamp} from '../components/Stamp';
 import {Vignette} from '../components/Vignette';
 import {WalmartLogo} from '../components/WalmartLogo';
+import {cue} from '../timeline';
 import {THEME} from '../theme';
+
+/**
+ * Cues from the voiceover transcript:
+ *   "So she takes Walmart to court"  31.96 - 33.22
+ *   "and she wins."                  33.46 - 34.26
+ *   "But Walmart isn't done."        35.40 - 36.52
+ *   "They appeal it all the way to the state supreme court." 37.30 - 39.50
+ */
+const WINS_AT = cue('court', 34.26) - 8;
 
 /**
  * "So she takes Walmart to court — and she WINS — but Walmart isn't done —
@@ -49,7 +59,7 @@ export const Scene06Court: React.FC = () => {
 
       <AbsoluteFill style={{opacity: plateIn}}>
         <FootagePlate
-          src="video/reference.mp4"
+          src="video/capitol.mp4"
           durationInFrames={261}
           push={[1.34, 1.06]}
           opacity={0.82}
@@ -58,38 +68,38 @@ export const Scene06Court: React.FC = () => {
 
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
         <div style={{opacity: 1 - drain, transform: `scale(${1 - drain * 0.12})`}}>
-          <Caption text="SHE TAKES" startAt={4} tone="kicker" stagger={2} />
+          <Caption text="SHE TAKES" startAt={cue('court', 31.96) + 2} tone="kicker" stagger={2} />
           <div style={{height: 18}} />
           <div style={{display: 'flex', justifyContent: 'center'}}>
-            <WalmartLogo startAt={10} />
+            <WalmartLogo startAt={cue('court', 32.54) - 6} />
           </div>
           <div style={{height: 26}} />
-          <Caption text="TO COURT" startAt={24} tone="display" stagger={2} />
+          <Caption text="TO COURT" startAt={cue('court', 33.22) - 6} tone="display" stagger={2} />
         </div>
       </AbsoluteFill>
 
-      {frame >= 60 && frame < 148 ? (
+      {frame >= WINS_AT && frame < WINS_AT + 88 ? (
         <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
           <div style={{opacity: stampOut}}>
-            <Stamp text="SHE WINS" startAt={60} color="#3fbf6a" angle={-6} />
+            <Stamp text="SHE WINS" startAt={WINS_AT} color="#3fbf6a" angle={-6} />
           </div>
         </AbsoluteFill>
       ) : null}
 
       <AbsoluteFill
-        style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 300}}
+        style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 430}}
       >
         <Caption
-          text="WALMART APPEALS"
-          startAt={160}
+          text="WALMART ISN'T DONE"
+          startAt={cue('court', 35.4) - 4}
           tone="heavy"
           stagger={2}
           color={THEME.goldBright}
         />
         <div style={{height: 22}} />
         <Caption
-          text="ALL THE WAY TO THE STATE SUPREME COURT"
-          startAt={196}
+          text="THEY APPEAL TO THE STATE SUPREME COURT"
+          startAt={cue('court', 37.3) - 4}
           tone="kicker"
           stagger={1}
           style={{fontSize: 38, maxWidth: 860}}
