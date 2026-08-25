@@ -15,10 +15,12 @@ const WANTED = {
   franklin: ['franklin.jpg', 'franklin.jpeg', 'franklin.png', 'franklin.webp'],
   cashStacks: ['cash-stacks.jpg', 'cash-stacks.png', 'cash-stacks.webp'],
   fallingBills: ['falling-bills.png', 'falling-bills.webp'],
+  bill: ['bill.png', 'bill.webp'],
   cart: ['cart.png', 'cart.webp'],
   grandma: ['grandma.png', 'grandma.webp'],
   walmartLogo: ['walmart-logo.png', 'walmart-logo.svg', 'walmart-logo.webp'],
   walmartSpark: ['walmart-spark.png', 'walmart-spark.svg', 'walmart-spark.webp'],
+  brandLogo: ['brand-logo.png', 'brand-logo.svg', 'brand-logo.webp'],
 };
 
 const present = existsSync(DIR) ? new Set(readdirSync(DIR)) : new Set();

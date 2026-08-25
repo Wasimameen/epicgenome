@@ -18,5 +18,5 @@ export const VIDEO = {
   height: 1920,
   fps: 30,
   /** Scene 01 runs a flat 5 seconds. */
-  hookDuration: 150,
+  hookDuration: 165,
 } as const;

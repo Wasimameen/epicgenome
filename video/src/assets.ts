@@ -9,8 +9,10 @@ export const ASSETS = {
   franklin: null,
   cashStacks: null,
   fallingBills: null,
+  bill: null,
   cart: null,
   grandma: null,
   walmartLogo: null,
   walmartSpark: null,
+  brandLogo: null,
 } as const;
