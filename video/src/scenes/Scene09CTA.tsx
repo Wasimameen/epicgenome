@@ -2,7 +2,9 @@ import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Caption} from '../components/Caption';
 import {FallingBills} from '../components/FallingBills';
+import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
+import {LightRays} from '../components/LightRays';
 import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
 
@@ -44,7 +46,7 @@ export const Scene09CTA: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
-  const urlPop = spring({frame: frame - 150, fps, config: {damping: 13, mass: 0.7}});
+  const urlPop = spring({frame: frame - 190, fps, config: {damping: 13, mass: 0.7}});
   const glow = interpolate(Math.sin(frame * 0.16), [-1, 1], [0.25, 0.6]);
 
   return (
@@ -62,7 +64,7 @@ export const Scene09CTA: React.FC = () => {
         <Caption
           text="THAT'S WHAT HAPPENS WHEN THE FACTS HOLD UP"
           startAt={2}
-          exitAt={58}
+          exitAt={96}
           tone="display"
           stagger={2}
           style={{fontSize: 76, maxWidth: 900}}
@@ -72,7 +74,7 @@ export const Scene09CTA: React.FC = () => {
       <AbsoluteFill
         style={{alignItems: 'center', justifyContent: 'center', gap: 26, padding: '0 70px'}}
       >
-        {frame >= 62 ? (
+        {frame >= 106 ? (
           <>
             <div
               style={{
@@ -82,8 +84,8 @@ export const Scene09CTA: React.FC = () => {
                 color: THEME.paper,
                 textAlign: 'center',
                 textShadow: `0 0 46px rgba(245,217,138,${glow})`,
-                opacity: interpolate(frame, [62, 74], [0, 1], {extrapolateRight: 'clamp'}),
-                transform: `translateY(${interpolate(frame, [62, 78], [30, 0], {
+                opacity: interpolate(frame, [106, 120], [0, 1], {extrapolateRight: 'clamp'}),
+                transform: `translateY(${interpolate(frame, [106, 124], [30, 0], {
                   extrapolateRight: 'clamp',
                 })}px)`,
               }}
@@ -94,14 +96,14 @@ export const Scene09CTA: React.FC = () => {
             </div>
             <Caption
               text="MATCHED DIRECTLY WITH A PHOENIX INJURY ATTORNEY"
-              startAt={86}
+              startAt={126}
               tone="kicker"
               stagger={1}
               style={{fontSize: 34, maxWidth: 820}}
             />
             <div style={{display: 'flex', gap: 22, marginTop: 16}}>
-              <Pill text="GET MATCHED" startAt={112} />
-              <Pill text="GET PAID" startAt={124} />
+              <Pill text="GET MATCHED" startAt={168} />
+              <Pill text="GET PAID" startAt={180} />
             </div>
             <div
               style={{
@@ -122,6 +124,8 @@ export const Scene09CTA: React.FC = () => {
         ) : null}
       </AbsoluteFill>
 
+      <LightRays opacity={0.18} />
+      <DustMotes seed="cta" />
       <Vignette />
       <Grain />
     </AbsoluteFill>

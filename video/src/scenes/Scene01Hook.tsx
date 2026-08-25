@@ -7,7 +7,9 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
+import {LightRays} from '../components/LightRays';
 import {LightSweep} from '../components/LightSweep';
 import {MoneyBackdrop} from '../components/MoneyBackdrop';
 import {MoneyCounter} from '../components/MoneyCounter';
@@ -27,11 +29,11 @@ import {THEME} from '../theme';
 const BEAT = {
   fadeUp: 0,
   counterIn: 8,
-  counterCount: 48, // lands on frame 56
-  counterOut: 74,
-  grandmother: 78,
-  shoppingAt: 104,
-  logo: 114,
+  counterCount: 48, // lands on frame 56, well before "dollars" at ~2.3s
+  counterOut: 78, // the read's first real pause sits at 2.56s
+  grandmother: 88,
+  shoppingAt: 122,
+  logo: 146,
 } as const;
 
 export const Scene01Hook: React.FC = () => {
@@ -126,6 +128,8 @@ export const Scene01Hook: React.FC = () => {
         <LightSweep startAt={BEAT.logo + 2} />
       </AbsoluteFill>
 
+      <LightRays />
+      <DustMotes seed="hook" />
       <Vignette />
       <Grain />
     </AbsoluteFill>

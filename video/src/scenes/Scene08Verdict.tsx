@@ -3,7 +3,9 @@ import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {Caption} from '../components/Caption';
 import {FallingBills} from '../components/FallingBills';
 import {FlashCut} from '../components/FlashCut';
+import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
+import {LightRays} from '../components/LightRays';
 import {LightSweep} from '../components/LightSweep';
 import {MoneyBackdrop} from '../components/MoneyBackdrop';
 import {MoneyCounter} from '../components/MoneyCounter';
@@ -11,7 +13,7 @@ import {Stamp} from '../components/Stamp';
 import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
 
-const STAMP_AT = 26;
+const STAMP_AT = 90; // "the verdict stands" begins at 49.55s
 
 /**
  * "The court said… the verdict stands. All of it — nearly seventeen million
@@ -24,7 +26,7 @@ const STAMP_AT = 26;
 export const Scene08Verdict: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const stampOut = interpolate(frame, [72, 86], [0, 1], {
+  const stampOut = interpolate(frame, [150, 166], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -35,7 +37,7 @@ export const Scene08Verdict: React.FC = () => {
 
   return (
     <AbsoluteFill style={{backgroundColor: THEME.ink}}>
-      <MoneyBackdrop durationInFrames={180} />
+      <MoneyBackdrop durationInFrames={253} />
 
       <AbsoluteFill
         style={{
@@ -59,7 +61,7 @@ export const Scene08Verdict: React.FC = () => {
         />
       </AbsoluteFill>
 
-      {frame >= STAMP_AT && frame < 92 ? (
+      {frame >= STAMP_AT && frame < 172 ? (
         <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
           <div style={{opacity: 1 - stampOut, transform: `scale(${1 + stampOut * 0.16})`}}>
             <Stamp text="VERDICT STANDS" startAt={STAMP_AT} color="#3fbf6a" angle={-5} />
@@ -67,13 +69,13 @@ export const Scene08Verdict: React.FC = () => {
         </AbsoluteFill>
       ) : null}
 
-      {frame >= 88 ? (
+      {frame >= 168 ? (
         <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', gap: 30}}>
-          <MoneyCounter startAt={92} countFrames={30} target={17_000_000} />
+          <MoneyCounter startAt={176} countFrames={34} target={17_000_000} />
           <div style={{height: 6}} />
           <Caption
             text="UPHELD BY THE HIGHEST COURT IN THE STATE"
-            startAt={130}
+            startAt={216}
             tone="kicker"
             stagger={1}
             style={{fontSize: 36, maxWidth: 880}}
@@ -82,7 +84,9 @@ export const Scene08Verdict: React.FC = () => {
       ) : null}
 
       <FlashCut at={STAMP_AT} frames={5} />
-      <LightSweep startAt={124} />
+      <LightSweep startAt={208} />
+      <LightRays opacity={0.22} />
+      <DustMotes seed="verdict" />
       <Vignette />
       <Grain />
     </AbsoluteFill>

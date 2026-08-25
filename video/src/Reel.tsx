@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Series} from 'remotion';
+import {AbsoluteFill, Audio, Series, staticFile} from 'remotion';
 import {Scene01Hook} from './scenes/Scene01Hook';
 import {Scene02Crazier} from './scenes/Scene02Crazier';
 import {Scene03Impact} from './scenes/Scene03Impact';
@@ -27,9 +27,13 @@ const COMPONENTS: Record<string, React.FC> = {
 /**
  * Full 9:16 reel. Scenes hard-cut rather than cross-dissolve — at this pace a
  * dissolve reads as a stumble, and each scene already opens on its own move.
+ *
+ * The voiceover is laid across the whole timeline rather than per scene, so the
+ * read stays continuous no matter how the scene boundaries are nudged.
  */
 export const Reel: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: THEME.ink}}>
+    <Audio src={staticFile('audio/vo.mp3')} />
     <Series>
       {SCENES.map((scene) => {
         const Component = COMPONENTS[scene.id];

@@ -1,6 +1,8 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {CameraShake} from '../components/CameraShake';
+import {ChromaticSplit} from '../components/ChromaticSplit';
+import {DustMotes} from '../components/DustMotes';
 import {Caption} from '../components/Caption';
 import {CartFigure} from '../components/CartFigure';
 import {FlashCut} from '../components/FlashCut';
@@ -9,7 +11,7 @@ import {GrandmaFigure} from '../components/GrandmaFigure';
 import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
 
-const LANDING = 74;
+const LANDING = 96; // "went down hard" lands at 23.7s
 
 /**
  * "The little girl was completely fine — but grandma went down hard, and the
@@ -22,12 +24,12 @@ export const Scene04Down: React.FC = () => {
   const frame = useCurrentFrame();
 
   // Grandmother rotates to the floor with gravity easing, not a linear tip.
-  const fall = interpolate(frame, [40, LANDING], [0, 1], {
+  const fall = interpolate(frame, [62, LANDING], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.quad),
   });
-  const cartFall = interpolate(frame, [52, LANDING + 8], [0, 1], {
+  const cartFall = interpolate(frame, [96, LANDING + 54], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.cubic),
@@ -40,6 +42,7 @@ export const Scene04Down: React.FC = () => {
 
   return (
     <AbsoluteFill style={{backgroundColor: '#09080b'}}>
+      <ChromaticSplit impactAt={LANDING} maxOffset={24}>
       <CameraShake impactAt={LANDING} intensity={40} decay={26}>
         <AbsoluteFill
           style={{
@@ -80,12 +83,13 @@ export const Scene04Down: React.FC = () => {
           <CartFigure height={340} />
         </div>
       </CameraShake>
+      </ChromaticSplit>
 
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-start', paddingTop: 250}}>
         <Caption
           text="THE LITTLE GIRL WAS FINE"
           startAt={2}
-          exitAt={34}
+          exitAt={52}
           tone="display"
           stagger={2}
           color="#7fd8a4"
@@ -98,7 +102,7 @@ export const Scene04Down: React.FC = () => {
         />
         <Caption
           text="THE CART CAME DOWN ON TOP OF HER"
-          startAt={LANDING + 30}
+          startAt={LANDING + 56}
           tone="kicker"
           stagger={1}
           style={{fontSize: 38, marginTop: 28}}
@@ -106,6 +110,7 @@ export const Scene04Down: React.FC = () => {
       </AbsoluteFill>
 
       <FlashCut at={LANDING} frames={4} color="#ffd9d9" />
+      <DustMotes seed="down" opacity={0.4} />
       <Vignette />
       <Grain />
     </AbsoluteFill>

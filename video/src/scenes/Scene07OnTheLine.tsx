@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, random, useCurrentFrame} from 'remotion';
 import {Caption} from '../components/Caption';
 import {CashStacks} from '../components/CashStacks';
+import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
@@ -15,15 +16,15 @@ import {THEME} from '../theme';
 export const Scene07OnTheLine: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const rate = interpolate(frame, [0, 120], [0.16, 0.42], {extrapolateRight: 'clamp'});
+  const rate = interpolate(frame, [0, 74], [0.2, 0.52], {extrapolateRight: 'clamp'});
   const pulse = (Math.sin(frame * rate) + 1) / 2;
 
   // Occasional single-frame dropouts, increasing in frequency — instability.
-  const glitch = frame > 60 && random(`g-${frame}`) > 0.93 ? 1 : 0;
+  const glitch = frame > 30 && random(`g-${frame}`) > 0.9 ? 1 : 0;
 
   return (
     <AbsoluteFill style={{backgroundColor: '#07060a'}}>
-      <CashStacks durationInFrames={120} />
+      <CashStacks durationInFrames={74} />
 
       <AbsoluteFill
         style={{
@@ -45,7 +46,7 @@ export const Scene07OnTheLine: React.FC = () => {
         <div style={{height: 20}} />
         <Caption
           text="ON THE LINE"
-          startAt={26}
+          startAt={18}
           tone="heavy"
           stagger={2}
           color={THEME.goldBright}
@@ -55,6 +56,7 @@ export const Scene07OnTheLine: React.FC = () => {
         />
       </AbsoluteFill>
 
+      <DustMotes seed="line" opacity={0.5} />
       <Vignette />
       <Grain />
     </AbsoluteFill>

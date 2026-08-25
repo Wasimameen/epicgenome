@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Caption} from '../components/Caption';
+import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
@@ -81,7 +82,7 @@ const BigStat: React.FC<{value: string; label: string; startAt: number}> = ({
 export const Scene05Surgeries: React.FC = () => {
   const frame = useCurrentFrame();
   // Nothing here should feel energetic — the push is barely perceptible.
-  const drift = interpolate(frame, [0, 150], [0, -22], {
+  const drift = interpolate(frame, [0, 208], [0, -30], {
     extrapolateRight: 'clamp',
     easing: Easing.inOut(Easing.ease),
   });
@@ -100,9 +101,10 @@ export const Scene05Surgeries: React.FC = () => {
       >
         <Caption text="MULTIPLE SURGERIES" startAt={4} tone="display" stagger={3} />
         <Heartline startAt={18} />
-        <BigStat value="20+" label="HOSPITAL VISITS" startAt={56} />
+        <BigStat value="20+" label="HOSPITAL VISITS" startAt={112} />
       </AbsoluteFill>
 
+      <DustMotes seed="surg" count={30} opacity={0.3} />
       <Vignette strength={0.96} />
       <Grain opacity={0.08} />
     </AbsoluteFill>

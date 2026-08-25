@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {Caption} from '../components/Caption';
 import {FallingBills} from '../components/FallingBills';
+import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
 import {THEME} from '../theme';
@@ -11,7 +12,7 @@ export const Scene02Crazier: React.FC = () => {
   const frame = useCurrentFrame();
 
   // Bills keep falling from the hook's payoff, thinning as the copy takes over.
-  const billFade = interpolate(frame, [0, 14, 62, 96], [0, 1, 1, 0.25], {
+  const billFade = interpolate(frame, [0, 14, 84, 122], [0, 1, 1, 0.25], {
     extrapolateRight: 'clamp',
   });
 
@@ -38,6 +39,7 @@ export const Scene02Crazier: React.FC = () => {
         <Caption text="THAN THE NUMBER" startAt={30} tone="display" stagger={2} />
       </AbsoluteFill>
 
+      <DustMotes seed="crazy" />
       <Vignette />
       <Grain />
     </AbsoluteFill>
