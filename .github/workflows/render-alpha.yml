@@ -9,12 +9,12 @@ name: Render transparent MOV
 on:
   workflow_dispatch:
     inputs:
-      format:
-        description: 'Alpha codec'
+      composition:
+        description: 'Composition to render'
         required: true
-        default: prores4444
+        default: AdjusterAlpha
         type: choice
-        options: [prores4444, png, qtrle]
+        options: [AdjusterAlpha, ReelAlpha]
       scale:
         description: 'Resolution'
         required: true
@@ -31,6 +31,11 @@ jobs:
   render:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    strategy:
+      matrix:
+        # ProRes 4444 is the mastering format; qtrle is 8-bit RGBA for editors
+        # (CapCut among them) that misread 12-bit ProRes planes.
+        format: [prores4444, qtrle]
     defaults:
       run:
         working-directory: video
@@ -60,7 +65,8 @@ jobs:
 
       - name: Render alpha pass
         env:
-          FORMAT: ${{ inputs.format || 'prores4444' }}
+          COMPOSITION: ${{ inputs.composition || 'AdjusterAlpha' }}
+          FORMAT: ${{ matrix.format }}
           SCALE: ${{ inputs.scale || 'full' }}
         run: |
           mkdir -p out
@@ -69,13 +75,13 @@ jobs:
 
           case "$FORMAT" in
             prores4444)
-              npx remotion render ReelAlpha out/reel-alpha.mov \
+              npx remotion render "$COMPOSITION" out/reel-alpha.mov \
                 --codec=prores --prores-profile=4444 \
                 --pixel-format=yuva444p10le --image-format=png $SCALE_ARG
               ;;
             png|qtrle)
               # Remotion has no encoder for these, so render ProRes then transcode.
-              npx remotion render ReelAlpha out/tmp-alpha.mov \
+              npx remotion render "$COMPOSITION" out/tmp-alpha.mov \
                 --codec=prores --prores-profile=4444 \
                 --pixel-format=yuva444p10le --image-format=png $SCALE_ARG
               PIXFMT=rgba; [ "$FORMAT" = "qtrle" ] && PIXFMT=argb
@@ -95,7 +101,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: reel-alpha-mov
+          name: ${{ inputs.composition || 'AdjusterAlpha' }}-${{ matrix.format }}-mov
           path: video/out/reel-alpha.mov
           retention-days: 30
           compression-level: 0

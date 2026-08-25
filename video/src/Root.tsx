@@ -2,6 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Composition} from 'remotion';
 import {FONT_STACK, loadFonts} from './fonts';
 import {Reel} from './Reel';
+import {TransparentContext} from './alpha';
+import {Adjuster, ADJUSTER_FRAMES} from './scenes/Adjuster';
 import {Scene01Hook} from './scenes/Scene01Hook';
 import {VIDEO} from './theme';
 import {TOTAL_FRAMES} from './timeline';
@@ -75,6 +77,38 @@ export const RemotionRoot: React.FC = () => (
         </AbsoluteFill>
       )}
       durationInFrames={TOTAL_FRAMES}
+      fps={VIDEO.fps}
+      width={VIDEO.width}
+      height={VIDEO.height}
+    />
+
+    {/*
+      "Adjuster" spot — a 14s b-roll overlay: graphics top and bottom, the
+      centre window left empty for footage. Adjuster previews on a dark card;
+      AdjusterAlpha is the transparent deliverable.
+    */}
+    <Composition
+      id="Adjuster"
+      component={() => (
+        <FontVars>
+          <Adjuster />
+        </FontVars>
+      )}
+      durationInFrames={ADJUSTER_FRAMES}
+      fps={VIDEO.fps}
+      width={VIDEO.width}
+      height={VIDEO.height}
+    />
+    <Composition
+      id="AdjusterAlpha"
+      component={() => (
+        <TransparentContext.Provider value={true}>
+          <FontVars>
+            <Adjuster />
+          </FontVars>
+        </TransparentContext.Provider>
+      )}
+      durationInFrames={ADJUSTER_FRAMES}
       fps={VIDEO.fps}
       width={VIDEO.width}
       height={VIDEO.height}
