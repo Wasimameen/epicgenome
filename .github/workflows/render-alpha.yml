@@ -32,6 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
+      # One format failing must not cancel the other's render.
+      fail-fast: false
       matrix:
         # ProRes 4444 is the mastering format; qtrle is 8-bit RGBA for editors
         # (CapCut among them) that misread 12-bit ProRes planes.
@@ -56,7 +58,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
             libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
-            libgbm1 libasound2t64 libpango-1.0-0 libcairo2
+            libgbm1 libasound2t64 libpango-1.0-0 libcairo2 ffmpeg
 
       - run: npm ci
 
