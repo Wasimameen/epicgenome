@@ -6,6 +6,7 @@ import {DustMotes} from '../components/DustMotes';
 import {FallingBills} from '../components/FallingBills';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -17,6 +18,7 @@ const B = {
 };
 
 export const Scene02Crazier: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
 
   const billFade = interpolate(frame, [0, 12, 70, 110], [0, 1, 1, 0.2], {
@@ -26,10 +28,10 @@ export const Scene02Crazier: React.FC = () => {
   const tilt = interpolate(frame, [0, 121], [-1.6, 1.6], {extrapolateRight: 'clamp'});
 
   return (
-    <AbsoluteFill style={{backgroundColor: THEME.ink}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : THEME.ink}}>
       <AbsoluteFill
         style={{
-          background: `radial-gradient(ellipse 66% 44% at 50% 46%, #3a2c11 0%, ${THEME.ink} 72%)`,
+          background: alpha ? 'none' : `radial-gradient(ellipse 66% 44% at 50% 46%, #3a2c11 0%, ${THEME.ink} 72%)`,
         }}
       />
       <FallingBills count={24} seed="crazier" intensity={billFade} />

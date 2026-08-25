@@ -86,3 +86,34 @@ appeal and verdict beats. It is 720x1080 daylight on blue sky, so `FootagePlate`
 both upscales it to cover 9:16 and crushes/warms it into the reel's palette —
 dropped in raw it tears a hole in a dark cut. Its own audio track is stripped;
 only the voiceover sits on the timeline.
+
+## Transparent / alpha version
+
+`ReelAlpha` is the same timeline with every background-only layer dropped —
+ground fills, the money plate, the Capitol footage, the vignette and the grain.
+Additive passes (bloom, rays, dust, glows, flashes) are kept, since those are
+graphics rather than ground. Scenes read `useTransparent()` from `src/alpha.ts`.
+
+```bash
+# ProRes 4444 master with alpha (~2.5 GB for 62.5s)
+npx remotion render ReelAlpha out/reel-alpha.mov \
+  --codec=prores --prores-profile=4444 \
+  --pixel-format=yuva444p10le --image-format=png
+
+# Smaller alpha file for review / web
+npx remotion render ReelAlpha out/reel-alpha.webm \
+  --codec=vp8 --image-format=png
+```
+
+**`--pixel-format=yuva444p10le` is required.** Without it Remotion writes a
+ProRes 4444 file whose pixel format is `yuv422p12le` — the profile says 4444 but
+there is no alpha plane, and the result is silently opaque. Verify any alpha
+render before shipping it:
+
+```bash
+ffprobe -v error -show_entries stream=pix_fmt -of csv=p=0 out/reel-alpha.mov
+# must report yuva444p10le / yuva444p12le, not yuv422p12le
+```
+
+Alternative alpha codecs, measured on this reel: QuickTime Animation
+(`-c:v qtrle -pix_fmt argb`) lands around 1.9 GB, VP9 WebM around 25 MB.

@@ -9,6 +9,7 @@ import {FlashCut} from '../components/FlashCut';
 import {Grain} from '../components/Grain';
 import {GrandmaFigure} from '../components/GrandmaFigure';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -38,6 +39,7 @@ const B = {
  * beat, so the two halves never share the screen.
  */
 export const Scene04Down: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
 
   // Grandmother rotates to the floor with gravity easing, not a linear tip.
@@ -58,12 +60,12 @@ export const Scene04Down: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#09080b'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#09080b'}}>
       <ChromaticSplit impactAt={LANDING} maxOffset={24}>
       <CameraShake impactAt={LANDING} intensity={40} decay={26}>
         <AbsoluteFill
           style={{
-            background: 'radial-gradient(ellipse 68% 40% at 50% 62%, #1b1520 0%, #08070a 74%)',
+            background: alpha ? 'none' : 'radial-gradient(ellipse 68% 40% at 50% 62%, #1b1520 0%, #08070a 74%)',
           }}
         />
         <AbsoluteFill

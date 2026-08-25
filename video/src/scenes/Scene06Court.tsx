@@ -8,6 +8,7 @@ import {LightRays} from '../components/LightRays';
 import {Stamp} from '../components/Stamp';
 import {Vignette} from '../components/Vignette';
 import {WalmartLogo} from '../components/WalmartLogo';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -29,6 +30,7 @@ const WINS_AT = cue('court', 34.26) - 8;
  * it — the escalation to a higher court is the only literal image in the spot.
  */
 export const Scene06Court: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
 
   // The court block clears before the stamp lands — the two must never share
@@ -50,10 +52,10 @@ export const Scene06Court: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#07070a'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#07070a'}}>
       <AbsoluteFill
         style={{
-          background: `radial-gradient(ellipse 70% 44% at 50% 46%, #241d10 0%, #06060a 76%)`,
+          background: alpha ? 'none' : `radial-gradient(ellipse 70% 44% at 50% 46%, #241d10 0%, #06060a 76%)`,
         }}
       />
 

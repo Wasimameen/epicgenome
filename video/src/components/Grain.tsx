@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, random, useCurrentFrame} from 'remotion';
+import {useTransparent} from '../alpha';
 
 /**
  * Deterministic film grain. The pattern is regenerated every `cycle` frames so
@@ -9,6 +10,7 @@ export const Grain: React.FC<{opacity?: number; cycle?: number}> = ({
   opacity = 0.10,
   cycle = 3,
 }) => {
+  const transparent = useTransparent();
   const frame = useCurrentFrame();
   const seed = Math.floor(frame / cycle);
 
@@ -20,6 +22,9 @@ export const Grain: React.FC<{opacity?: number; cycle?: number}> = ({
       o: 0.25 + random(`go-${seed}-${i}`) * 0.75,
     }));
   }, [seed]);
+
+  // Overlay blend has nothing to act on without a ground beneath it.
+  if (transparent) return null;
 
   return (
     <AbsoluteFill style={{opacity, mixBlendMode: 'overlay', pointerEvents: 'none'}}>

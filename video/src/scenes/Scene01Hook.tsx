@@ -11,6 +11,7 @@ import {MoneyCounter} from '../components/MoneyCounter';
 import {Vignette} from '../components/Vignette';
 import {WalmartLogo} from '../components/WalmartLogo';
 import {WordRise} from '../components/WordRise';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -30,6 +31,7 @@ const B = {
 };
 
 export const Scene01Hook: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
 
@@ -47,7 +49,7 @@ export const Scene01Hook: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: THEME.ink}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : THEME.ink}}>
       <AbsoluteFill style={{opacity: fadeUp}}>
         <MoneyBackdrop durationInFrames={durationInFrames} />
         <LightRays opacity={0.2} origin="50% -12%" angle={-8} />

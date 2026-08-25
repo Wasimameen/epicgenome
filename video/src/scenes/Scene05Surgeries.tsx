@@ -4,6 +4,7 @@ import {Caption} from '../components/Caption';
 import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -81,6 +82,7 @@ const BigStat: React.FC<{value: string; label: string; startAt: number}> = ({
 
 /** "She needed multiple surgeries. She's been in the hospital more than twenty times." */
 export const Scene05Surgeries: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
   // Nothing here should feel energetic — the push is barely perceptible.
   const drift = interpolate(frame, [0, 208], [0, -30], {
@@ -89,10 +91,10 @@ export const Scene05Surgeries: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#07070a'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#07070a'}}>
       <AbsoluteFill
         style={{
-          background: 'radial-gradient(ellipse 62% 36% at 50% 44%, #16161f 0%, #06060a 76%)',
+          background: alpha ? 'none' : 'radial-gradient(ellipse 62% 36% at 50% 44%, #16161f 0%, #06060a 76%)',
           transform: `translateY(${drift}px)`,
         }}
       />

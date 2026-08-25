@@ -39,6 +39,26 @@ export const RemotionRoot: React.FC = () => (
       width={VIDEO.width}
       height={VIDEO.height}
     />
+    {/*
+      Alpha pass for compositing: identical timing, with every background-only
+      layer dropped (ground fills, money plate, live footage, vignette, grain).
+      Render with:
+        npx remotion render ReelAlpha out/reel-alpha.mov \
+          --codec=prores --prores-profile=4444 --image-format=png
+    */}
+    <Composition
+      id="ReelAlpha"
+      component={() => (
+        <FontVars>
+          <Reel transparent />
+        </FontVars>
+      )}
+      durationInFrames={TOTAL_FRAMES}
+      fps={VIDEO.fps}
+      width={VIDEO.width}
+      height={VIDEO.height}
+    />
+
     {/* Kept standalone so the opening can be iterated without a full render. */}
     <Composition
       id="Scene01Hook"

@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {ASSETS} from '../assets';
+import {useTransparent} from '../alpha';
 import {THEME} from '../theme';
 
 /** One banded bundle, drawn in rough isometric. */
@@ -28,6 +29,7 @@ export const CashStacks: React.FC<{startAt?: number; durationInFrames: number}> 
   startAt = 0,
   durationInFrames,
 }) => {
+  const transparent = useTransparent();
   const frame = useCurrentFrame();
   const local = frame - startAt;
   const push = interpolate(local, [0, durationInFrames], [1.04, 1.16], {
@@ -35,7 +37,7 @@ export const CashStacks: React.FC<{startAt?: number; durationInFrames: number}> 
     extrapolateRight: 'clamp',
   });
 
-  if (ASSETS.cashStacks) {
+  if (ASSETS.cashStacks && !transparent) {
     return (
       <AbsoluteFill style={{overflow: 'hidden'}}>
         <Img
@@ -55,7 +57,7 @@ export const CashStacks: React.FC<{startAt?: number; durationInFrames: number}> 
   const cols = 4;
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#0b0906', overflow: 'hidden'}}>
+    <AbsoluteFill style={{backgroundColor: transparent ? 'transparent' : '#0b0906', overflow: 'hidden'}}>
       <AbsoluteFill style={{transform: `scale(${push})`, transformOrigin: '48% 62%'}}>
         <AbsoluteFill
           style={{

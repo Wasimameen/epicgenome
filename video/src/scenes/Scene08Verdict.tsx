@@ -11,6 +11,7 @@ import {MoneyBackdrop} from '../components/MoneyBackdrop';
 import {MoneyCounter} from '../components/MoneyCounter';
 import {Stamp} from '../components/Stamp';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -39,6 +40,7 @@ const UPHELD_AT = cue('verdict', 49.6) - 5;
  * consequence of the ruling rather than decoration running underneath it.
  */
 export const Scene08Verdict: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
 
   const stampOut = interpolate(frame, [STAMP_OUT, STAMP_OUT + 14], [0, 1], {
@@ -51,7 +53,7 @@ export const Scene08Verdict: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: THEME.ink}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : THEME.ink}}>
       <MoneyBackdrop durationInFrames={253} />
 
       <AbsoluteFill

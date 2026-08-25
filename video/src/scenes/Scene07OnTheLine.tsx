@@ -5,6 +5,7 @@ import {CashStacks} from '../components/CashStacks';
 import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -15,6 +16,7 @@ import {THEME} from '../theme';
  * toward the cut, so the beat feels like it is running out of time.
  */
 export const Scene07OnTheLine: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
 
   const rate = interpolate(frame, [0, 74], [0.2, 0.52], {extrapolateRight: 'clamp'});
@@ -24,7 +26,7 @@ export const Scene07OnTheLine: React.FC = () => {
   const glitch = frame > 30 && random(`g-${frame}`) > 0.9 ? 1 : 0;
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#07060a'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#07060a'}}>
       <CashStacks durationInFrames={74} />
 
       <AbsoluteFill
@@ -37,8 +39,9 @@ export const Scene07OnTheLine: React.FC = () => {
 
       <AbsoluteFill
         style={{
-          background:
-            'radial-gradient(ellipse 74% 22% at 50% 30%, rgba(6,5,8,0.72) 0%, transparent 72%)',
+          background: alpha
+            ? 'none'
+            : 'radial-gradient(ellipse 74% 22% at 50% 30%, rgba(6,5,8,0.72) 0%, transparent 72%)',
         }}
       />
 

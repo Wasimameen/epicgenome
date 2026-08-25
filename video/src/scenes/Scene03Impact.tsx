@@ -13,6 +13,7 @@ import {GrandmaFigure} from '../components/GrandmaFigure';
 import {RunnerFigure} from '../components/RunnerFigure';
 import {SpeedLines} from '../components/SpeedLines';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -42,6 +43,7 @@ const B = {
 };
 
 export const Scene03Impact: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
 
   // Runner accelerates in, then is stopped dead by the cart at IMPACT.
@@ -69,12 +71,12 @@ export const Scene03Impact: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#0a0a0d'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#0a0a0d'}}>
       <ChromaticSplit impactAt={IMPACT} maxOffset={20}>
         <CameraShake impactAt={IMPACT} intensity={34}>
           <AbsoluteFill
             style={{
-              background: `radial-gradient(ellipse 70% 40% at 50% 58%, #1d2430 0%, #08080b 74%)`,
+              background: alpha ? 'none' : `radial-gradient(ellipse 70% 40% at 50% 58%, #1d2430 0%, #08080b 74%)`,
             }}
           />
 

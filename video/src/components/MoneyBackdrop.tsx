@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {ASSETS} from '../assets';
+import {useTransparent} from '../alpha';
 import {THEME} from '../theme';
 
 /**
@@ -58,6 +59,7 @@ export const MoneyBackdrop: React.FC<{
   from?: number;
   durationInFrames: number;
 }> = ({from = 0, durationInFrames}) => {
+  const transparent = useTransparent();
   const frame = useCurrentFrame();
 
   // Slow, unbroken Ken Burns — dread builds when the camera never quite settles.
@@ -69,6 +71,9 @@ export const MoneyBackdrop: React.FC<{
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+
+  // The money plate is purely a ground; the alpha pass ships without it.
+  if (transparent) return null;
 
   return (
     <AbsoluteFill style={{backgroundColor: THEME.ink, overflow: 'hidden'}}>

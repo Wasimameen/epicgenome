@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, OffthreadVideo, staticFile, useCurrentFrame} from 'remotion';
+import {useTransparent} from '../alpha';
 import {THEME} from '../theme';
 
 /**
@@ -16,11 +17,16 @@ export const FootagePlate: React.FC<{
   push?: [number, number];
   opacity?: number;
 }> = ({src, startFrom = 0, durationInFrames, push = [1.08, 1.2], opacity = 0.7}) => {
+  const transparent = useTransparent();
   const frame = useCurrentFrame();
   const scale = interpolate(frame, [0, durationInFrames], push, {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+
+  // Live plates are ground, not graphics — omitted from the alpha pass so the
+  // titles can be laid over the client's own footage instead.
+  if (transparent) return null;
 
   return (
     <AbsoluteFill style={{overflow: 'hidden', backgroundColor: THEME.ink}}>

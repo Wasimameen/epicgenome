@@ -6,6 +6,7 @@ import {DustMotes} from '../components/DustMotes';
 import {Grain} from '../components/Grain';
 import {LightRays} from '../components/LightRays';
 import {Vignette} from '../components/Vignette';
+import {useTransparent} from '../alpha';
 import {cue} from '../timeline';
 import {THEME} from '../theme';
 
@@ -63,6 +64,7 @@ const Pill: React.FC<{text: string; startAt: number}> = ({text, startAt}) => {
  * logo into public/assets as `brand-logo.png` and it should replace this block.
  */
 export const Scene09CTA: React.FC = () => {
+  const alpha = useTransparent();
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -70,10 +72,10 @@ export const Scene09CTA: React.FC = () => {
   const glow = interpolate(Math.sin(frame * 0.16), [-1, 1], [0.25, 0.6]);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#07060a'}}>
+    <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#07060a'}}>
       <AbsoluteFill
         style={{
-          background: `radial-gradient(ellipse 72% 46% at 50% 44%, #2c2210 0%, #06060a 76%)`,
+          background: alpha ? 'none' : `radial-gradient(ellipse 72% 46% at 50% 44%, #2c2210 0%, #06060a 76%)`,
         }}
       />
       <FallingBills count={16} seed="cta" intensity={0.5} />

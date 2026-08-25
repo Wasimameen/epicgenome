@@ -9,6 +9,7 @@ import {Scene06Court} from './scenes/Scene06Court';
 import {Scene07OnTheLine} from './scenes/Scene07OnTheLine';
 import {Scene08Verdict} from './scenes/Scene08Verdict';
 import {Scene09CTA} from './scenes/Scene09CTA';
+import {TransparentContext} from './alpha';
 import {SCENES} from './timeline';
 import {THEME} from './theme';
 
@@ -31,18 +32,23 @@ const COMPONENTS: Record<string, React.FC> = {
  * The voiceover is laid across the whole timeline rather than per scene, so the
  * read stays continuous no matter how the scene boundaries are nudged.
  */
-export const Reel: React.FC = () => (
-  <AbsoluteFill style={{backgroundColor: THEME.ink}}>
-    <Audio src={staticFile('audio/vo.mp3')} />
-    <Series>
-      {SCENES.map((scene) => {
-        const Component = COMPONENTS[scene.id];
-        return (
-          <Series.Sequence key={scene.id} durationInFrames={scene.frames}>
-            <Component />
-          </Series.Sequence>
-        );
-      })}
-    </Series>
-  </AbsoluteFill>
+export const Reel: React.FC<{transparent?: boolean; withAudio?: boolean}> = ({
+  transparent = false,
+  withAudio = true,
+}) => (
+  <TransparentContext.Provider value={transparent}>
+    <AbsoluteFill style={{backgroundColor: transparent ? 'transparent' : THEME.ink}}>
+      {withAudio ? <Audio src={staticFile('audio/vo.mp3')} /> : null}
+      <Series>
+        {SCENES.map((scene) => {
+          const Component = COMPONENTS[scene.id];
+          return (
+            <Series.Sequence key={scene.id} durationInFrames={scene.frames}>
+              <Component />
+            </Series.Sequence>
+          );
+        })}
+      </Series>
+    </AbsoluteFill>
+  </TransparentContext.Provider>
 );
