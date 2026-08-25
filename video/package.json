@@ -6,7 +6,11 @@
     "dev": "remotion studio",
     "render": "remotion render",
     "still": "remotion still",
-    "sync-assets": "node scripts/sync-assets.mjs"
+    "sync-assets": "node scripts/sync-assets.mjs",
+    "render:reel": "remotion render Reel out/reel.mp4",
+    "render:alpha": "remotion render ReelAlpha out/reel-alpha.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
+    "render:screen": "remotion render ReelScreenBlend out/reel-screen-blend.mp4",
+    "verify:alpha": "node scripts/verify-alpha.mjs out/reel-alpha.mov"
   },
   "dependencies": {
     "@remotion/cli": "4.0.516",

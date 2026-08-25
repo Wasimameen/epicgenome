@@ -1,5 +1,5 @@
 import React from 'react';
-import {Composition} from 'remotion';
+import {AbsoluteFill, Composition} from 'remotion';
 import {FONT_STACK, loadFonts} from './fonts';
 import {Reel} from './Reel';
 import {Scene01Hook} from './scenes/Scene01Hook';
@@ -52,6 +52,27 @@ export const RemotionRoot: React.FC = () => (
         <FontVars>
           <Reel transparent />
         </FontVars>
+      )}
+      durationInFrames={TOTAL_FRAMES}
+      fps={VIDEO.fps}
+      width={VIDEO.width}
+      height={VIDEO.height}
+    />
+
+    {/*
+      The alpha graphics laid on pure black, for editors that cannot read an
+      alpha channel. Set the clip's blend mode to Screen and the black drops
+      out — for graphics this bright on this dark a ground, it keeps the glows
+      and soft edges that a chroma key would fringe. Ships as ordinary H.264.
+    */}
+    <Composition
+      id="ReelScreenBlend"
+      component={() => (
+        <AbsoluteFill style={{backgroundColor: '#000'}}>
+          <FontVars>
+            <Reel transparent />
+          </FontVars>
+        </AbsoluteFill>
       )}
       durationInFrames={TOTAL_FRAMES}
       fps={VIDEO.fps}

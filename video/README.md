@@ -87,6 +87,29 @@ both upscales it to cover 9:16 and crushes/warms it into the reel's palette —
 dropped in raw it tears a hole in a dark cut. Its own audio track is stripped;
 only the voiceover sits on the timeline.
 
+## Rendering it yourself
+
+```bash
+git clone https://github.com/Wasimameen/epicgenome.git
+cd epicgenome/video
+npm install
+npx remotion browser ensure     # Remotion needs its own headless shell
+
+npm run render:alpha            # transparent ProRes 4444 MOV  (~2.5 GB)
+npm run verify:alpha            # confirms the alpha plane is really there
+```
+
+Other outputs:
+
+```bash
+npm run render:reel     # finished spot, H.264 with voiceover
+npm run render:screen   # graphics on pure black, for Screen blend mode
+```
+
+Requires Node 18+. The alpha render takes roughly 15 minutes on a laptop and
+needs ~3 GB free disk. Nothing else is needed — fonts, the voiceover and the
+Capitol plate are all committed under `public/`.
+
 ## Transparent / alpha version
 
 `ReelAlpha` is the same timeline with every background-only layer dropped —
