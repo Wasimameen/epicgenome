@@ -5,7 +5,8 @@
 7.5  refresh + scrub to the same time twice -> identical frame
 7.2  nothing moves in the last 0.5s
 """
-import hashlib, os
+import hashlib, io, os
+from PIL import Image
 from playwright.sync_api import sync_playwright
 from render import boot, W, H
 
@@ -18,9 +19,13 @@ ACCENTS = {1.30: 1.19, 5.65: 5.61, 7.65: 7.57, 9.35: 9.27, 10.65: 10.61,
 
 
 def sig(pg, t):
+    """Hash the DECODED pixels. Chromium's PNG encoder picks different
+    compression strategies across process launches, so hashing the container
+    bytes reports differences where the pixels are identical."""
     pg.evaluate("t => window.__render(t)", t)
+    png = pg.screenshot(clip={"x": 0, "y": 0, "width": W, "height": H})
     return hashlib.sha256(
-        pg.screenshot(clip={"x": 0, "y": 0, "width": W, "height": H})).hexdigest()
+        Image.open(io.BytesIO(png)).convert("RGB").tobytes()).hexdigest()
 
 
 def main():
