@@ -32,6 +32,8 @@
 
   #wipe,#card{position:absolute;inset:0;pointer-events:none}
   .img{position:absolute;transform-origin:50% 50%;will-change:transform,opacity}
+  /* scale each cutout to its container rather than its intrinsic SVG width */
+  .img svg{display:block;width:100%;height:auto}
 
   #safe{position:absolute;inset:0;pointer-events:none;display:none}
   #safe div{position:absolute;background:rgba(224,57,63,.16);
@@ -203,40 +205,110 @@ function accentAt(t){
 /* ---------- flat-vector cutout stand-ins --------------------------------- */
 /* None of the §3 PNGs were supplied, so each is drawn in the same flat style. */
 const SVG = {
-check:()=>`<svg viewBox="0 0 600 280" width="600" height="280">
-  <rect x="6" y="6" width="588" height="268" rx="10" fill="#F3EEE3" stroke="#DDD3C0" stroke-width="3"/>
-  <rect x="6" y="6" width="588" height="46" rx="10" fill="${C.brand}"/>
-  <text x="28" y="38" font-family="Inter" font-size="20" font-weight="700"
-        letter-spacing="3" fill="#F6EFE4">SETTLEMENT</text>
-  <rect x="34" y="86" width="250" height="12" rx="6" fill="#CFC5B2"/>
-  <rect x="34" y="118" width="170" height="12" rx="6" fill="#CFC5B2"/>
-  <rect x="330" y="92" width="236" height="86" rx="8" fill="#FFFFFF" stroke="#DDD3C0" stroke-width="3"/>
-  <text x="352" y="150" font-family="Fraunces" font-size="46" font-weight="600" fill="${C.ink}">$</text>
-  <rect x="392" y="128" width="150" height="10" rx="5" fill="#E2D9C7"/>
-  <rect x="34" y="210" width="300" height="4" rx="2" fill="#CFC5B2"/>
-  <path d="M44 208c26-18 44 10 68-6s34 8 58-8" stroke="${C.inkSoft}" stroke-width="4"
-        fill="none" stroke-linecap="round"/>
-  <rect x="392" y="206" width="174" height="4" rx="2" fill="#CFC5B2"/>
+
+/* ---- MONEY BAG (Beat 1) --------------------------------------------------
+   Canvas drawstring sack, dark $ on the front, US notes spilling from the top. */
+moneybag:()=>{
+  const notes=[
+    [ 44,150,-44,162, 80,'#C4CFAE'],[144,120,-20,174, 84,'#CFD8BA'],
+    [256,110,  8,168, 82,'#C8D2B2'],[352,136, 30,162, 80,'#BCC7A6'],
+    [ 96,186,-30,152, 76,'#D3DBC2'],[300,176, 24,154, 76,'#D0D9BE'],
+    [196,166, -4,162, 78,'#DAE1CB'],
+  ];
+  return `<svg viewBox="0 0 520 672" width="520" height="672">
+  <defs>
+    <linearGradient id="bagG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D8D0BC"/><stop offset=".32" stop-color="#F1EBDC"/>
+      <stop offset=".70" stop-color="#E7E0CD"/><stop offset="1" stop-color="#CFC6B0"/>
+    </linearGradient>
+  </defs>
+  ${notes.map(([x,y,r,w,h,c])=>`
+    <g transform="rotate(${r} ${x+w/2} ${y+h/2})">
+      <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="${c}"
+            stroke="#93A37B" stroke-width="2"/>
+      <rect x="${x+8}" y="${y+8}" width="${w-16}" height="${h-16}" rx="3"
+            fill="none" stroke="#9FAE87" stroke-width="1.6"/>
+      <ellipse cx="${x+w/2}" cy="${y+h/2}" rx="${h*0.24}" ry="${h*0.31}" fill="#A8B691"/>
+    </g>`).join('')}
+  <ellipse cx="260" cy="250" rx="190" ry="44" fill="#C6BCA4"/>
+  <path d="M70 244C42 330 38 480 116 556C190 626 330 626 404 556C482 480 478 330 450 244Z"
+        fill="url(#bagG)"/>
+  <path d="M70 244C60 288 54 338 52 380C108 410 180 422 260 422C340 422 412 410 468 380
+           C466 338 460 288 450 244C402 278 332 292 260 292C188 292 116 278 70 244Z"
+        fill="#E2DAC6"/>
+  <path d="M120 300c26-14 22 26 6 44-14 16-26 4-20-16 4-14 8-22 14-28Z"
+        fill="#D6CCB6" opacity=".8"/>
+  <path d="M404 306c-24-12-20 24-6 42 12 16 24 4 19-15-4-13-8-21-13-27Z"
+        fill="#CFC5AE" opacity=".8"/>
+  <text x="262" y="492" text-anchor="middle" font-family="Inter,sans-serif"
+        font-size="176" font-weight="700" fill="#7E8265" opacity=".92">$</text>
+  <ellipse cx="262" cy="640" rx="152" ry="20" fill="#000" opacity=".13"/>
+</svg>`;},
+
+/* ---- INSURANCE: umbrella + bill + coin stacks (Beat 2) -------------------- */
+insurance:()=>{
+  const px=[40,104,168,232,296,360], pv=['#5CC8EC','#2C9FD0'];
+  const panels=px.slice(0,-1).map((x,i)=>
+    `<path d="M200 34 L${x} 196 Q${x+32} 220 ${px[i+1]} 196 Z" fill="${pv[i%2]}"/>`).join('');
+  const stack=(cx,by,n)=>Array.from({length:n},(_,i)=>{
+    const y=by-i*15;
+    return `<ellipse cx="${cx}" cy="${y}" rx="46" ry="14" fill="#E8B845" stroke="#B8862A" stroke-width="2"/>
+            <ellipse cx="${cx}" cy="${y-3}" rx="46" ry="14" fill="#F5D067"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 800 440" width="800" height="440">
+  <rect x="286" y="112" width="316" height="192" rx="10" fill="#B4D69B"
+        stroke="#87B46C" stroke-width="3"/>
+  <rect x="300" y="126" width="288" height="164" rx="6" fill="none"
+        stroke="#96C079" stroke-width="2"/>
+  <ellipse cx="444" cy="208" rx="46" ry="60" fill="#9CC582"/>
+  <ellipse cx="444" cy="192" rx="25" ry="29" fill="#8CB973"/>
+  <path d="M414 252c13-19 47-19 60 0Z" fill="#8CB973"/>
+  <circle cx="176" cy="248" r="88" fill="#84C64A"/>
+  <text x="176" y="300" text-anchor="middle" font-family="Inter,sans-serif"
+        font-size="132" font-weight="700" fill="#FFFFFF">$</text>
+  ${stack(668,352,7)}${stack(746,366,5)}
+  <g transform="rotate(-13 200 150)">
+    <path d="M40 196Q40 46 200 34Q360 46 360 196Q334 222 308 196Q282 222 256 196
+             Q230 222 204 196Q178 222 152 196Q126 222 100 196Q74 222 40 196Z" fill="#5CC8EC"/>
+    ${panels}
+    <path d="M40 196Q40 46 200 34Q360 46 360 196" fill="none"
+          stroke="#1D82AE" stroke-width="3"/>
+    <path d="M196 40v250q0 34-32 34t-32-30" fill="none" stroke="#9AA3A8"
+          stroke-width="9" stroke-linecap="round"/>
+    <rect x="192" y="14" width="9" height="30" rx="4" fill="#B9C0C4"/>
+    <path d="M78 120Q120 58 196 46" fill="none" stroke="#FFFFFF" stroke-width="9"
+          stroke-linecap="round" opacity=".45"/>
+  </g>
+</svg>`;},
+
+/* ---- FOUNTAIN PEN (Beat 3) -----------------------------------------------
+   Black lacquer barrel, gold nib, three gold bands, gold clip. Rotated so the
+   nib points down-left at the signature line. */
+pen:()=>`<svg viewBox="0 0 400 400" width="400" height="400">
+  <g transform="rotate(215 200 200)">
+    <path d="M200 26 L214 92 L186 92 Z" fill="#E0B65C"/>
+    <path d="M200 26 L207 92 L193 92 Z" fill="#F2D089"/>
+    <line x1="200" y1="40" x2="200" y2="86" stroke="#A87F26" stroke-width="3"/>
+    <circle cx="200" cy="84" r="6" fill="#A87F26"/>
+    <path d="M182 92h36l-3 30h-30Z" fill="#161616"/>
+    <rect x="178" y="120" width="44" height="12" rx="2" fill="#DFB65E"/>
+    <rect x="176" y="132" width="48" height="132" rx="5" fill="#0D0D0D"/>
+    <rect x="186" y="140" width="10" height="116" rx="5" fill="#FFFFFF" opacity=".14"/>
+    <rect x="176" y="252" width="48" height="11" rx="2" fill="#DFB65E"/>
+    <rect x="176" y="268" width="48" height="11" rx="2" fill="#DFB65E"/>
+    <rect x="174" y="279" width="52" height="94" rx="8" fill="#111111"/>
+    <rect x="184" y="288" width="10" height="76" rx="5" fill="#FFFFFF" opacity=".12"/>
+    <path d="M216 284v74q0 12-11 13v-11q4-1 4-8v-68Z" fill="#DFB65E"/>
+    <rect x="174" y="366" width="52" height="9" rx="4" fill="#DFB65E"/>
+  </g>
 </svg>`,
 
-envelope:()=>`<svg viewBox="0 0 560 360" width="560" height="360">
-  <rect x="20" y="120" width="520" height="222" rx="10" fill="#EDE3D2"/>
-  <rect x="86" y="52" width="388" height="196" rx="8" fill="#FFFFFF" stroke="#E0D6C3" stroke-width="3"/>
-  <rect x="118" y="88" width="200" height="12" rx="6" fill="${C.brand}" opacity=".85"/>
-  <rect x="118" y="124" width="300" height="9" rx="4.5" fill="#D9CFBC"/>
-  <rect x="118" y="150" width="256" height="9" rx="4.5" fill="#D9CFBC"/>
-  <rect x="118" y="176" width="286" height="9" rx="4.5" fill="#D9CFBC"/>
-  <path d="M20 120 280 268 540 120 540 132 280 280 20 132Z" fill="#E2D7C4"/>
-  <path d="M20 342 236 214 20 214Z" fill="#E6DCC9"/>
-  <path d="M540 342 324 214 540 214Z" fill="#E6DCC9"/>
-  <path d="M20 342 280 196 540 342Z" fill="#F1E8D8"/>
-</svg>`,
-
+/* ---- RELEASE DOCUMENT (Beat 3) ------------------------------------------- */
 release:()=>`<svg viewBox="0 0 470 610" width="470" height="610">
   <rect x="8" y="8" width="454" height="594" rx="8" fill="#FFFFFF" stroke="#E2D9C7" stroke-width="3"/>
-  <text x="42" y="86" font-family="Fraunces" font-size="31" font-weight="600" fill="${C.ink}">Release of</text>
-  <text x="42" y="126" font-family="Fraunces" font-size="31" font-weight="600" fill="${C.ink}">All Claims</text>
-  <rect x="42" y="158" width="120" height="4" rx="2" fill="${C.brand}"/>
+  <text x="42" y="86" font-family="Fraunces" font-size="31" font-weight="600" fill="#14110F">Release of</text>
+  <text x="42" y="126" font-family="Fraunces" font-size="31" font-weight="600" fill="#14110F">All Claims</text>
+  <rect x="42" y="158" width="120" height="4" rx="2" fill="#8A2326"/>
   ${[0,1,2,3,4,5,6,7].map(i=>`<rect x="42" y="${200+i*30}" width="${376-(i%3)*70}"
       height="8" rx="4" fill="#E6DCC9"/>`).join('')}
   <rect x="42" y="470" width="240" height="3" rx="1.5" fill="#CFC5B2"/>
@@ -244,65 +316,70 @@ release:()=>`<svg viewBox="0 0 470 610" width="470" height="610">
         letter-spacing="2" fill="#A79C88">SIGNATURE</text>
 </svg>`,
 
-pen:()=>`<svg viewBox="0 0 340 340" width="340" height="340">
-  <g transform="rotate(34 170 170)">
-    <rect x="150" y="34" width="42" height="212" rx="8" fill="${C.ink}"/>
-    <rect x="150" y="58" width="42" height="12" fill="${C.brass}"/>
-    <rect x="150" y="196" width="42" height="12" fill="${C.brass}"/>
-    <rect x="163" y="86" width="8" height="100" rx="4" fill="#2A2522"/>
-    <path d="M150 246h42l-21 56Z" fill="${C.brassLight}"/>
-    <path d="M166 288h10l-5 18Z" fill="${C.ink}"/>
-  </g>
-</svg>`,
-
+/* ---- X-RAY LIGHTBOX (Beat 3b) -------------------------------------------- */
 brace:()=>`<svg viewBox="0 0 420 300" width="420" height="300">
   <rect x="8" y="8" width="404" height="284" rx="12" fill="#0E1B23" stroke="#1E3340" stroke-width="3"/>
   <rect x="30" y="30" width="360" height="240" rx="8" fill="#12222C"/>
   <g stroke="#7FB7CE" stroke-width="9" fill="none" stroke-linecap="round" opacity=".92">
-    <path d="M150 62v54M270 62v54"/>
-    <path d="M150 116c0 26 120 26 120 0"/>
-    <path d="M138 140h144"/>
-    <path d="M156 140v46M264 140v46"/>
-    <path d="M156 186c0 22 108 22 108 0"/>
-    <path d="M170 214h80"/>
+    <path d="M150 62v54M270 62v54"/><path d="M150 116c0 26 120 26 120 0"/>
+    <path d="M138 140h144"/><path d="M156 140v46M264 140v46"/>
+    <path d="M156 186c0 22 108 22 108 0"/><path d="M170 214h80"/>
   </g>
-  <circle cx="210" cy="163" r="7" fill="${C.brass}"/>
-  <text x="30" y="292" font-family="Inter" font-size="0" fill="none">x-ray</text>
+  <circle cx="210" cy="163" r="7" fill="#B68A4E"/>
 </svg>`,
 
+/* ---- PHONE (Beat 4) ------------------------------------------------------ */
 phone:()=>`<svg viewBox="0 0 330 660" width="330" height="660">
-  <rect x="6" y="6" width="318" height="648" rx="46" fill="${C.ink}"/>
-  <rect x="18" y="18" width="294" height="624" rx="38" fill="${C.cream}"/>
-  <rect x="130" y="30" width="70" height="12" rx="6" fill="${C.ink}" opacity=".25"/>
-  <text x="44" y="104" font-family="Fraunces" font-size="25" font-weight="600"
-        fill="${C.ink}">Awesome</text>
-  <text x="44" y="136" font-family="Fraunces" font-size="25" font-weight="600"
-        fill="${C.ink}">Attorneys</text>
-  <rect x="44" y="158" width="180" height="3" fill="${C.brand}"/>
+  <rect x="6" y="6" width="318" height="648" rx="46" fill="#14110F"/>
+  <rect x="18" y="18" width="294" height="624" rx="38" fill="#FBF7EF"/>
+  <rect x="130" y="30" width="70" height="12" rx="6" fill="#14110F" opacity=".25"/>
+  <text x="44" y="104" font-family="Fraunces" font-size="25" font-weight="600" fill="#14110F">Awesome</text>
+  <text x="44" y="136" font-family="Fraunces" font-size="25" font-weight="600" fill="#14110F">Attorneys</text>
+  <rect x="44" y="158" width="180" height="3" fill="#8A2326"/>
   <text x="44" y="200" font-family="Inter" font-size="14" font-weight="600"
         letter-spacing="1.6" fill="#8C8377">FIND A LAWYER</text>
   ${[0,1,2].map(i=>`<g>
      <rect x="44" y="${226+i*104}" width="242" height="86" rx="10"
            fill="#FFFFFF" stroke="#E6DCC9" stroke-width="2"/>
-     <circle cx="76" cy="${262+i*104}" r="17" fill="${C.sand}"/>
+     <circle cx="76" cy="${262+i*104}" r="17" fill="#E4D9C3"/>
      <rect x="104" y="${248+i*104}" width="120" height="10" rx="5" fill="#DCD2BF"/>
      <rect x="104" y="${268+i*104}" width="86" height="8" rx="4" fill="#E8DFCD"/>
      <rect x="104" y="${286+i*104}" width="64" height="8" rx="4" fill="#E8DFCD"/>
    </g>`).join('')}
-  <rect x="44" y="546" width="242" height="52" rx="26" fill="${C.brand}"/>
+  <rect x="44" y="546" width="242" height="52" rx="26" fill="#8A2326"/>
   <text x="165" y="578" text-anchor="middle" font-family="Inter" font-size="17"
         font-weight="700" letter-spacing="1" fill="#FBF7EF">Get Matched</text>
 </svg>`,
 
-/* Phoenix / Camelback — flat single-colour silhouette */
-skyline:(fill)=>`<svg viewBox="0 0 1080 300" width="1080" height="300">
-  <path fill="${fill}" d="M0 300V214c46-6 78-30 116-58 34-25 62-19 92 6 22 18 40 14 58-6
-    26-29 58-24 84 4l18 20V132h30v-28h16v28h30v54c18-16 36-14 52 4v-96h22v-34h18v34h22v130
-    c16-22 36-22 54 2v-72h20v-26h16v26h20v96c18-26 40-24 58 6v-52h18v-30h16v30h18v78
-    c26-34 54-30 78 8 20 32 46 44 84 48v68Z"/>
-  <path fill="${fill}" opacity=".55" d="M0 300v-40c60-10 104-44 150-76 40-28 74-18 106 10
-    26 22 50 16 72-8 30-32 66-24 96 8l26 28v78Z"/>
-</svg>`
+/* ---- SKYLINE (Beat 4) ----------------------------------------------------
+   The supplied skyline's own profile — low blocks left, the tall tower just
+   right of centre, tapering right — over a treeline, with its mirrored
+   reflection. Rendered single-colour so it reads on the brand-red beat. */
+skyline:(fill)=>{
+  const towers="M60 330V270h40v-20h40v40h35V225h35v-20h40v35h35V180h35v-20h40v55h35V150h35"
+              +"v-30h40v55h35V135h40V95h45v50h35V110h35V70h45V60h55v70h35v-30h40v55h35V125h40"
+              +"v60h35v-35h40v55h35v-30h40v60h40v30h40v65H60Z";
+  const trees="M0 330q30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0"
+             +" 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0"
+             +" 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0 30-17 60 0"
+             +" 30-17 60 0v22H0Z";
+  return `<svg viewBox="0 0 1200 700" preserveAspectRatio="none"
+       style="display:block;width:100%;height:100%">
+  <defs><linearGradient id="refl" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".40"/>
+    <stop offset=".55" stop-color="#fff" stop-opacity=".10"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <mask id="rmask"><rect x="0" y="352" width="1200" height="348" fill="url(#refl)"/></mask></defs>
+  <g transform="translate(1200,0) scale(-1,1)">
+    <path d="${towers}" fill="${fill}"/>
+    <path d="${trees}" fill="${fill}" opacity=".72"/>
+    <g mask="url(#rmask)" transform="translate(0,704) scale(1,-1)">
+      <path d="${towers}" fill="${fill}"/>
+      <path d="${trees}" fill="${fill}" opacity=".72"/>
+    </g>
+  </g>
+</svg>`;}
 };
 
 /* ---------- build DOM ---------------------------------------------------- */
@@ -341,13 +418,15 @@ function mkImg(id,html,css){
   Object.assign(d.style,css);
   elImgs.appendChild(d); return d;
 }
-const iCheck   = mkImg('check',   SVG.check(),   {left:'240px', top:'980px',  width:'600px'});
-const iEnv     = mkImg('env',     SVG.envelope(),{left:'96px',  top:'752px',  width:'560px'});
-const iRelease = mkImg('release', SVG.release(), {left:'560px', top:'760px',  width:'470px'});
-const iPen     = mkImg('pen',     SVG.pen(),     {left:'470px', top:'1090px', width:'340px'});
-const iBrace   = mkImg('brace',   SVG.brace(),   {left:'110px', top:'1090px', width:'420px'});
-const iPhone   = mkImg('phone',   SVG.phone(),   {left:'640px', top:'1010px', width:'330px'});
-const iSky     = mkImg('sky',     SVG.skyline(C.brandDeep), {left:'0px', top:'1620px', width:'1080px'});
+const iBag     = mkImg('bag',     SVG.moneybag(), {left:'302px', top:'898px',  width:'470px'});
+const iIns     = mkImg('ins',     SVG.insurance(),{left:'50px',  top:'790px',  width:'620px'});
+const iRelease = mkImg('release', SVG.release(),  {left:'560px', top:'760px',  width:'470px'});
+const iPen     = mkImg('pen',     SVG.pen(),      {left:'452px', top:'1052px', width:'400px'});
+const iBrace   = mkImg('brace',   SVG.brace(),    {left:'110px', top:'1090px', width:'420px'});
+/* the skyline is a background band, so it is built before the phone and sits behind it */
+const iSky     = mkImg('sky',     SVG.skyline(C.brandDeep),
+                       {left:'0px', top:'1622px', width:'1080px', height:'440px'});
+const iPhone   = mkImg('phone',   SVG.phone(),    {left:'640px', top:'1010px', width:'330px'});
 
 /* the stamps, chart, note card, road, wordmark, CTA — built into #chrome */
 /* the road lives *under* the cutouts, so objects sit on it rather than beneath it */
@@ -358,7 +437,7 @@ document.getElementById('roadLayer').innerHTML = `
 </svg>`;
 
 elChrome.innerHTML = `
-<div id="stampFirst" style="position:absolute;left:560px;top:1010px;
+<div id="stampFirst" style="position:absolute;left:372px;top:1112px;
      border:7px solid ${C.brand};color:${C.brand};padding:10px 20px;border-radius:8px;
      font:800 44px Inter;letter-spacing:.06em;transform-origin:50% 50%">FIRST OFFER</div>
 
@@ -516,10 +595,10 @@ function render(tRaw){
   }
 
   /* BEAT 1 — the check */
-  const checkShrink = t>=1.19 ? 0.94 : 1;
-  if(place(iCheck,{in:0.13,out:2.90,fx:520,fy:420,frot:-22,rot:-8,exitDx:420,exitDy:300})){
-    const cs=iv(t,1.19,1.45,1,checkShrink,expoOut);
-    iCheck.style.transform += ` scale(${cs})`;
+  const bagShrink = t>=1.19 ? 0.94 : 1;
+  if(place(iBag,{in:0.13,out:2.90,fx:460,fy:420,frot:-18,rot:-6,exitDx:420,exitDy:300})){
+    const cs=iv(t,1.19,1.45,1,bagShrink,expoOut);
+    iBag.style.transform += ` scale(${cs})`;
   }
   {   /* FIRST OFFER stamp */
     const s=$('stampFirst');
@@ -530,7 +609,7 @@ function render(tRaw){
   }
 
   /* BEAT 2 — envelope, chart, note, road */
-  place(iEnv,{in:3.15,out:6.80,fx:-560,fy:0,frot:-14,rot:6,exitDx:-460});
+  place(iIns,{in:3.15,out:6.80,fx:-580,fy:0,frot:-14,rot:4,exitDx:-480});
   {   /* road draws on, then drifts */
     const p=clamp((t-3.20)/0.60,0,1), e=expoOut(p);
     const on = t>=3.15 && t<11.98;
