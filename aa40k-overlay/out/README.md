@@ -138,8 +138,15 @@ npm run render:16x9
 npm run render:frame-9x16
 npm run render:frame-16x9
 npm run render:4k           # 2160x3840, --scale=2
-npm run render:webm         # VP9 + alpha fallback
+npm run render:webm         # VP9 + alpha fallback (transcoded from the 9:16 master)
 ```
+
+`render:webm` transcodes the ProRes master rather than re-rendering. Remotion
+refuses to render when a ProRes profile is set and the codec isn't ProRes, and
+the profile that makes a Studio export default to 4444 (i.e. to having alpha at
+all) can't be unset per-command. Transcoding is the better answer anyway: the
+webm comes out frame-identical to the master in a fraction of the time. It needs
+`render:9x16` to have run first.
 
 Or the raw commands, if you'd rather not go through npm:
 
@@ -154,8 +161,9 @@ npx remotion render FrameLayer-16x9 out/frame_16x9_alpha.mov \
   --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted
 npx remotion render AA40K-9x16 out/aa40k_9x16_4k_alpha.mov --scale=2 \
   --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted
-npx remotion render AA40K-9x16 out/aa40k_9x16_30fps_alpha.webm \
-  --codec=vp9 --pixel-format=yuva420p --image-format=png --muted
+npx remotion ffmpeg -y -i out/aa40k_9x16_30fps_alpha.mov \
+  -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 0 -crf 28 -row-mt 1 -an \
+  out/aa40k_9x16_30fps_alpha.webm
 ```
 
 ---

@@ -16,7 +16,7 @@
     "render:frame-9x16": "remotion render FrameLayer-9x16 out/frame_9x16_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
     "render:frame-16x9": "remotion render FrameLayer-16x9 out/frame_16x9_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
     "render:4k": "remotion render AA40K-9x16 out/aa40k_9x16_4k_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted --scale=2",
-    "render:webm": "remotion render AA40K-9x16 out/aa40k_9x16_30fps_alpha.webm --codec=vp9 --pixel-format=yuva420p --image-format=png --muted",
+    "render:webm": "node scripts/webm.mjs",
     "render:all": "npm run render:9x16 && npm run render:16x9 && npm run render:frame-9x16 && npm run render:frame-16x9 && npm run render:4k && npm run render:webm",
 
     "stills": "node scripts/stills.mjs",

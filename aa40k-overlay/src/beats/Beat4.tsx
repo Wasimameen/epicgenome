@@ -123,11 +123,14 @@ export const Beat4: React.FC<BeatProps> = ({
   const pUrl = useRamp(urlAt + 0.18, 0.5, EASE.expoOut);
 
   // End-card slots, in units of the card type size so both aspects scale.
+  // Chosen so the headline/wordmark/URL/pill stack sits centred on the frame
+  // with the disclaimer pinned to the bottom safe area — anchored lower, the
+  // card reads bottom-heavy with a dead third above it.
   const slot = {
-    paid: -type.card * 0.95,
-    wordmark: type.card * 0.35,
-    url: type.card * 1.05,
-    pill: type.card * 2.15,
+    paid: -type.card * 1.4,
+    wordmark: -type.card * 0.09,
+    url: type.card * 0.69,
+    pill: type.card * 1.76,
   };
 
   const onInk = cards;

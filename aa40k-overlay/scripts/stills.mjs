@@ -42,7 +42,10 @@ rmSync(tmp, {force: true});
 const hit = (sec) => Math.round(sec * FPS) - LEAD_FRAMES;
 
 const SHOTS = [
-  {name: 'still_01_forty_impact', frame: hit(t.forty) + 8, what: 'the "40%" slam, settled'},
+  // The literal impact frame catches the lockup half-built — "AT FAULT" does
+  // not wipe in until `t.fault`. This is the same beat a dozen frames later,
+  // where the whole "40% AT FAULT" stamp is on screen and worth judging.
+  {name: 'still_01_forty_stamp', frame: hit(t.fault) + 12, what: 'the "40% AT FAULT" stamp, complete'},
   {name: 'still_02_directly', frame: hit(t.directly) + 12, what: '"DIRECTLY" travelling the match line'},
   {name: 'still_03_end_card', frame: Math.round(TOTAL_SEC * FPS) - 30, what: 'the end card, still'},
 ];
