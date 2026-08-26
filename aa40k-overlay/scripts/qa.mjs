@@ -62,11 +62,33 @@ const size = (path) => {
 if (cmd === 'probe') {
   const s = size(mov);
   const ALPHA_OK = ['yuva444p10le', 'yuva444p12le', 'yuva420p', 'yuva444p'];
+
+  // VP9 in WebM does not carry alpha in the stream's pixel format — the alpha
+  // plane is a separate container-level layer flagged by the `alpha_mode` tag,
+  // and the stream still reports yuv420p. Reading pix_fmt alone reports a
+  // perfectly good alpha webm as opaque.
+  const tags = run(FFPROBE, [
+    '-v', 'error', '-select_streams', 'v:0',
+    '-show_entries', 'stream_tags=alpha_mode',
+    '-of', 'default=nw=1', mov,
+  ]);
+  const alphaMode = /alpha_mode=1/.test(tags);
+
+  const ok = ALPHA_OK.includes(s.pixFmt) || alphaMode;
   console.log(`file      ${mov}`);
   console.log(`size      ${s.width}x${s.height} @ ${s.rate}`);
   console.log(`frames    ${s.frames}`);
-  console.log(`pix_fmt   ${s.pixFmt}   ${ALPHA_OK.includes(s.pixFmt) ? 'ALPHA OK' : '*** NO ALPHA ***'}`);
-  process.exit(ALPHA_OK.includes(s.pixFmt) ? 0 : 1);
+  console.log(
+    `pix_fmt   ${s.pixFmt}${alphaMode ? ' + alpha_mode=1 (VP9 container alpha)' : ''}   ` +
+      `${ok ? 'ALPHA OK' : '*** NO ALPHA ***'}`,
+  );
+  if (alphaMode) {
+    console.log(
+      `note      decode this with \`-c:v libvpx-vp9\` — ffmpeg's native VP9\n` +
+        `          decoder silently ignores the alpha layer.`,
+    );
+  }
+  process.exit(ok ? 0 : 1);
 }
 
 if (cmd === 'frames' || cmd === 'cover') {

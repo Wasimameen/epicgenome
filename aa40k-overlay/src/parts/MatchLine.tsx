@@ -173,16 +173,23 @@ export const MatchLine: React.FC<{
           );
         })}
 
-        {/* the two ends */}
+        {/* the two ends. The ATTORNEY dot shrinks back as the check ring draws
+            around it, so the ring and tick read as one badge instead of the
+            tick sitting muddily on top of a same-coloured disc. */}
         {[
-          {x: x0, key: 'l'},
-          {x: x1, key: 'r'},
-        ].map(({x, key}) => (
+          {x: x0, key: 'l', shrink: 0},
+          {x: x1, key: 'r', shrink: 0.5},
+        ].map(({x, key, shrink}) => (
           <circle
             key={key}
             cx={x}
             cy={cy}
-            r={dotR * pDots * (1 + 0.28 * Math.sin(Math.PI * pFlash))}
+            r={
+              dotR *
+              pDots *
+              (1 + 0.28 * Math.sin(Math.PI * pFlash)) *
+              (1 - shrink * pRing)
+            }
             fill={gold}
           />
         ))}

@@ -200,6 +200,12 @@ The matte (`fN_alpha.png`) should be **black wherever the frame is empty**, show
 only the graphics on footage beats, and be **fully white only inside a card
 beat**. Frame 0 is entirely black.
 
+**On the `.webm`:** VP9 stores alpha as a separate container-level layer, not in
+the stream's pixel format — so `ffprobe` reports `pix_fmt=yuv420p` and the alpha
+is flagged by the `alpha_mode=1` tag instead. `qa.mjs probe` knows this. If you
+check it by hand, decode with `-c:v libvpx-vp9`; ffmpeg's *native* VP9 decoder
+silently throws the alpha layer away and every matte comes out solid white.
+
 ### Safe zones, measured
 
 ```bash
