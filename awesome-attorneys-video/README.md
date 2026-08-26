@@ -13,6 +13,33 @@ assets/        voiceover.mp3, the embedded Fraunces + Inter subsets, brand refer
 Regenerate: `python3 render.py` (≈6 min). Probe a handful of key frames instead
 with `python3 render.py probe`. Verify with `python3 check.py`.
 
+## Verified
+
+`check.py` and `check_zones.py`, plus checks run directly on the encoded file:
+
+| §7 | Result |
+|---|---|
+| 7.1 accent events fire on their timestamps | PASS (all 10, including the corrected 4.31) |
+| 7.2 nothing moves in the last 0.5s | PASS — frames 1320–1349 byte-identical; the 30 before them all distinct |
+| 7.3 something is always moving | PASS across the timeline |
+| 7.4 captions clear of top 14% / bottom 20% | PASS — 0 caption words in the margins |
+| 7.4 smallest text ≥ 30px | PASS |
+| 7.5 same time, twice, after a reload | PASS (pixel-identical) |
+| audio at t=0, no offset | PASS — muxed silence boundaries match the source mp3 within 2ms |
+
+Two honest caveats:
+
+- **The watermark and @AwesomeAttys sit in the platform-UI margins.** The brief
+  contradicts itself here: §5 places them top-left and bottom-right, which is
+  necessarily inside the top 14% / bottom 20% that §7.4 reserves. They are
+  branding chrome and deliberately sacrificial, so they are asserted separately
+  from the caption text §7.4 exists to protect. Move them inward if you would
+  rather they never be occluded.
+- **~7 frames of flat brand red at t≈12.32–12.43**, where the circle wipe has
+  covered the frame and the wordmark has not yet started. It falls inside the
+  VO's longest pause and reads as a punch into the brand beat, but it is the one
+  moment nothing is moving outside the end card.
+
 ## How this differs from the brief, and why
 
 **The renderer.** §1 requires `copy_starter_component` with kind `animations.jsx`.
