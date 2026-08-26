@@ -37,8 +37,6 @@ const B = {
   adjusterChip: at(0.3),
   fortySlam: at(1.54) - 4,
   atFault: at(2.22) - 3,
-  meterFrom: at(1.54),
-  meterTo: at(2.5),
   openingTag: at(3.48) - 3,
   strike: at(4.82) - 4,
   stamp: at(4.82) - 6,
@@ -55,31 +53,6 @@ export const ADJUSTER_FRAMES = at(14.106) + 4;
 /** Fast spring — this spot never eases gently. */
 const snap = (frame: number, fps: number, delay: number) =>
   spring({frame: frame - delay, fps, config: {damping: 14, mass: 0.45, stiffness: 320}});
-
-/** Corner brackets marking the b-roll window. Graphics, but also a framing aid. */
-const Brackets: React.FC = () => {
-  const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const s = snap(frame, fps, B.bracketsIn);
-  const pulse = 1 + Math.sin(frame * 0.09) * 0.012;
-  const arm = 74 * s;
-
-  const corner = (x: string, y: string, sx: number, sy: number) => (
-    <div style={{position: 'absolute', left: x, top: y, transform: `scale(${sx}, ${sy})`}}>
-      <div style={{position: 'absolute', width: arm, height: 7, background: THEME.gold, boxShadow: `0 0 18px ${THEME.gold}88`}} />
-      <div style={{position: 'absolute', width: 7, height: arm, background: THEME.gold, boxShadow: `0 0 18px ${THEME.gold}88`}} />
-    </div>
-  );
-
-  return (
-    <AbsoluteFill style={{pointerEvents: 'none', transform: `scale(${pulse})`, opacity: 0.9}}>
-      {corner('7%', '26.5%', 1, 1)}
-      {corner('93%', '26.5%', -1, 1)}
-      {corner('7%', '69.5%', 1, -1)}
-      {corner('93%', '69.5%', -1, -1)}
-    </AbsoluteFill>
-  );
-};
 
 /** Small angled tag — insurance-paperwork energy. */
 const Tag: React.FC<{text: string; delay: number; color?: string; angle?: number}> = ({
@@ -112,63 +85,6 @@ const Tag: React.FC<{text: string; delay: number; color?: string; angle?: number
       }}
     >
       {text}
-    </div>
-  );
-};
-
-/** The fault meter: a segmented bar that fills to 40%, then gets voided. */
-const FaultMeter: React.FC = () => {
-  const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const appear = snap(frame, fps, B.meterFrom - 6);
-
-  const fill = interpolate(frame, [B.meterFrom, B.meterTo], [0, 0.4], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
-  });
-
-  // The void: after the stamp, the fill drains back out — their number, retracted.
-  const drain = interpolate(frame, [B.strike + 8, B.strike + 26], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.in(Easing.quad),
-  });
-  const gone = interpolate(frame, [B.topExit, B.topExit + 8], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-
-  const SEGS = 20;
-  const lit = Math.round(fill * drain * SEGS);
-  const struck = frame >= B.strike;
-
-  if (frame < B.meterFrom - 6 || gone <= 0) return null;
-
-  return (
-    <div style={{opacity: appear * gone, transform: `translateY(${(1 - appear) * 30}px)`, width: 760}}>
-      <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 10}}>
-        <span style={{fontFamily: 'var(--body), sans-serif', fontWeight: 700, fontSize: 27, letterSpacing: '0.22em', color: THEME.gold}}>
-          FAULT&nbsp;ASSIGNED
-        </span>
-        <span style={{fontFamily: 'var(--body), sans-serif', fontWeight: 700, fontSize: 27, letterSpacing: '0.1em', color: struck ? '#d8402f' : THEME.paper, textDecoration: struck ? 'line-through' : 'none'}}>
-          {Math.round(fill * drain * 100)}%
-        </span>
-      </div>
-      <div style={{display: 'flex', gap: 6}}>
-        {new Array(SEGS).fill(0).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              flex: 1,
-              height: 26,
-              background: i < lit ? (struck ? '#d8402f' : THEME.goldBright) : 'rgba(216,178,106,0.16)',
-              boxShadow: i < lit ? `0 0 14px ${struck ? '#d8402f' : THEME.goldBright}66` : undefined,
-              transform: `skewX(-14deg)`,
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 };
@@ -227,7 +143,6 @@ export const Adjuster: React.FC<{withAudio?: boolean}> = ({withAudio = true}) =>
   return (
     <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : '#0b0a0e'}}>
       {withAudio ? <Audio src={staticFile('audio/vo-adjuster.mp3')} /> : null}
-      <Brackets />
       <DustMotes count={16} seed="adj" opacity={0.3} />
 
       {/* ============ TOP ZONE (6% - 26%) ============ */}
@@ -318,9 +233,7 @@ export const Adjuster: React.FC<{withAudio?: boolean}> = ({withAudio = true}) =>
           gap: 18,
         }}
       >
-        {frame < B.brand ? (
-          <FaultMeter />
-        ) : (
+        {frame < B.brand ? null : (
           <>
             <div
               style={{
