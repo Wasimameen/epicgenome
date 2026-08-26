@@ -3,21 +3,18 @@ import {AbsoluteFill, Audio, Easing, interpolate, random, staticFile, useCurrent
 import {useTransparent} from '../alpha';
 
 /**
- * "Adjuster" — kinetic typography over a b-roll window. 60fps, 14.1s.
+ * "Adjuster" — sticker-graphic cut. 60fps, 14.1s.
  *
- * Layout contract: the middle of the frame (28%-70% vertically) stays EMPTY —
- * no type, no ornament, no drawn frame — so the alpha version overlays footage.
- * Graphics live in a top zone and a bottom zone.
+ * Visual system: no naked type. Every message lives inside a designed element —
+ * a pill badge, a glass stat card, an angled tag, a stamp badge, CTA buttons,
+ * a URL bar — so the frame reads as art-directed graphics, not captions.
  *
- * Motion system, three layers with distinct jobs:
- *  - WORDS enter fast: masked baseline rises, 12-16 frames on an ease-out
- *    bezier, then hold dead still (kinetic-type standard);
- *  - BLOCKS transition with the smooth cinematic blur: a soft defocus push
- *    (blur 0-10px + short travel) whenever a section hands off — fast, but
- *    with the filmic softness a hard swap lacks;
- *  - AMBIENT elements drift continuously on slow sine eases: gold particles,
- *    thin rotating rings, occasional light streaks — smooth, never snapping,
- *    confined to the two zones and the frame edges.
+ * Motion system: every element enters through a cinematic defocus — blur 14->0
+ * with a soft rise and a settle from 104% scale, ~26 frames (0.43s) — and exits
+ * back into blur, faster (16 frames). Ambient sparks, particles and rings
+ * drift continuously on slow sine eases. Nothing moves linearly, nothing snaps.
+ *
+ * Layout contract: the centre (28%-70% vertically) stays EMPTY for b-roll.
  *
  * Cues are word timestamps of public/audio/vo-adjuster.mp3:
  *   "So an adjuster told you you're 40% at fault."  0.00 - 2.38
@@ -33,26 +30,27 @@ export const ADJUSTER_CINE_FPS = FPS;
 export const ADJUSTER_CINE_FRAMES = at(14.106) + 8;
 
 const B = {
-  kicker: at(0.3),
-  kickerOut: at(3.28),
-  forty: at(1.42),
-  atFault: at(2.08),
-  opening: at(3.42),
+  kicker: at(0.28),
+  kickerOut: at(3.2),
+  card: at(1.34),
+  opening: at(3.4),
   strike: at(4.78),
-  finding: at(4.9),
-  act1Out: at(6.24),
-  brand: at(6.52),
-  phoenix: at(8.68),
-  matched: at(10.32),
-  paid: at(11.18),
-  ctaOut: at(12.02),
-  url: at(12.26),
+  stamp: at(4.88),
+  act1Out: at(6.2),
+  brand: at(6.5),
+  phoenix: at(8.66),
+  matched: at(10.3),
+  paid: at(11.16),
+  ctaOut: at(12.0),
+  url: at(12.24),
 };
 
 const PAPER = '#f5f2ea';
 const GOLD = '#e3b34c';
+const GOLD_DIM = 'rgba(227,179,76,0.55)';
 const RED = '#e5484d';
 const INK = '#0b0b0d';
+const GLASS = 'rgba(16,16,20,0.6)';
 
 const OUT = Easing.bezier(0.16, 1, 0.3, 1);
 const IN = Easing.bezier(0.55, 0, 0.9, 0.2);
@@ -64,88 +62,321 @@ const ease = (frame: number, from: number, dur: number, a: number, b: number, cu
     easing: curve,
   });
 
-/* ------------------------------------------------------ block transitions */
+/* --------------------------------------------------------------- stickers */
 
 /**
- * The cinematic handoff: blocks arrive and leave through a soft defocus push.
- * Fast (16-18 frames) so pace never sags, blurred so the change feels filmic.
+ * The one motion wrapper every sticker uses: cinematic blur in, blur out.
+ * Enter: defocus resolves over ~0.43s with a soft rise and a settle from 104%.
+ * Exit: back into the blur, faster.
  */
-const blockStyle = (frame: number, inAt: number, outAt?: number): React.CSSProperties => {
-  const enter = ease(frame, inAt, 18, 0, 1);
-  const exit = outAt !== undefined ? ease(frame, outAt, 14, 0, 1, IN) : 0;
-  const blur = (1 - enter) * 10 + exit * 10;
-  return {
-    opacity: enter * (1 - exit),
-    transform: `translateY(${(1 - enter) * 42 - exit * 42}px)`,
-    filter: blur > 0.3 ? `blur(${blur}px)` : undefined,
-  };
-};
-
-/* ---------------------------------------------------------------- reveals */
-
-/** Masked baseline rise, per word — fast in, then dead still. */
-const Rise: React.FC<{
-  text: string;
-  atFrame: number;
+const Sticker: React.FC<{
+  inAt: number;
+  outAt?: number;
   dur?: number;
-  stagger?: number;
-  style: React.CSSProperties;
-}> = ({text, atFrame, dur = 14, stagger = 4, style}) => {
+  children: React.ReactNode;
+}> = ({inAt, outAt, dur = 26, children}) => {
   const frame = useCurrentFrame();
-  if (frame < atFrame) return null;
+  if (frame < inAt) return null;
+
+  const enter = ease(frame, inAt, dur, 0, 1);
+  const exit = outAt !== undefined ? ease(frame, outAt, 16, 0, 1, IN) : 0;
+  if (exit >= 1) return null;
+
+  const blur = (1 - enter) * 14 + exit * 14;
+
   return (
-    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: '0.28em', ...style}}>
-      {text.split(' ').map((word, i) => {
-        const y = ease(frame, atFrame + i * stagger, dur, 108, 0);
-        return (
-          <span key={i} style={{display: 'inline-block', overflow: 'hidden', verticalAlign: 'top'}}>
-            <span style={{display: 'inline-block', transform: `translateY(${y}%)`}}>{word}</span>
-          </span>
-        );
-      })}
+    <div
+      style={{
+        opacity: enter * (1 - exit),
+        transform: `translateY(${(1 - enter) * 34 - exit * 30}px) scale(${1.04 - enter * 0.04 + exit * 0.03})`,
+        filter: blur > 0.3 ? `blur(${blur}px)` : undefined,
+      }}
+    >
+      {children}
     </div>
   );
 };
 
-/** A thin gold rule that sweeps to width on cue. */
-const Rule: React.FC<{atFrame: number; width: number; color?: string}> = ({atFrame, width, color = GOLD}) => {
+/** Rounded pill badge with a breathing dot — the kicker treatment. */
+const Pill: React.FC<{text: string; color?: string}> = ({text, color = GOLD}) => {
   const frame = useCurrentFrame();
-  if (frame < atFrame) return null;
+  const pulse = 0.7 + Math.sin(frame * 0.06) * 0.3;
   return (
-    <div style={{width: ease(frame, atFrame, 16, 0, width), height: 3, background: color, borderRadius: 2}} />
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 16,
+        padding: '16px 34px',
+        borderRadius: 999,
+        border: `2px solid ${color}66`,
+        background: GLASS,
+        boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
+      }}
+    >
+      <div style={{width: 10, height: 10, borderRadius: '50%', background: color, opacity: pulse, boxShadow: `0 0 12px ${color}`}} />
+      <span
+        style={{
+          fontFamily: 'var(--body), sans-serif',
+          fontWeight: 700,
+          fontSize: 30,
+          letterSpacing: '0.24em',
+          textIndent: '0.05em',
+          color: PAPER,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {text}
+      </span>
+    </div>
+  );
+};
+
+/** Glass stat card holding the 40% claim. */
+const StatCard: React.FC<{struck: number; dimmed: number}> = ({struck, dimmed}) => (
+  <div
+    style={{
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 30,
+      padding: '26px 52px',
+      borderRadius: 28,
+      background: GLASS,
+      border: '1px solid rgba(245,242,234,0.14)',
+      borderTop: `3px solid ${GOLD}`,
+      boxShadow: '0 18px 60px rgba(0,0,0,0.5)',
+    }}
+  >
+    <span
+      style={{
+        fontFamily: 'var(--display), sans-serif',
+        fontSize: 170,
+        lineHeight: 0.94,
+        color: PAPER,
+        letterSpacing: '-0.01em',
+        opacity: dimmed,
+      }}
+    >
+      40%
+    </span>
+    <span
+      style={{
+        fontFamily: 'var(--display), sans-serif',
+        fontSize: 54,
+        lineHeight: 1.1,
+        color: GOLD,
+        letterSpacing: '0.05em',
+        maxWidth: 200,
+        opacity: dimmed,
+      }}
+    >
+      AT FAULT
+    </span>
+    {/* red strike drawn across the card on "not a legal finding" */}
+    <div
+      style={{
+        position: 'absolute',
+        left: '4%',
+        top: '52%',
+        width: `${struck * 92}%`,
+        height: 9,
+        transform: 'rotate(-6deg)',
+        background: RED,
+        borderRadius: 5,
+        boxShadow: `0 0 22px ${RED}88`,
+        opacity: struck > 0 ? 1 : 0,
+      }}
+    />
+  </div>
+);
+
+/** Angled label tag with a notch — paperwork energy, professionally drawn. */
+const Tag: React.FC<{text: string}> = ({text}) => (
+  <div style={{display: 'flex', alignItems: 'center', transform: 'rotate(-2deg)'}}>
+    <div
+      style={{
+        width: 0,
+        height: 0,
+        borderTop: '17px solid transparent',
+        borderBottom: '17px solid transparent',
+        borderRight: `16px solid ${GOLD}`,
+      }}
+    />
+    <div
+      style={{
+        padding: '12px 28px 12px 20px',
+        background: GOLD,
+        color: INK,
+        fontFamily: 'var(--body), sans-serif',
+        fontWeight: 800,
+        fontSize: 27,
+        letterSpacing: '0.16em',
+        borderRadius: '0 10px 10px 0',
+        boxShadow: '0 10px 34px rgba(0,0,0,0.4)',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {text}
+    </div>
+  </div>
+);
+
+/** Stamp badge — official, slightly rotated, red. */
+const Stamp: React.FC<{text: string}> = ({text}) => {
+  const frame = useCurrentFrame();
+  const breathe = 1 + Math.sin(frame * 0.03) * 0.006;
+  return (
+    <div
+      style={{
+        transform: `rotate(-3deg) scale(${breathe})`,
+        padding: '20px 44px',
+        border: `5px solid ${RED}`,
+        borderRadius: 16,
+        background: 'rgba(229,72,77,0.08)',
+        boxShadow: `0 0 44px ${RED}33, inset 0 0 30px ${RED}14`,
+      }}
+    >
+      <span
+        style={{
+          fontFamily: 'var(--display), sans-serif',
+          fontSize: 72,
+          color: RED,
+          letterSpacing: '0.03em',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {text}
+      </span>
+    </div>
+  );
+};
+
+/** Filled CTA button sticker with arrow. */
+const Button: React.FC<{text: string; filled?: boolean}> = ({text, filled}) => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 18,
+      padding: '20px 40px',
+      borderRadius: 18,
+      background: filled ? GOLD : GLASS,
+      border: filled ? 'none' : `2px solid ${GOLD}88`,
+      boxShadow: filled ? `0 14px 44px ${GOLD}44` : '0 12px 40px rgba(0,0,0,0.45)',
+    }}
+  >
+    <span
+      style={{
+        fontFamily: 'var(--display), sans-serif',
+        fontSize: 54,
+        color: filled ? INK : PAPER,
+        letterSpacing: '0.02em',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {text}
+    </span>
+    <svg width="34" height="34" viewBox="0 0 34 34">
+      <path
+        d="M6 17 h20 M18 8 l9 9 -9 9"
+        stroke={filled ? INK : GOLD}
+        strokeWidth="3.5"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </div>
+);
+
+/** URL bar sticker. */
+const UrlBar: React.FC = () => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 20,
+      padding: '22px 46px',
+      borderRadius: 999,
+      background: GLASS,
+      border: '1.5px solid rgba(245,242,234,0.16)',
+      boxShadow: '0 18px 60px rgba(0,0,0,0.5)',
+    }}
+  >
+    <svg width="34" height="34" viewBox="0 0 34 34">
+      <circle cx="17" cy="17" r="13" fill="none" stroke={GOLD} strokeWidth="2.5" />
+      <ellipse cx="17" cy="17" rx="6" ry="13" fill="none" stroke={GOLD} strokeWidth="2" />
+      <path d="M4.5 17 h25" stroke={GOLD} strokeWidth="2" />
+    </svg>
+    <span
+      style={{
+        fontFamily: 'var(--body), sans-serif',
+        fontWeight: 800,
+        fontSize: 56,
+        letterSpacing: '-0.01em',
+        color: PAPER,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      Awesome<span style={{color: GOLD}}>Attorneys</span>.com
+    </span>
+  </div>
+);
+
+/** Four-point spark mark — decorative sticker, breathing. */
+const Spark: React.FC<{x: number; y: number; size: number; phase: number}> = ({x, y, size, phase}) => {
+  const frame = useCurrentFrame();
+  const breathe = 0.8 + Math.sin(frame * 0.025 + phase) * 0.2;
+  const spin = Math.sin(frame * 0.006 + phase) * 10;
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: `${x}%`,
+        top: `${y}%`,
+        transform: `translate(-50%,-50%) rotate(${spin}deg) scale(${breathe})`,
+        opacity: 0.6,
+        pointerEvents: 'none',
+      }}
+    >
+      <svg width={size} height={size} viewBox="0 0 40 40">
+        <path
+          d="M20 2 C21.5 12 24 15.5 34 17 L38 20 L34 23 C24 24.5 21.5 28 20 38 L20 38 C18.5 28 16 24.5 6 23 L2 20 L6 17 C16 15.5 18.5 12 20 2 Z"
+          fill={GOLD}
+        />
+      </svg>
+    </div>
   );
 };
 
 /* ------------------------------------------------------- ambient graphics */
 
-/** Gold particles drifting in the two zones — smooth sine motion, no snaps. */
 const Particles: React.FC = () => {
   const frame = useCurrentFrame();
   const dots = React.useMemo(
     () =>
-      new Array(30).fill(0).map((_, i) => {
+      new Array(26).fill(0).map((_, i) => {
         const topBand = random(`pb-${i}`) > 0.5;
         return {
           x: random(`px-${i}`) * 100,
           y: topBand ? random(`py-${i}`) * 24 + 1 : 72 + random(`py-${i}`) * 25,
-          r: 2 + random(`pr-${i}`) * 4.5,
-          rise: 0.008 + random(`ps-${i}`) * 0.012,
-          sway: 1 + random(`pw-${i}`) * 2.2,
+          r: 2 + random(`pr-${i}`) * 4,
+          rise: 0.007 + random(`ps-${i}`) * 0.011,
+          sway: 1 + random(`pw-${i}`) * 2,
           phase: random(`pp-${i}`) * 6.28,
           band: topBand ? [1, 25] : [72, 97],
-          o: 0.2 + random(`po-${i}`) * 0.45,
+          o: 0.18 + random(`po-${i}`) * 0.4,
         };
       }),
     [],
   );
-
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       {dots.map((d, i) => {
         const span = d.band[1] - d.band[0];
         const y = d.band[0] + ((((d.y - d.band[0] - frame * d.rise) % span) + span) % span);
         const x = d.x + Math.sin(frame * 0.006 + d.phase) * d.sway;
-        const twinkle = 0.55 + Math.sin(frame * 0.02 + d.phase) * 0.45;
         return (
           <div
             key={i}
@@ -157,8 +388,8 @@ const Particles: React.FC = () => {
               height: d.r,
               borderRadius: '50%',
               background: GOLD,
-              opacity: d.o * twinkle,
-              filter: d.r > 4.5 ? 'blur(1.5px)' : undefined,
+              opacity: d.o * (0.55 + Math.sin(frame * 0.02 + d.phase) * 0.45),
+              filter: d.r > 4 ? 'blur(1.5px)' : undefined,
             }}
           />
         );
@@ -167,7 +398,6 @@ const Particles: React.FC = () => {
   );
 };
 
-/** Thin rings rotating slowly at the frame corners — outside the window. */
 const Rings: React.FC = () => {
   const frame = useCurrentFrame();
   const ring = (x: number, y: number, r: number, rate: number, o: number, dash?: string) => (
@@ -182,56 +412,17 @@ const Rings: React.FC = () => {
       }}
     >
       <svg width={r * 2} height={r * 2} viewBox={`0 0 ${r * 2} ${r * 2}`}>
-        <circle cx={r} cy={r} r={r - 2} fill="none" stroke={GOLD} strokeWidth="1.4" strokeDasharray={dash} />
+        <circle cx={r} cy={r} r={r - 2} fill="none" stroke={GOLD_DIM} strokeWidth="1.4" strokeDasharray={dash} />
       </svg>
     </div>
   );
   return (
     <>
-      {ring(91, 6.5, 110, 0.05, 0.4)}
-      {ring(91, 6.5, 78, -0.08, 0.3, '4 8')}
-      {ring(8, 94, 130, -0.045, 0.35)}
-      {ring(8, 94, 92, 0.07, 0.25, '2 10')}
+      {ring(92, 6, 100, 0.05, 0.5)}
+      {ring(92, 6, 70, -0.08, 0.35, '4 8')}
+      {ring(7, 95, 120, -0.045, 0.45)}
+      {ring(7, 95, 84, 0.07, 0.3, '2 10')}
     </>
-  );
-};
-
-/** Occasional soft glints sweeping through the zones. */
-const Streaks: React.FC = () => {
-  const frame = useCurrentFrame();
-  const rows = React.useMemo(
-    () =>
-      new Array(4).fill(0).map((_, i) => ({
-        y: i < 2 ? 4 + random(`sy-${i}`) * 20 : 74 + random(`sy-${i}`) * 20,
-        len: 20 + random(`sl-${i}`) * 22,
-        period: 460 + random(`sp-${i}`) * 380,
-        offset: random(`so-${i}`) * 800,
-        tilt: -14 - random(`st-${i}`) * 8,
-      })),
-    [],
-  );
-  return (
-    <AbsoluteFill style={{pointerEvents: 'none', opacity: 0.4}}>
-      {rows.map((s, i) => {
-        const p = ((frame + s.offset) % s.period) / s.period;
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `${interpolate(p, [0, 1], [-35, 125])}%`,
-              top: `${s.y}%`,
-              width: `${s.len}%`,
-              height: 2,
-              transform: `rotate(${s.tilt}deg)`,
-              background: 'linear-gradient(90deg, transparent, rgba(245,238,215,0.75), transparent)',
-              filter: 'blur(1px)',
-              opacity: Math.sin(p * Math.PI) * 0.7,
-            }}
-          />
-        );
-      })}
-    </AbsoluteFill>
   );
 };
 
@@ -280,7 +471,7 @@ const TOP: React.CSSProperties = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: 18,
+  gap: 20,
 };
 
 const BOTTOM: React.CSSProperties = {
@@ -293,142 +484,87 @@ const BOTTOM: React.CSSProperties = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: 18,
+  gap: 20,
 };
 
 export const AdjusterCinematic: React.FC<{withAudio?: boolean}> = ({withAudio = true}) => {
   const alpha = useTransparent();
   const frame = useCurrentFrame();
 
-  const strike = ease(frame, B.strike, 9, 0, 1);
-  const dimmed = ease(frame, B.strike, 12, 1, 0.32);
+  const struck = ease(frame, B.strike, 10, 0, 1);
+  const dimmed = ease(frame, B.strike, 14, 1, 0.4);
 
   return (
     <AbsoluteFill style={{backgroundColor: alpha ? 'transparent' : INK}}>
       {withAudio ? <Audio src={staticFile('audio/vo-adjuster.mp3')} /> : null}
       {!alpha && <Ground />}
 
-      {/* ambient graphics — smooth continuous motion, zones and edges only */}
       <Particles />
       <Rings />
-      <Streaks />
+      <Spark x={13} y={8} size={34} phase={0} />
+      <Spark x={86} y={22} size={26} phase={2} />
+      <Spark x={90} y={78} size={30} phase={4} />
 
       {/* =========================== ACT 1 — TOP =========================== */}
-      <div style={{...TOP, ...blockStyle(frame, B.kicker, B.act1Out)}}>
-        {/* kicker hands off to the opening-position line through the blur push */}
-        <div style={{position: 'relative', height: 46, width: '100%'}}>
-          <div style={{position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', ...blockStyle(frame, B.kicker, B.kickerOut)}}>
-            <Rise
-              text="THE ADJUSTER SAYS"
-              atFrame={B.kicker + 2}
-              stagger={3}
-              style={{fontFamily: 'var(--body), sans-serif', fontWeight: 700, fontSize: 33, letterSpacing: '0.32em', textIndent: '0.32em', color: GOLD}}
-            />
+      <div style={TOP}>
+        <div style={{position: 'relative', height: 70, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <div style={{position: 'absolute'}}>
+            <Sticker inAt={B.kicker} outAt={B.kickerOut}>
+              <Pill text="THE ADJUSTER SAYS" />
+            </Sticker>
           </div>
-          <div style={{position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', ...blockStyle(frame, B.opening)}}>
-            <Rise
-              text="THAT'S THEIR OPENING POSITION"
-              atFrame={B.opening + 2}
-              stagger={3}
-              style={{fontFamily: 'var(--body), sans-serif', fontWeight: 700, fontSize: 33, letterSpacing: '0.2em', textIndent: '0.2em', color: GOLD}}
-            />
+          <div style={{position: 'absolute'}}>
+            <Sticker inAt={B.opening} outAt={B.act1Out}>
+              <Tag text="THAT'S THEIR OPENING POSITION" />
+            </Sticker>
           </div>
         </div>
-
-        <div style={{display: 'flex', alignItems: 'center', gap: 30}}>
-          <div style={{position: 'relative', opacity: dimmed}}>
-            <Rise
-              text="40%"
-              atFrame={B.forty}
-              dur={16}
-              style={{fontFamily: 'var(--display), sans-serif', fontSize: 210, lineHeight: 0.94, color: PAPER, letterSpacing: '-0.01em'}}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                width: strike * 420,
-                height: 11,
-                transform: 'translate(-50%,-50%) rotate(-8deg)',
-                background: RED,
-                borderRadius: 6,
-                opacity: strike > 0 ? 1 : 0,
-              }}
-            />
-          </div>
-          <div style={{opacity: dimmed}}>
-            <Rise
-              text="AT FAULT"
-              atFrame={B.atFault}
-              stagger={4}
-              style={{fontFamily: 'var(--display), sans-serif', fontSize: 66, lineHeight: 1.08, color: PAPER, letterSpacing: '0.04em', maxWidth: 260}}
-            />
-          </div>
-        </div>
+        <Sticker inAt={B.card} outAt={B.act1Out} dur={30}>
+          <StatCard struck={struck} dimmed={dimmed} />
+        </Sticker>
       </div>
 
       {/* ========================= ACT 1 — BOTTOM ========================= */}
-      <div style={{...BOTTOM, ...blockStyle(frame, B.finding, B.act1Out)}}>
-        <Rise
-          text="NOT A LEGAL FINDING"
-          atFrame={B.finding + 2}
-          dur={13}
-          stagger={4}
-          style={{fontFamily: 'var(--display), sans-serif', fontSize: 88, color: PAPER, letterSpacing: '0.015em'}}
-        />
-        <Rule atFrame={B.finding + 16} width={380} color={RED} />
+      <div style={BOTTOM}>
+        <Sticker inAt={B.stamp} outAt={B.act1Out} dur={22}>
+          <Stamp text="NOT A LEGAL FINDING" />
+        </Sticker>
       </div>
 
       {/* =========================== ACT 2 — TOP =========================== */}
-      <div style={{...TOP, ...blockStyle(frame, B.brand)}}>
-        <Rise
-          text="AWESOME"
-          atFrame={B.brand + 2}
-          dur={15}
-          style={{fontFamily: 'var(--display), sans-serif', fontSize: 118, lineHeight: 0.98, color: PAPER, letterSpacing: '0.01em'}}
-        />
-        <Rise
-          text="ATTORNEYS"
-          atFrame={B.brand + 8}
-          dur={15}
-          style={{fontFamily: 'var(--display), sans-serif', fontSize: 118, lineHeight: 0.98, color: GOLD, letterSpacing: '0.01em'}}
-        />
-        <Rule atFrame={B.brand + 18} width={280} />
-        <Rise
-          text="PHOENIX INJURY ATTORNEY"
-          atFrame={B.phoenix}
-          stagger={3}
-          style={{fontFamily: 'var(--body), sans-serif', fontWeight: 700, fontSize: 30, letterSpacing: '0.26em', textIndent: '0.26em', color: PAPER, opacity: 0.85}}
-        />
+      <div style={{...TOP, gap: 16}}>
+        <Sticker inAt={B.brand} dur={30}>
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6}}>
+            <span style={{fontFamily: 'var(--display), sans-serif', fontSize: 120, lineHeight: 0.98, color: PAPER, letterSpacing: '0.01em'}}>
+              AWESOME
+            </span>
+            <span style={{fontFamily: 'var(--display), sans-serif', fontSize: 120, lineHeight: 0.98, color: GOLD, letterSpacing: '0.01em'}}>
+              ATTORNEYS
+            </span>
+          </div>
+        </Sticker>
+        <Sticker inAt={B.phoenix} dur={24}>
+          <Pill text="PHOENIX INJURY ATTORNEY" />
+        </Sticker>
       </div>
 
       {/* ========================= ACT 2 — BOTTOM ========================= */}
-      <div style={{...BOTTOM, ...blockStyle(frame, B.matched, B.ctaOut)}}>
-        <div style={{display: 'flex', gap: 30}}>
-          <Rise
-            text="GET MATCHED."
-            atFrame={B.matched}
-            dur={13}
-            style={{fontFamily: 'var(--display), sans-serif', fontSize: 72, color: PAPER}}
-          />
-          <Rise
-            text="GET PAID."
-            atFrame={B.paid}
-            dur={13}
-            style={{fontFamily: 'var(--display), sans-serif', fontSize: 72, color: GOLD}}
-          />
+      <div style={BOTTOM}>
+        <div style={{position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div style={{position: 'absolute', display: 'flex', gap: 26}}>
+            <Sticker inAt={B.matched} outAt={B.ctaOut} dur={24}>
+              <Button text="GET MATCHED" filled />
+            </Sticker>
+            <Sticker inAt={B.paid} outAt={B.ctaOut} dur={24}>
+              <Button text="GET PAID" />
+            </Sticker>
+          </div>
+          <div style={{position: 'absolute'}}>
+            <Sticker inAt={B.url} dur={28}>
+              <UrlBar />
+            </Sticker>
+          </div>
         </div>
-      </div>
-
-      <div style={{...BOTTOM, ...blockStyle(frame, B.url)}}>
-        <Rise
-          text="AwesomeAttorneys.com"
-          atFrame={B.url + 2}
-          dur={15}
-          style={{fontFamily: 'var(--body), sans-serif', fontWeight: 800, fontSize: 66, letterSpacing: '-0.01em', color: PAPER}}
-        />
-        <Rule atFrame={B.url + 14} width={480} />
       </div>
 
       {!alpha && <FilmGrain />}
