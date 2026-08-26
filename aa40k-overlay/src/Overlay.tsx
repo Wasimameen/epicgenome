@@ -31,6 +31,7 @@ import {Beat2, Beat2Card} from './beats/Beat2';
 import {Beat3} from './beats/Beat3';
 import {Beat4} from './beats/Beat4';
 import {Particles} from './parts/Particles';
+import {Backdrop} from './parts/Backdrop';
 import {BEATS, CARD_WINDOWS} from './timing/beats';
 import {layoutFor, makePalette, typeScale} from './theme';
 import type {BeatProps, OverlayProps} from './types';
@@ -41,6 +42,7 @@ export const Overlay: React.FC<OverlayProps> = ({
   tone,
   disclaimer,
   accent,
+  backdrop = false,
 }) => {
   const {fps} = useVideoConfig();
   const frame = useCurrentFrame();
@@ -67,6 +69,11 @@ export const Overlay: React.FC<OverlayProps> = ({
   return (
     <FramePunch punches={punches}>
       <AbsoluteFill>
+        {/* 0 — the moving photographic background, when this is a finished
+            video rather than a transparent overlay. It sits inside
+            <FramePunch> so the three 1-frame hits land on it too. */}
+        {backdrop ? <Backdrop layout={layout} /> : null}
+
         {/* 1 — ambient particles, always behind the type */}
         <Particles
           layout={layout}

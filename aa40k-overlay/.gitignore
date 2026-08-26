@@ -16,6 +16,11 @@ out/*.mov
 out/*.mp4
 out/qa/
 
+# ...but the two composed videos are only ~4 MB each, so they are committed:
+# the repo should carry something you can actually watch.
+!out/aa40k_9x16_full.mp4
+!out/aa40k_16x9_full.mp4
+
 # Working audio derived from assets-in/vo.mp3
 public/vo.mp3
 public/vo16.wav

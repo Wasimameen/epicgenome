@@ -37,6 +37,18 @@ const alphaDefaultsFrame: CalculateMetadataFunction<FrameLayerProps> = () => ({
   defaultProResProfile: '4444',
 });
 
+/**
+ * The "-Full" compositions bake the moving photographic background in, so the
+ * result is a finished, opaque video rather than a transparent overlay. H.264
+ * is the right container for that — and it keeps the files small enough to
+ * actually watch and to live in the repo.
+ */
+const composedDefaults: CalculateMetadataFunction<OverlayProps> = () => ({
+  defaultCodec: 'h264',
+  defaultVideoImageFormat: 'png',
+  defaultPixelFormat: 'yuv420p',
+});
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
@@ -69,6 +81,41 @@ export const RemotionRoot: React.FC = () => {
           cards: true,
           tone: 'mixed',
           disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+        }}
+      />
+
+      {/* Finished video: the same piece with the moving photography baked in. */}
+      <Composition
+        id="AA40K-9x16-Full"
+        component={Overlay}
+        durationInFrames={DURATION}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        calculateMetadata={composedDefaults}
+        defaultProps={{
+          aspect: '9x16',
+          cards: true,
+          tone: 'mixed',
+          disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+          backdrop: true,
+        }}
+      />
+
+      <Composition
+        id="AA40K-16x9-Full"
+        component={Overlay}
+        durationInFrames={DURATION}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        calculateMetadata={composedDefaults}
+        defaultProps={{
+          aspect: '16x9',
+          cards: true,
+          tone: 'mixed',
+          disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+          backdrop: true,
         }}
       />
 

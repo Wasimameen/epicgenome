@@ -19,4 +19,10 @@ export type OverlayProps = {
   readonly tone: Tone;
   readonly disclaimer: string;
   readonly accent?: string;
+  /**
+   * Bakes the moving photographic background in. The result is an opaque,
+   * finished video rather than a transparent overlay — the alpha compositions
+   * leave this off so they still drop onto your own footage.
+   */
+  readonly backdrop?: boolean;
 };

@@ -1,8 +1,13 @@
-# AA40K — "40% At Fault" kinetic-typography overlay
+# AA40K — "40% At Fault" kinetic typography
 
-A transparent-background motion-graphics overlay built in Remotion. Output is
-Apple ProRes 4444 `.mov` with a real alpha channel, designed to sit on the track
-above your own B-roll.
+Built in Remotion. Renders two ways from one source:
+
+- **the finished video** — `AA40K-9x16-Full` / `AA40K-16x9-Full`, with the
+  moving photographic background composed in. H.264 MP4, ready to post.
+- **the overlay on its own** — `AA40K-9x16` / `AA40K-16x9`, ProRes 4444 with a
+  real alpha channel, for dropping onto your own B-roll.
+
+The only difference between them is the `backdrop` prop.
 
 **If you just want to use the files, read [`out/README.md`](out/README.md).** This
 file is about the code.
@@ -61,6 +66,32 @@ scripts/
   stills.mjs            the three reference stills
   qa.mjs                alpha probe, frame extraction, plate composites
 ```
+
+## The moving background
+
+`src/parts/Backdrop.tsx` + `src/timing/backdrops.ts`. Three things happen at
+once, and together they are what stops a photograph behind type reading as
+wallpaper:
+
+1. **Ken Burns** — every shot pushes in or pulls back across its whole life,
+   alternating direction so two consecutive shots never drift the same way.
+2. **Camera parallax** — the backdrop is driven by the *same* camera that flies
+   between the words, at about a twentieth of the travel. When the camera whips
+   to "OPENING" the photograph leans with it, so the type and the picture read
+   as one shot rather than two layers.
+3. **The frame punch** — it sits inside `<FramePunch>`, so the three 1-frame
+   hits land on the photograph too.
+
+Everything is then graded down — desaturated, darkened, ink-tinted, vignetted —
+so the palette stays white/gold/ink and the type keeps its contrast.
+
+Two of the three transitions are hidden entirely: `silenced` → `court`
+cross-fades underneath the opaque "NOT / A LEGAL FINDING" plate, and
+`counsel` → end card is covered by the gold "GET MATCHED." slam. A cut you
+never see is the most seamless kind.
+
+With no images in `assets-in/bg/` the same moves play over procedural
+gradients, so the timing can be judged before the photography lands.
 
 ## Two decisions worth knowing about
 

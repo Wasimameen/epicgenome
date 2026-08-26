@@ -5,6 +5,13 @@
  * into `public/` and rewrites this file from `assets-in/brand.json`.
  */
 
+export type BackdropFiles = {
+  adjuster: string;
+  silenced: string;
+  court: string;
+  counsel: string;
+};
+
 export const BRAND = {
   /** Google Font family name. Must expose weights 500, 700 and 800. */
   font: 'Manrope',
@@ -14,4 +21,18 @@ export const BRAND = {
   logo: null as string | null,
   /** True when assets-in/vo.mp3 was copied into public/. */
   hasVoiceOver: false,
+  /**
+   * The four photographic backdrops, by role. Null until images are dropped
+   * into `assets-in/bg/` — the backdrop then plays procedural gradients so the
+   * moves and the timing can still be judged.
+   */
+  backdrops: null as BackdropFiles | null,
+  /** public/ filename for the signature end card, else null. */
+  endCard: null as string | null,
+  /**
+   * Background colour of the signature end card, sampled from the card itself
+   * so the "GET PAID." plate is painted the same colour and the plate-to-card
+   * join is invisible.
+   */
+  endCardBg: '#8A1F26',
 } as const;

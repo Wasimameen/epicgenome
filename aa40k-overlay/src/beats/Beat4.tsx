@@ -21,9 +21,12 @@ import {CardPlate, ScrimGradient} from '../stage/CardPlate';
 import {Wordmark} from '../parts/Wordmark';
 import {Pill} from '../parts/Pill';
 import {Disclaimer} from '../parts/Disclaimer';
+import {SignatureEndCard} from '../parts/EndCard';
 import {EASE, MaskReveal, SPRING, mix, useHit, useLocal, useRamp, useSpringAt} from '../overlays/lib';
+import {BRAND} from '../brand.generated';
 import {TYPE_BASE} from '../font';
 import {BEATS, TOTAL_SEC, t} from '../timing/beats';
+import {END_CARD_AT} from '../timing/backdrops';
 import {TRACKING, textShadow} from '../theme';
 import type {BeatProps} from '../types';
 
@@ -115,12 +118,24 @@ export const Beat4: React.FC<BeatProps> = ({
   const endAt = local(t.end);
   const stillFrom = local(TOTAL_SEC) - 0.5;
 
+  /**
+   * When the signature end card is supplied it *is* the close: "GET PAID."
+   * lifts away and the card settles onto the plate it was already sitting on.
+   * Without it, the typographic end card is built in place instead and
+   * "GET PAID." shrinks down to become its headline.
+   */
+  const hasSignature = Boolean(BRAND.endCard);
+  const signatureAt = local(END_CARD_AT);
+
   const pMatched = useSpringAt(matchedAt + 0.06, SPRING.overshoot, 0.7);
   const pPaid = useSpringAt(paidAt + 0.06, SPRING.overshoot, 0.7);
   /** GET PAID. eases up and shrinks to 70% to become the end-card headline */
   const pSettle = useRamp(urlAt, 0.5, EASE.expoOut);
   const pSettlePrev = useRamp(urlAt + 1 / fps, 0.5, EASE.expoOut);
   const pUrl = useRamp(urlAt + 0.18, 0.5, EASE.expoOut);
+  /** ...or lifts clean away, when the signature card is taking over */
+  const pLift = useRamp(signatureAt, 0.4, EASE.expoIn);
+  const pLiftPrev = useRamp(signatureAt + 1 / fps, 0.4, EASE.expoIn);
 
   // End-card slots, in units of the card type size so both aspects scale.
   // Chosen so the headline/wordmark/URL/pill stack sits centred on the frame
@@ -139,39 +154,55 @@ export const Beat4: React.FC<BeatProps> = ({
   const matchedColor = onInk ? palette.ink : palette.white;
   const paidColor = palette.gold;
 
+  /**
+   * The last plate is painted in the end card's own background colour (sampled
+   * from the card by `prepare-assets`), so the plate becoming the card is a
+   * dissolve of the content only — the background never changes and the join
+   * cannot be seen.
+   */
+  const plateColor = hasSignature ? BRAND.endCardBg : palette.ink;
+
   const disclaimerBottom = layout.safe.bottom + layout.height * 0.012;
 
-  // "GET PAID." rising and shrinking into the end card is the one fast move
-  // that happens *on* a plate rather than in the 3D stage.
-  const settleSpeed = Math.abs(pSettle - pSettlePrev) * Math.abs(slot.paid) * 1.6;
+  // "GET PAID." moving into or out of the end card is the one fast move that
+  // happens *on* a plate rather than in the 3D stage.
+  const settleSpeed = hasSignature
+    ? Math.abs(pLift - pLiftPrev) * layout.height * 0.14 * 1.6
+    : Math.abs(pSettle - pSettlePrev) * Math.abs(slot.paid) * 1.6;
 
-  const endCard = (
-    <>
-      {/* GET PAID. — slams in centred, then rises and shrinks in place */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: '50%',
-          display: 'flex',
-          justifyContent: 'center',
-          transform: `translateY(${slot.paid * pSettle}px) scale(${mix(1, 0.7, pSettle)})`,
-        }}
-      >
-        <div style={{transform: 'translateY(-50%)'}}>
-          <SlamType
-            lines={['Get', 'Paid.']}
-            size={type.card}
-            color={paidColor}
-            p={pPaid}
-            shadow={shadow}
-            echoColor={onInk ? palette.gold : undefined}
-            echoOpacity={0.055}
-          />
-        </div>
+  const paid = (
+    /* GET PAID. — slams in centred, then either shrinks into the typographic
+       end card or lifts clean away for the signature one */
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: '50%',
+        display: 'flex',
+        justifyContent: 'center',
+        opacity: hasSignature ? 1 - pLift : 1,
+        transform: hasSignature
+          ? `translateY(${-layout.height * 0.14 * pLift}px) scale(${mix(1, 0.94, pLift)})`
+          : `translateY(${slot.paid * pSettle}px) scale(${mix(1, 0.7, pSettle)})`,
+      }}
+    >
+      <div style={{transform: 'translateY(-50%)'}}>
+        <SlamType
+          lines={['Get', 'Paid.']}
+          size={type.card}
+          color={paidColor}
+          p={pPaid}
+          shadow={shadow}
+          echoColor={onInk ? palette.gold : undefined}
+          echoOpacity={0.055}
+        />
       </div>
+    </div>
+  );
 
+  const typographicEndCard = (
+    <>
       {/* the wordmark */}
       <div
         style={{
@@ -256,7 +287,20 @@ export const Beat4: React.FC<BeatProps> = ({
     </>
   );
 
-  const disclaimer = (
+  const endCard = (
+    <>
+      {paid}
+      {hasSignature ? (
+        <SignatureEndCard layout={layout} at={signatureAt} stillFrom={stillFrom} />
+      ) : (
+        typographicEndCard
+      )}
+    </>
+  );
+
+  // The signature card carries its own disclaimer; adding a second one would
+  // just be a duplicate stacked underneath it.
+  const disclaimer = hasSignature ? null : (
     <div
       style={{
         position: 'absolute',
@@ -319,10 +363,10 @@ export const Beat4: React.FC<BeatProps> = ({
         />
       </CardPlate>
 
-      {/* card #3 — ink plate from above; it never leaves, it becomes the end card */}
+      {/* card #3 — from above; it never leaves, it becomes the end card */}
       <CardPlate
         layout={layout}
-        color={palette.ink}
+        color={plateColor}
         enterAt={paidAt}
         enterDur={0.28}
         entry="slam-down"

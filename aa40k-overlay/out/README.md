@@ -1,8 +1,36 @@
-# "40% At Fault" — transparent overlay
+# "40% At Fault"
 
-Everything in this folder is an **overlay**. There is no footage baked in: apart
-from the card beats, every pixel is either graphics or transparent, so it drops
-straight on top of your own B-roll.
+Two families of output, for two different jobs.
+
+### A — the finished video
+
+`aa40k_9x16_full.mp4` and `aa40k_16x9_full.mp4`. The photography, the type and
+the end card, all composed. Nothing to assemble — post it as it is.
+
+The background is not a still. Every shot pushes in or pulls back across its
+whole life, alternating direction so two consecutive shots never drift the same
+way; and it is driven by the **same camera that flies between the words**, at
+about a twentieth of the travel, so when the camera whips to "OPENING" the
+photograph leans with it. The three 1-frame frame punches land on it too. The
+type and the picture read as one shot rather than two layers.
+
+Two of the three transitions you never see at all:
+
+- **Franklin → Supreme Court** cross-fades entirely underneath the opaque
+  "NOT / A LEGAL FINDING" plate. The Court is simply *there* when the card
+  wipes away.
+- **Courtroom → end card** is covered by the gold "GET MATCHED." slam.
+
+Only the first, eye → Franklin, is an exposed dissolve, and it sits in beat 1's
+still hold where it becomes the thing that keeps the hold alive.
+
+### B — the alpha overlay
+
+`aa40k_9x16_30fps_alpha.mov` and friends. **No background at all** — apart from
+the card beats every pixel is graphics or transparent, so it drops on top of
+your own B-roll. Use these if you want to art-direct the footage yourself.
+
+Everything from §1 down is about family B.
 
 ---
 
@@ -26,7 +54,9 @@ so you can trim it, hold it or loop it to any length without a visible seam.
 
 | File | What it is |
 |---|---|
-| `aa40k_9x16_30fps_alpha.mov` | **primary deliverable.** 1080×1920, ProRes 4444, real alpha |
+| `aa40k_9x16_full.mp4` | **the finished video.** 1080×1920, photography baked in, ready to post |
+| `aa40k_16x9_full.mp4` | 1920×1080, same |
+| `aa40k_9x16_30fps_alpha.mov` | the overlay on its own. 1080×1920, ProRes 4444, real alpha |
 | `aa40k_16x9_30fps_alpha.mov` | 1920×1080, same piece re-laid-out (not a crop) |
 | `frame_9x16_alpha.mov` | vignette only |
 | `frame_16x9_alpha.mov` | vignette + 2.39 bars |
@@ -137,6 +167,8 @@ npm run render:9x16         # the primary deliverable
 npm run render:16x9
 npm run render:frame-9x16
 npm run render:frame-16x9
+npm run render:full         # both finished videos
+npm run render:full-9x16    # just the vertical one
 npm run render:4k           # 2160x3840, --scale=2
 npm run render:webm         # VP9 + alpha fallback (transcoded from the 9:16 master)
 ```
@@ -168,21 +200,29 @@ npx remotion ffmpeg -y -i out/aa40k_9x16_30fps_alpha.mov \
 
 ---
 
-## 5. What each beat was built to sit over
+## 5. The shot list
 
-The overlay was designed assuming this underneath. It reads over other footage —
-that is what `tone` is for — but this is the intent:
+What plays behind each beat in the finished video. The timings live in
+`src/timing/backdrops.ts`, expressed against the voice-over rather than frame
+numbers, so a new VO re-cuts the background along with everything else.
 
-| Beat | Time | Footage |
-|---|---|---|
-| 1 — deflated | 0 – 3.4s | macro of a claim letter / adjuster paperwork, or a damaged bumper. Slow, desaturated |
-| 2 — knowing | 3.4 – 7.2s | a person looking up, resolved; or an office at golden hour. Warmer than beat 1 |
-| 3 — warm | 7.2 – 12.0s | Phoenix skyline or Camelback at golden hour, drone. **The overlay stays airy here — let the footage carry it** |
-| 4 — decisive | 12.0 – 18.0s | mostly covered by the card plates; only matters if you set `cards: false` |
+| Shot | Roughly | What it is | Move |
+|---|---|---|---|
+| `adjuster` | 0 – 3.7s | the eye through the torn banknote — the adjuster sizing you up through money | pushes in, settles |
+| `silenced` | 3.1 – 6.9s | Franklin gagged — what their "opening position" is really doing to you | pulls back the other way |
+| `court` | 6.4 – 9.0s | the Supreme Court — what an actual *legal finding* looks like | pushes in, drifts left |
+| `counsel` | 8.4 – 12.4s | counsel on his feet — the attorney you get matched with | pulls back toward him |
+| end card | 14.5 – 18.0s | the signature card | slow push, dead still for the last 0.5s |
 
-Between **11.93s and 12.35s** the overlay is deliberately empty — a hard cut back
-to bare footage before the closing card slams in. Put something worth seeing
-there.
+To re-cut: rename the files in `assets-in/bg/` to change which photograph plays
+which role, or edit the one table in `src/timing/backdrops.ts` to change when.
+
+**If you are using the alpha overlay instead**, the beats were designed assuming
+this underneath: beat 1 a claim letter or a damaged bumper, slow and desaturated;
+beat 2 a person looking up, resolved, warmer; beat 3 Phoenix at golden hour, with
+the overlay staying airy so the footage carries it. Between **11.93s and 12.35s**
+the overlay is deliberately empty — a hard cut back to bare footage before the
+closing card. Put something worth seeing there.
 
 ---
 
