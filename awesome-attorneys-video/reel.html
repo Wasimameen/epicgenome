@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Awesome Attorneys — The First Offer</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+  :root{
+    --cream:#FBF7EF; --black:#0A0A0A; --ink:#14110F; --white:#FFFFFF;
+    --brand:#8A2326; --brandDeep:#5E1619; --brass:#B68A4E; --brassLight:#D9B780;
+    --parchment:#F1E8D8; --sand:#E4D9C3; --inkSoft:#4A443C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#191919;overflow:hidden}
+  body{display:flex;align-items:flex-start;gap:28px;padding:16px;font:14px/1.45 Inter,system-ui,sans-serif;color:#ddd}
+
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;flex:none;
+         transform-origin:top left;background:var(--cream)}
+  #bg{position:absolute;inset:0}
+  #grid{position:absolute;inset:-120px;background-repeat:repeat}
+  #cam{position:absolute;inset:0;transform-origin:50% 50%}
+
+  .layer{position:absolute;inset:0}
+  .word{display:inline-block;will-change:transform,opacity;white-space:pre}
+  .line{position:absolute;left:90px;width:900px;display:flex;flex-wrap:wrap;
+        column-gap:.28em;row-gap:.06em}
+
+  .hero{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-0.015em;line-height:1.08}
+  .sup {font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-0.01em;line-height:1.12}
+  .lbl {font-family:Inter,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.14em}
+  .bdy {font-family:Inter,sans-serif;font-weight:500}
+
+  #wipe,#card{position:absolute;inset:0;pointer-events:none}
+  .img{position:absolute;transform-origin:50% 50%;will-change:transform,opacity}
+
+  #safe{position:absolute;inset:0;pointer-events:none;display:none}
+  #safe div{position:absolute;background:rgba(224,57,63,.16);
+            border-top:1px dashed rgba(224,57,63,.7);border-bottom:1px dashed rgba(224,57,63,.7)}
+
+  /* ---- controls (never rendered into the video) ---- */
+  #panel{width:300px;flex:none;background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:16px}
+  #panel h3{font:600 12px Inter;text-transform:uppercase;letter-spacing:.12em;color:#888;margin-bottom:12px}
+  #panel label{display:block;margin:12px 0 4px;font-size:11px;color:#999;
+               text-transform:uppercase;letter-spacing:.08em}
+  #panel input[type=range]{width:100%}
+  #panel input[type=text],#panel input[type=color],#panel select{
+    width:100%;background:#1c1c1c;border:1px solid #333;color:#ddd;padding:6px;border-radius:6px}
+  #panel .row{display:flex;gap:8px;align-items:center;margin-top:10px}
+  #panel button{background:#8A2326;color:#fff;border:0;padding:8px 14px;border-radius:6px;
+                cursor:pointer;font:600 12px Inter}
+  #tval{font-variant-numeric:tabular-nums;color:#B68A4E;font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div id="bg"></div>
+  <div id="grid"></div>
+  <div id="cam">
+    <div class="layer" id="roadLayer"></div>
+    <div class="layer" id="images"></div>
+    <div class="layer" id="text"></div>
+    <div class="layer" id="chrome"></div>
+  </div>
+  <div id="wipe"></div>
+  <div id="card"></div>
+  <div id="safe"><div style="top:0;height:14%"></div><div style="bottom:0;height:20%"></div></div>
+</div>
+
+<div id="panel" data-export-hide>
+  <h3>The First Offer</h3>
+  <div class="row"><button id="play">Play</button><span id="tval">0.00s</span></div>
+  <label>Scrub</label>
+  <input type="range" id="scrub" min="0" max="22.5" step="0.01" value="0">
+  <label>Timing offset (±0.3s)</label>
+  <input type="range" id="off" min="-0.3" max="0.3" step="0.01" value="0">
+  <label>Accent colour</label>
+  <input type="color" id="accent" value="#8A2326">
+  <label>Display font</label>
+  <select id="font">
+    <option value="Fraunces,Georgia,serif">Fraunces (site)</option>
+    <option value="Inter,sans-serif">Inter</option>
+  </select>
+  <label>Captions size <span id="csz">100%</span></label>
+  <input type="range" id="cap" min="80" max="120" step="1" value="100">
+  <label>Disclaimer</label>
+  <input type="text" id="disc"
+         value="Awesome Attorneys is not a law firm and does not provide legal advice.">
+  <div class="row"><input type="checkbox" id="zones"><span style="font-size:12px">Show safe zones</span></div>
+  <audio id="vo" src="assets/voiceover.mp3" preload="auto"></audio>
+</div>
+
+<script>
+/* ============================================================================
+   THE FIRST OFFER — 1080x1920, 22.5s, 60fps.
+   Every frame is a pure function of t. No CSS animation/transition, no
+   Date.now, no Math.random, no rAF-derived timing. Scrubbing to any t twice
+   produces identical pixels.
+
+   Timings come from data/timing_reference.json (measured, not estimated):
+   silencedetect for sentence-initial onsets, whisper word timestamps
+   mid-sentence, each shifted -0.05s per the brief's "hits land 0.05s before
+   the word is heard".
+   ========================================================================= */
+
+const W = 1080, H = 1920, DUR = 22.5, STILL = 22.0;   // frozen for the last 0.5s
+const C = {
+  cream:'#FBF7EF', black:'#0A0A0A', ink:'#14110F', white:'#FFFFFF',
+  brand:'#8A2326', brandDeep:'#5E1619', brass:'#B68A4E', brassLight:'#D9B780',
+  parchment:'#F1E8D8', sand:'#E4D9C3', inkSoft:'#4A443C'
+};
+
+/* ---------- easing ------------------------------------------------------- */
+function bez(x1,y1,x2,y2){
+  return function(x){
+    if(x<=0) return 0; if(x>=1) return 1;
+    let lo=0, hi=1, t=x;
+    for(let i=0;i<26;i++){
+      const u=1-t, cx=3*u*u*t*x1 + 3*u*t*t*x2 + t*t*t;
+      if(cx<x) lo=t; else hi=t;
+      t=(lo+hi)/2;
+    }
+    const u=1-t;
+    return 3*u*u*t*y1 + 3*u*t*t*y2 + t*t*t;
+  };
+}
+const expoOut   = bez(0.16,1,0.3,1);      // slides, reveals
+const expoIn    = bez(0.7,0,0.84,0);      // exits
+const expoInOut = bez(0.87,0,0.13,1);     // the circle wipe
+
+const clamp = (v,a,b)=>v<a?a:v>b?b:v;
+const lerp  = (a,b,p)=>a+(b-a)*p;
+
+function iv(t,t0,t1,v0,v1,ease){
+  if(t<=t0) return v0;
+  if(t>=t1) return v1;
+  const p=(t-t0)/(t1-t0);
+  return lerp(v0,v1,ease?ease(p):p);
+}
+/* explicit overshoot pop: from -> peak -> to. 6% over final by default. */
+function pop(t,t0,dur,from,peak,to){
+  const p=clamp((t-t0)/dur,0,1);
+  return p<0.55 ? iv(p,0,0.55,from,peak,expoOut)
+                : iv(p,0.55,1,peak,to,expoOut);
+}
+function mixHex(a,b,p){
+  p=clamp(p,0,1);
+  const A=parseInt(a.slice(1),16), B=parseInt(b.slice(1),16);
+  const r=Math.round(lerp(A>>16,B>>16,p));
+  const g=Math.round(lerp((A>>8)&255,(B>>8)&255,p));
+  const bl=Math.round(lerp(A&255,B&255,p));
+  return `rgb(${r},${g},${bl})`;
+}
+
+/* ---------- script ------------------------------------------------------- */
+/* a = accent word. Times are Stage times (already -0.05 lead applied). */
+const S1 = { bg:'cream', in:0.07, out:3.10, top:300, size:96, lines:[
+  [['The',0.07],['first',0.07],['offer',0.43]],
+  [['is',0.73],['almost',0.73],['never',1.19,'a']],
+  [['the',1.59],['best',1.59],['offer.',2.07]],
+]};
+const S2 = { bg:'black', in:3.10, out:7.00, top:296, size:80, lines:[
+  [['Insurance',3.10],['companies',3.10]],
+  [['open',3.93],['low,',4.31,'a']],
+  [['because',4.65],['most',4.65],['people',4.65]],
+  [['accept',5.61,'a'],['early.',6.03]],
+]};
+const S3 = { bg:'cream', in:7.00, out:11.98, top:296, size:80, lines:[
+  [['And',7.00],['once',7.00],['you',7.00]],
+  [['sign',7.57,'a'],['that',7.83],['release,',8.03]],
+  [['your',8.73],['case',8.73],['is',9.09],['over.',9.27,'a']],
+]};
+const S3b= { bg:'cream', in:9.99, out:11.98, top:812, size:68, lines:[
+  [['even',9.99],['if',9.99],['your',9.99],['treatment',10.61,'a'],["isn't.",11.05]],
+]};
+const S4 = { bg:'brand', in:13.11, out:16.19, top:700, size:70, lines:[
+  [['matches',13.11],['you',13.11],['directly',13.83,'a']],
+  [['with',14.27],['a',14.27],['Phoenix',14.27]],
+  [['injury',15.09],['attorney.',15.09]],
+]};
+const SENTENCES=[S1,S2,S3,S3b,S4];
+
+/* which background is live at time t (before any wipe/card overlay) */
+function bgAt(t){
+  if(t < 3.10) return C.cream;
+  if(t < 7.00) return C.black;
+  if(t < 12.43) return C.cream;
+  if(t < 16.55) return C.brand;
+  return C.cream;
+}
+function onDark(t){ return (t>=3.10 && t<7.00) || (t>=12.43 && t<16.55); }
+
+/* palette for text at time t */
+function inkAt(t){
+  if(t>=12.43 && t<16.55) return C.white;      // on brand red
+  return onDark(t) ? C.white : C.ink;
+}
+function accentAt(t){
+  if(t>=12.43 && t<16.55) return C.white;      // white accent on red
+  return onDark(t) ? C.brass : ACCENT;         // brass on black (site token)
+}
+
+/* ---------- flat-vector cutout stand-ins --------------------------------- */
+/* None of the §3 PNGs were supplied, so each is drawn in the same flat style. */
+const SVG = {
+check:()=>`<svg viewBox="0 0 600 280" width="600" height="280">
+  <rect x="6" y="6" width="588" height="268" rx="10" fill="#F3EEE3" stroke="#DDD3C0" stroke-width="3"/>
+  <rect x="6" y="6" width="588" height="46" rx="10" fill="${C.brand}"/>
+  <text x="28" y="38" font-family="Inter" font-size="20" font-weight="700"
+        letter-spacing="3" fill="#F6EFE4">SETTLEMENT</text>
+  <rect x="34" y="86" width="250" height="12" rx="6" fill="#CFC5B2"/>
+  <rect x="34" y="118" width="170" height="12" rx="6" fill="#CFC5B2"/>
+  <rect x="330" y="92" width="236" height="86" rx="8" fill="#FFFFFF" stroke="#DDD3C0" stroke-width="3"/>
+  <text x="352" y="150" font-family="Fraunces" font-size="46" font-weight="600" fill="${C.ink}">$</text>
+  <rect x="392" y="128" width="150" height="10" rx="5" fill="#E2D9C7"/>
+  <rect x="34" y="210" width="300" height="4" rx="2" fill="#CFC5B2"/>
+  <path d="M44 208c26-18 44 10 68-6s34 8 58-8" stroke="${C.inkSoft}" stroke-width="4"
+        fill="none" stroke-linecap="round"/>
+  <rect x="392" y="206" width="174" height="4" rx="2" fill="#CFC5B2"/>
+</svg>`,
+
+envelope:()=>`<svg viewBox="0 0 560 360" width="560" height="360">
+  <rect x="20" y="120" width="520" height="222" rx="10" fill="#EDE3D2"/>
+  <rect x="86" y="52" width="388" height="196" rx="8" fill="#FFFFFF" stroke="#E0D6C3" stroke-width="3"/>
+  <rect x="118" y="88" width="200" height="12" rx="6" fill="${C.brand}" opacity=".85"/>
+  <rect x="118" y="124" width="300" height="9" rx="4.5" fill="#D9CFBC"/>
+  <rect x="118" y="150" width="256" height="9" rx="4.5" fill="#D9CFBC"/>
+  <rect x="118" y="176" width="286" height="9" rx="4.5" fill="#D9CFBC"/>
+  <path d="M20 120 280 268 540 120 540 132 280 280 20 132Z" fill="#E2D7C4"/>
+  <path d="M20 342 236 214 20 214Z" fill="#E6DCC9"/>
+  <path d="M540 342 324 214 540 214Z" fill="#E6DCC9"/>
+  <path d="M20 342 280 196 540 342Z" fill="#F1E8D8"/>
+</svg>`,
+
+release:()=>`<svg viewBox="0 0 470 610" width="470" height="610">
+  <rect x="8" y="8" width="454" height="594" rx="8" fill="#FFFFFF" stroke="#E2D9C7" stroke-width="3"/>
+  <text x="42" y="86" font-family="Fraunces" font-size="31" font-weight="600" fill="${C.ink}">Release of</text>
+  <text x="42" y="126" font-family="Fraunces" font-size="31" font-weight="600" fill="${C.ink}">All Claims</text>
+  <rect x="42" y="158" width="120" height="4" rx="2" fill="${C.brand}"/>
+  ${[0,1,2,3,4,5,6,7].map(i=>`<rect x="42" y="${200+i*30}" width="${376-(i%3)*70}"
+      height="8" rx="4" fill="#E6DCC9"/>`).join('')}
+  <rect x="42" y="470" width="240" height="3" rx="1.5" fill="#CFC5B2"/>
+  <text x="42" y="500" font-family="Inter" font-size="15" font-weight="600"
+        letter-spacing="2" fill="#A79C88">SIGNATURE</text>
+</svg>`,
+
+pen:()=>`<svg viewBox="0 0 340 340" width="340" height="340">
+  <g transform="rotate(34 170 170)">
+    <rect x="150" y="34" width="42" height="212" rx="8" fill="${C.ink}"/>
+    <rect x="150" y="58" width="42" height="12" fill="${C.brass}"/>
+    <rect x="150" y="196" width="42" height="12" fill="${C.brass}"/>
+    <rect x="163" y="86" width="8" height="100" rx="4" fill="#2A2522"/>
+    <path d="M150 246h42l-21 56Z" fill="${C.brassLight}"/>
+    <path d="M166 288h10l-5 18Z" fill="${C.ink}"/>
+  </g>
+</svg>`,
+
+brace:()=>`<svg viewBox="0 0 420 300" width="420" height="300">
+  <rect x="8" y="8" width="404" height="284" rx="12" fill="#0E1B23" stroke="#1E3340" stroke-width="3"/>
+  <rect x="30" y="30" width="360" height="240" rx="8" fill="#12222C"/>
+  <g stroke="#7FB7CE" stroke-width="9" fill="none" stroke-linecap="round" opacity=".92">
+    <path d="M150 62v54M270 62v54"/>
+    <path d="M150 116c0 26 120 26 120 0"/>
+    <path d="M138 140h144"/>
+    <path d="M156 140v46M264 140v46"/>
+    <path d="M156 186c0 22 108 22 108 0"/>
+    <path d="M170 214h80"/>
+  </g>
+  <circle cx="210" cy="163" r="7" fill="${C.brass}"/>
+  <text x="30" y="292" font-family="Inter" font-size="0" fill="none">x-ray</text>
+</svg>`,
+
+phone:()=>`<svg viewBox="0 0 330 660" width="330" height="660">
+  <rect x="6" y="6" width="318" height="648" rx="46" fill="${C.ink}"/>
+  <rect x="18" y="18" width="294" height="624" rx="38" fill="${C.cream}"/>
+  <rect x="130" y="30" width="70" height="12" rx="6" fill="${C.ink}" opacity=".25"/>
+  <text x="44" y="104" font-family="Fraunces" font-size="25" font-weight="600"
+        fill="${C.ink}">Awesome</text>
+  <text x="44" y="136" font-family="Fraunces" font-size="25" font-weight="600"
+        fill="${C.ink}">Attorneys</text>
+  <rect x="44" y="158" width="180" height="3" fill="${C.brand}"/>
+  <text x="44" y="200" font-family="Inter" font-size="14" font-weight="600"
+        letter-spacing="1.6" fill="#8C8377">FIND A LAWYER</text>
+  ${[0,1,2].map(i=>`<g>
+     <rect x="44" y="${226+i*104}" width="242" height="86" rx="10"
+           fill="#FFFFFF" stroke="#E6DCC9" stroke-width="2"/>
+     <circle cx="76" cy="${262+i*104}" r="17" fill="${C.sand}"/>
+     <rect x="104" y="${248+i*104}" width="120" height="10" rx="5" fill="#DCD2BF"/>
+     <rect x="104" y="${268+i*104}" width="86" height="8" rx="4" fill="#E8DFCD"/>
+     <rect x="104" y="${286+i*104}" width="64" height="8" rx="4" fill="#E8DFCD"/>
+   </g>`).join('')}
+  <rect x="44" y="546" width="242" height="52" rx="26" fill="${C.brand}"/>
+  <text x="165" y="578" text-anchor="middle" font-family="Inter" font-size="17"
+        font-weight="700" letter-spacing="1" fill="#FBF7EF">Get Matched</text>
+</svg>`,
+
+/* Phoenix / Camelback — flat single-colour silhouette */
+skyline:(fill)=>`<svg viewBox="0 0 1080 300" width="1080" height="300">
+  <path fill="${fill}" d="M0 300V214c46-6 78-30 116-58 34-25 62-19 92 6 22 18 40 14 58-6
+    26-29 58-24 84 4l18 20V132h30v-28h16v28h30v54c18-16 36-14 52 4v-96h22v-34h18v34h22v130
+    c16-22 36-22 54 2v-72h20v-26h16v26h20v96c18-26 40-24 58 6v-52h18v-30h16v30h18v78
+    c26-34 54-30 78 8 20 32 46 44 84 48v68Z"/>
+  <path fill="${fill}" opacity=".55" d="M0 300v-40c60-10 104-44 150-76 40-28 74-18 106 10
+    26 22 50 16 72-8 30-32 66-24 96 8l26 28v78Z"/>
+</svg>`
+};
+
+/* ---------- build DOM ---------------------------------------------------- */
+const stage=document.getElementById('stage');
+const elBg=document.getElementById('bg'), elGrid=document.getElementById('grid');
+const elCam=document.getElementById('cam'), elText=document.getElementById('text');
+const elImgs=document.getElementById('images'), elChrome=document.getElementById('chrome');
+const elWipe=document.getElementById('wipe'), elCard=document.getElementById('card');
+
+let ACCENT = C.brand, DISPFONT='Fraunces,Georgia,serif', CAPS=1;
+
+/* text */
+const wordEls=[];
+SENTENCES.forEach((S,si)=>{
+  S.el=[];
+  S.lines.forEach((line,li)=>{
+    const d=document.createElement('div');
+    d.className='line '+(si===0?'hero':'sup');
+    d.style.top=(S.top+li*S.size*1.16)+'px';
+    d.style.fontSize=S.size+'px';
+    if(si===4) d.style.justifyContent='center';   // brand beat is centred under the wordmark
+    line.forEach(tok=>{
+      const s=document.createElement('span');
+      s.className='word'; s.textContent=tok[0];
+      s.dataset.t=tok[1]; s.dataset.a=tok[2]||'';
+      d.appendChild(s); wordEls.push({el:s,t:tok[1],accent:!!tok[2],S});
+    });
+    elText.appendChild(d); S.el.push(d);
+  });
+});
+
+/* images */
+function mkImg(id,html,css){
+  const d=document.createElement('div');
+  d.className='img'; d.id='img-'+id; d.innerHTML=html;
+  Object.assign(d.style,css);
+  elImgs.appendChild(d); return d;
+}
+const iCheck   = mkImg('check',   SVG.check(),   {left:'240px', top:'980px',  width:'600px'});
+const iEnv     = mkImg('env',     SVG.envelope(),{left:'96px',  top:'752px',  width:'560px'});
+const iRelease = mkImg('release', SVG.release(), {left:'560px', top:'760px',  width:'470px'});
+const iPen     = mkImg('pen',     SVG.pen(),     {left:'470px', top:'1090px', width:'340px'});
+const iBrace   = mkImg('brace',   SVG.brace(),   {left:'110px', top:'1090px', width:'420px'});
+const iPhone   = mkImg('phone',   SVG.phone(),   {left:'640px', top:'1010px', width:'330px'});
+const iSky     = mkImg('sky',     SVG.skyline(C.brandDeep), {left:'0px', top:'1620px', width:'1080px'});
+
+/* the stamps, chart, note card, road, wordmark, CTA — built into #chrome */
+/* the road lives *under* the cutouts, so objects sit on it rather than beneath it */
+document.getElementById('roadLayer').innerHTML = `
+<svg id="road" width="1080" height="1920" style="position:absolute;inset:0" fill="none">
+  <path id="roadPath" stroke="${C.inkSoft}" stroke-width="26" stroke-linecap="round"
+        d="M-40 1780C170 1700 120 1520 300 1444c190-80 300 30 470-44 150-66 210-190 390-236"/>
+</svg>`;
+
+elChrome.innerHTML = `
+<div id="stampFirst" style="position:absolute;left:560px;top:1010px;
+     border:7px solid ${C.brand};color:${C.brand};padding:10px 20px;border-radius:8px;
+     font:800 44px Inter;letter-spacing:.06em;transform-origin:50% 50%">FIRST OFFER</div>
+
+<div id="stampClosed" style="position:absolute;left:590px;top:900px;
+     border:7px solid ${C.brand};color:${C.brand};padding:10px 20px;border-radius:8px;
+     font:800 40px Inter;letter-spacing:.06em;transform-origin:50% 50%">CASE CLOSED</div>
+
+<svg id="sig" width="300" height="120" style="position:absolute;left:600px;top:1146px" fill="none">
+  <path id="sigPath" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"
+        d="M12 84c30-52 44 22 66-14 20-32 30 30 54 6 20-20 34 22 56-10 16-24 30 14 48 2"/>
+</svg>
+
+<div id="chart" style="position:absolute;left:700px;top:820px;width:300px;height:280px">
+  <div style="position:absolute;bottom:0;left:0;width:300px;height:4px;background:rgba(255,255,255,.28)"></div>
+  <div id="bar1" style="position:absolute;bottom:4px;left:30px;width:76px;background:${C.brass};
+       transform-origin:50% 100%"></div>
+  <div id="bar2" style="position:absolute;bottom:4px;left:150px;width:76px;
+       background:rgba(255,255,255,.18);transform-origin:50% 100%"></div>
+  <div id="barlbl" class="lbl" style="position:absolute;bottom:-52px;left:-40px;width:380px;
+       text-align:center;font-size:30px;color:rgba(255,255,255,.62)">their opening</div>
+</div>
+
+<div id="note" style="position:absolute;left:150px;top:1176px;width:520px;
+     background:${C.parchment};border-radius:12px;padding:28px 30px 26px;
+     transform-origin:50% 0%;box-shadow:0 24px 48px rgba(0,0,0,.45)">
+  <div class="lbl" style="font-size:30px;color:${C.brand};margin-bottom:16px">Their offer</div>
+  <div class="noteline bdy" style="font-size:30px;color:${C.ink};margin:10px 0">Low number</div>
+  <div class="noteline bdy" style="font-size:30px;color:${C.ink};margin:10px 0">Short deadline</div>
+  <div class="noteline bdy" style="font-size:30px;color:${C.ink};margin:10px 0">Hoping you sign</div>
+  <div id="pin" style="position:absolute;left:50%;top:-16px;width:32px;height:32px;
+       margin-left:-16px;border-radius:50%;background:${C.brand};
+       box-shadow:0 6px 14px rgba(0,0,0,.45)"></div>
+</div>
+
+<div id="progWrap" style="position:absolute;left:110px;top:1470px;width:420px">
+  <div class="lbl" style="font-size:30px;color:${C.inkSoft};margin-bottom:12px">Treatment · <span id="progPct">0%</span></div>
+  <div style="height:14px;border-radius:7px;background:${C.sand};overflow:hidden">
+    <div id="progFill" style="height:100%;width:0;background:${C.brand}"></div>
+  </div>
+</div>
+
+<div id="mark" class="hero" style="position:absolute;left:0;top:348px;width:1080px;
+     text-align:center;font-size:82px;color:${C.white};transform-origin:50% 50%">Awesome Attorneys</div>
+<svg id="ring" width="1080" height="1920" style="position:absolute;inset:0" fill="none">
+  <circle id="ringC" cx="540" cy="400" r="238" stroke="rgba(255,255,255,.8)" stroke-width="4"/>
+</svg>
+
+<div id="dots" style="position:absolute;left:0;top:1000px;width:1080px;height:120px">
+  <div id="dotL" style="position:absolute;left:150px;top:24px;width:34px;height:34px;
+       border-radius:50%;background:${C.white}"></div>
+  <div id="dotR" style="position:absolute;right:150px;top:24px;width:34px;height:34px;
+       border-radius:50%;background:${C.white}"></div>
+  <div id="dotM1" style="position:absolute;left:400px;top:32px;width:18px;height:18px;
+       border-radius:50%;background:rgba(255,255,255,.4)"></div>
+  <div id="dotM2" style="position:absolute;left:662px;top:32px;width:18px;height:18px;
+       border-radius:50%;background:rgba(255,255,255,.4)"></div>
+  <div id="link" style="position:absolute;left:184px;top:39px;height:4px;
+       background:${C.white};transform-origin:0% 50%"></div>
+  <div class="lbl" style="position:absolute;left:80px;top:74px;width:200px;text-align:center;
+       font-size:30px;color:rgba(255,255,255,.78)">You</div>
+  <div class="lbl" style="position:absolute;right:80px;top:74px;width:200px;text-align:center;
+       font-size:30px;color:rgba(255,255,255,.78)">Attorney</div>
+</div>
+
+<div id="cta1" class="hero" style="position:absolute;left:0;top:640px;width:1080px;
+     text-align:center;font-size:98px;letter-spacing:.01em;color:${C.ink};
+     transform-origin:50% 50%">GET MATCHED.</div>
+<div id="cta2" class="hero" style="position:absolute;left:0;top:780px;width:1080px;
+     text-align:center;font-size:98px;letter-spacing:.01em;color:${C.brand};
+     transform-origin:50% 50%">GET PAID.</div>
+<div id="url" class="sup" style="position:absolute;left:0;top:912px;width:1080px;
+     text-align:center;font-size:56px;color:${C.ink}">AwesomeAttorneys<span style="color:${C.brand}">.com</span></div>
+<div id="btn" style="position:absolute;left:340px;top:1010px;width:400px;height:100px;
+     border-radius:50px;background:${C.brand};color:${C.cream};
+     font-family:Inter,sans-serif;font-weight:700;font-size:38px;text-align:center;
+     line-height:100px;transform-origin:50% 50%">Get Matched</div>
+<div id="disclaimer" class="bdy" style="position:absolute;left:90px;top:1430px;width:900px;
+     text-align:center;font-size:30px;color:${C.inkSoft};line-height:1.4"></div>
+
+<div id="wm" class="lbl" style="position:absolute;left:90px;top:96px;font-size:30px"></div>
+<div id="handle" class="lbl" style="position:absolute;right:90px;bottom:120px;font-size:30px"></div>
+`;
+
+const $=id=>document.getElementById(id);
+const roadPath=$('roadPath'), sigPath=$('sigPath'), ringC=$('ringC');
+const ROAD_LEN=roadPath.getTotalLength(), SIG_LEN=sigPath.getTotalLength(),
+      RING_LEN=2*Math.PI*330;
+
+/* ---------- the frame function ------------------------------------------ */
+function render(tRaw){
+  const t  = clamp(tRaw,0,DUR);
+  const tm = Math.min(t,STILL);            // continuous motion freezes at 22.0s
+  const dark = onDark(t);
+
+  /* background + grid */
+  elBg.style.background = bgAt(t);
+  const gc = dark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)';
+  elGrid.style.backgroundImage = `radial-gradient(${gc} 2.4px, transparent 2.5px)`;
+  elGrid.style.backgroundSize  = '44px 44px';
+  const drift = tm*8/Math.SQRT2;
+  elGrid.style.backgroundPosition = `${drift}px ${drift}px`;
+  elGrid.style.opacity = (t>=12.43 && t<16.55) ? 0.5 : 1;
+
+  /* camera breathing — resets on each cut */
+  const cuts=[0,3.10,7.00,12.43,16.55,DUR];
+  let c0=0,c1=DUR;
+  for(let i=0;i<cuts.length-1;i++) if(tm>=cuts[i]&&tm<cuts[i+1]){c0=cuts[i];c1=cuts[i+1];}
+  elCam.style.transform=`scale(${iv(tm,c0,Math.min(c1,c0+6),1,1.02)})`;
+
+  /* ---- words ---- */
+  const ink=inkAt(t), acc=accentAt(t);
+  for(const w of wordEls){
+    const S=w.S, t0=w.t+OFFSET;
+    const vis = t>=S.in-0.2 && t<S.out+0.35;
+    if(!vis){ w.el.style.opacity=0; continue; }
+    const start = w.accent ? t0+0.06 : t0;
+    const p  = clamp((t-start)/0.22,0,1);
+    const e  = expoOut(p);
+    let sc, y = 18*(1-e);
+    if(w.accent){ sc = pop(t,start,0.30,0.90,1.06,1.00); }
+    else        { sc = lerp(0.94,1,e); }
+    /* the sentence leaves as a block on the background flip */
+    const outP = clamp((t-S.out)/0.30,0,1);
+    const oe   = expoIn(outP);
+    const op   = clamp((t-start)/0.13,0,1) * (1-oe);
+    y += -26*oe;
+    w.el.style.opacity   = op;
+    w.el.style.transform = `translateY(${y}px) scale(${sc})`;
+    w.el.style.color     = w.accent ? acc : ink;
+    w.el.style.fontWeight= w.accent ? 800 : (S===S1?600:600);
+    w.el.style.fontFamily= DISPFONT;
+    w.el.style.textShadow= dark && !w.accent ? '0 0 18px rgba(255,255,255,0.35)' : 'none';
+  }
+  SENTENCES.forEach(S=>S.el.forEach(l=>{
+    l.style.transform=`scale(${CAPS})`;
+    l.style.transformOrigin = S===S4 ? '50% 50%' : '0% 50%';
+  }));
+
+  /* ---- image helper: enter, float, exit ---- */
+  function place(el,{in:tin,out:tout,fx,fy,frot,rot,dur=0.45,exitDx=0,exitDy=0,fs=0.85}){
+    const inP  = clamp((t-tin)/dur,0,1), e=expoOut(inP);
+    const outP = clamp((t-tout)/0.30,0,1), oe=expoIn(outP);
+    if(t<tin-0.02 || outP>=1){ el.style.opacity=0; return false; }
+    const fl = Math.sin(tm/3.2*Math.PI*2)*6;           // deterministic float
+    const fr = Math.sin(tm/4.7*Math.PI*2)*1.5;
+    const x  = lerp(fx,0,e) + exitDx*oe;
+    const y  = lerp(fy,0,e) + fl*e*(1-oe) + exitDy*oe;
+    const r  = lerp(frot,rot,e) + fr*e*(1-oe);
+    const s  = lerp(fs,1,e);
+    el.style.opacity   = clamp(inP*3,0,1)*(1-oe);
+    el.style.transform = `translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;
+    el.style.filter    = dark ? 'drop-shadow(0 0 26px rgba(255,255,255,.14))'
+                              : 'drop-shadow(0 24px 48px rgba(0,0,0,.25))';
+    return true;
+  }
+
+  /* BEAT 1 — the check */
+  const checkShrink = t>=1.19 ? 0.94 : 1;
+  if(place(iCheck,{in:0.13,out:2.90,fx:520,fy:420,frot:-22,rot:-8,exitDx:420,exitDy:300})){
+    const cs=iv(t,1.19,1.45,1,checkShrink,expoOut);
+    iCheck.style.transform += ` scale(${cs})`;
+  }
+  {   /* FIRST OFFER stamp */
+    const s=$('stampFirst');
+    const p=clamp((t-1.19)/0.26,0,1);
+    const vis = t>=1.19 && t<2.90;
+    s.style.opacity = vis ? clamp(p*4,0,1)*(1-clamp((t-2.90)/0.25,0,1)) : 0;
+    s.style.transform=`rotate(-12deg) scale(${pop(t,1.19,0.34,1.55,0.97,1.0)})`;
+  }
+
+  /* BEAT 2 — envelope, chart, note, road */
+  place(iEnv,{in:3.15,out:6.80,fx:-560,fy:0,frot:-14,rot:6,exitDx:-460});
+  {   /* road draws on, then drifts */
+    const p=clamp((t-3.20)/0.60,0,1), e=expoOut(p);
+    const on = t>=3.15 && t<11.98;
+    roadPath.style.opacity = on ? (dark?0.42:0.28) : 0;
+    roadPath.setAttribute('stroke',dark?'#6E675E':C.inkSoft);
+    roadPath.style.strokeDasharray  = ROAD_LEN;
+    roadPath.style.strokeDashoffset = ROAD_LEN*(1-e) - tm*0.5;
+  }
+  {   /* bar chart — one stubby bar rises and stops */
+    const ch=$('chart'), on=t>=4.31&&t<6.80;
+    ch.style.opacity = on ? clamp((t-4.31)*5,0,1)*(1-clamp((t-6.60)/0.2,0,1)) : 0;
+    $('bar1').style.height = iv(t,4.31,4.72,0,64,expoOut)+'px';
+    $('bar2').style.height = iv(t,4.31,4.72,0,190,expoOut)+'px';
+    $('bar2').style.opacity= 0.30;
+  }
+  {   /* pinned note card */
+    const n=$('note'), on=t>=5.61&&t<6.90;
+    const p=clamp((t-5.61)/0.42,0,1);
+    n.style.opacity = on ? clamp(p*4,0,1)*(1-clamp((t-6.72)/0.18,0,1)) : 0;
+    const sway=Math.sin(tm/3.6*Math.PI*2)*1;
+    n.style.transform=`translateY(${iv(t,5.61,6.03,-150,0,expoOut)}px) rotate(${lerp(-3,sway,clamp(p,0,1))}deg)`;
+    const lines=n.querySelectorAll('.noteline');
+    [5.61,5.88,6.03].forEach((lt,i)=>{
+      const lp=clamp((t-lt)/0.22,0,1);
+      lines[i].style.opacity=lp;
+      lines[i].style.transform=`translateX(${18*(1-expoOut(lp))}px)`;
+    });
+  }
+
+  /* BEAT 3 — release, pen, signature, stamp, brace */
+  const docShift = t>=9.99;
+  if(place(iRelease,{in:7.06,out:11.98,fx:560,fy:-60,frot:20,rot:6,exitDy:-420})){
+    const k=iv(t,9.99,10.45,0,1,expoOut);
+    const tilt=iv(t,9.27,9.55,0,3,expoOut);
+    iRelease.style.transform += ` translate(${k*70}px,${k*300}px) scale(${lerp(1,0.62,k)}) rotate(${tilt}deg)`;
+  }
+  place(iPen,{in:7.18,out:9.27,fx:420,fy:-120,frot:34,rot:0,exitDy:820,exitDx:120});
+  {   /* signature draws on "sign" */
+    const p=clamp((t-7.57)/0.50,0,1);
+    const on=t>=7.57&&t<11.98;
+    sigPath.style.opacity = on ? 1-clamp((t-9.99)/0.3,0,1) : 0;
+    sigPath.style.strokeDasharray=SIG_LEN;
+    sigPath.style.strokeDashoffset=SIG_LEN*(1-expoOut(p));
+    $('sig').style.opacity = on?1:0;
+  }
+  {   /* CASE CLOSED */
+    const s=$('stampClosed'), on=t>=9.27&&t<11.98;
+    const p=clamp((t-9.27)/0.26,0,1);
+    s.style.opacity= on ? clamp(p*4,0,1)*(1-clamp((t-9.99)/0.30,0,1)) : 0;
+    s.style.transform=`rotate(-9deg) scale(${pop(t,9.27,0.34,1.5,0.97,1.0)})`;
+  }
+  place(iBrace,{in:10.61,out:11.98,fx:-520,fy:0,frot:-12,rot:-3,exitDx:-460});
+  {   /* treatment progress bar — still filling */
+    const pw=$('progWrap'), on=t>=10.61&&t<11.98;
+    pw.style.opacity= on ? clamp((t-10.61)*4,0,1)*(1-clamp((t-11.80)/0.18,0,1)) : 0;
+    const pct=iv(t,10.61,11.98,0,46,null);
+    $('progFill').style.width=pct+'%';
+    $('progPct').textContent=Math.round(pct)+'%';
+  }
+
+  /* CIRCLE WIPE into the brand beat (11.98 -> 12.43) */
+  {
+    const p=clamp((t-11.98)/0.45,0,1);
+    if(p>0&&p<1){
+      const r=expoInOut(p)*1240;
+      elWipe.innerHTML=`<svg width="1080" height="1920"><circle cx="540" cy="960" r="${r}"
+        fill="${mixHex(C.black,C.brand,clamp((p-0.45)/0.55,0,1))}"/></svg>`;
+      elWipe.style.opacity=1;
+    } else elWipe.style.opacity=0;
+  }
+
+  /* BEAT 4 — wordmark, ring, dots, skyline, phone */
+  {
+    const m=$('mark'), on=t>=12.43&&t<16.19;
+    m.style.opacity= on ? clamp((t-12.43)/0.18,0,1)*(1-clamp((t-16.05)/0.16,0,1)) : 0;
+    m.style.fontFamily=DISPFONT;
+    m.style.transform=`scale(${pop(t,12.43,0.55,0.72,1.05,1.0)})`;
+    const rp=clamp((t-12.55)/0.50,0,1);
+    ringC.style.strokeDasharray=RING_LEN;
+    ringC.style.strokeDashoffset=RING_LEN*(1-expoOut(rp));
+    $('ring').style.opacity= on ? (1-clamp((t-15.09)/0.5,0,1)) : 0;
+  }
+  {
+    const d=$('dots'), on=t>=13.11&&t<16.19;
+    d.style.opacity= on ? clamp((t-13.11)/0.25,0,1)*(1-clamp((t-14.60)/0.42,0,1)) : 0;
+    const lp=clamp((t-13.83)/0.34,0,1);
+    $('link').style.width=(expoOut(lp)*612)+'px';
+    const mv=1-clamp((t-13.83)/0.24,0,1);
+    $('dotM1').style.opacity=mv; $('dotM2').style.opacity=mv;
+    $('dotL').style.transform=`scale(${pop(t,13.11,0.3,0.4,1.1,1)})`;
+    $('dotR').style.transform=`scale(${pop(t,13.11,0.3,0.4,1.1,1)})`;
+  }
+  {
+    const p=clamp((t-14.27)/0.55,0,1), on=t>=14.27&&t<16.19;
+    iSky.style.opacity= on ? 1-clamp((t-16.05)/0.16,0,1) : 0;
+    iSky.style.transform=`translateY(${lerp(300,-190,expoOut(p))}px)`;
+    iSky.style.filter='none';
+  }
+  place(iPhone,{in:15.09,out:16.10,fx:520,fy:40,frot:16,rot:-4,exitDx:460});
+
+  /* CARD SLIDE into the CTA (16.15 -> 16.55) */
+  {
+    const p=clamp((t-16.15)/0.40,0,1);
+    if(p>0&&p<1){
+      elCard.style.opacity=1;
+      elCard.style.background=C.cream;
+      elCard.style.transform=`translateY(${lerp(-1920,0,expoOut(p))}px)`;
+    } else elCard.style.opacity=0;
+  }
+
+  /* BEAT 5 — the end card */
+  {
+    const on=t>=16.49;
+    const up=clamp((t-18.26)/0.60,0,1), ue=expoOut(up);
+    const shift=-80*ue, sc=lerp(1,0.70,ue);
+    const c1=$('cta1'), c2=$('cta2');
+    c1.style.opacity= on?clamp((t-16.49)/0.16,0,1):0;
+    c2.style.opacity= t>=17.32?clamp((t-17.32)/0.16,0,1):0;
+    c1.style.fontFamily=c2.style.fontFamily=DISPFONT;
+    c1.style.color=C.ink; c2.style.color=ACCENT;
+    c1.style.transform=`translateY(${shift}px) scale(${pop(t,16.49,0.40,0.86,1.06,1)*sc})`;
+    c2.style.transform=`translateY(${shift}px) scale(${pop(t,17.32,0.40,0.86,1.06,1)*sc})`;
+
+    $('url').style.opacity=clamp((t-18.26)/0.30,0,1);
+    $('url').style.transform=`translateY(${18*(1-ue)}px)`;
+    $('url').style.fontFamily=DISPFONT;
+
+    const b=$('btn');
+    const breathe = t>=18.26 ? 1+0.015+0.015*Math.sin((tm-18.26)/1.6*Math.PI*2) : 1;
+    b.style.opacity=clamp((t-18.40)/0.30,0,1);
+    b.style.transform=`scale(${pop(t,18.40,0.45,0.80,1.05,1)*breathe})`;
+    b.style.background=ACCENT;
+
+    const dc=$('disclaimer');
+    dc.style.opacity= t>=19.20 ? clamp((t-19.20)/0.5,0,1) : 0;
+    dc.textContent=DISCLAIMER;
+  }
+
+  /* persistent chrome */
+  const wm=$('wm'), hd=$('handle');
+  wm.textContent='Awesome Attorneys';
+  hd.textContent='@AwesomeAttys';
+  const chromeCol = dark?'rgba(255,255,255,.62)':'rgba(20,17,15,.5)';
+  wm.style.color=hd.style.color=chromeCol;
+  const fadeChrome = t>=16.19 ? 1-clamp((t-16.19)/0.4,0,1) : 1;
+  wm.style.opacity=hd.style.opacity=fadeChrome;
+
+}
+
+/* ---------- controls (excluded from the render) -------------------------- */
+let OFFSET=0, DISCLAIMER=$('disc').value;
+const scrub=$('scrub'), tval=$('tval'), vo=$('vo');
+let playing=false, raf=0, t0=0, base=0;
+
+function setT(t){ scrub.value=t; tval.textContent=t.toFixed(2)+'s'; render(t); }
+scrub.oninput=()=>{ if(!playing){ vo.currentTime=Math.min(+scrub.value,20.0); } setT(+scrub.value); };
+$('off').oninput=e=>{ OFFSET=+e.target.value; setT(+scrub.value); };
+$('accent').oninput=e=>{ ACCENT=e.target.value; setT(+scrub.value); };
+$('font').onchange=e=>{ DISPFONT=e.target.value; setT(+scrub.value); };
+$('cap').oninput=e=>{ CAPS=+e.target.value/100; $('csz').textContent=e.target.value+'%'; setT(+scrub.value); };
+$('disc').oninput=e=>{ DISCLAIMER=e.target.value; setT(+scrub.value); };
+$('zones').onchange=e=>{ $('safe').style.display=e.target.checked?'block':'none'; };
+$('play').onclick=()=>{
+  playing=!playing; $('play').textContent=playing?'Pause':'Play';
+  if(playing){ base=+scrub.value; t0=performance.now(); vo.currentTime=Math.min(base,20.0); vo.play(); tick(); }
+  else { cancelAnimationFrame(raf); vo.pause(); }
+};
+function tick(){
+  const t=base+(performance.now()-t0)/1000;
+  if(t>=DUR){ setT(DUR); playing=false; $('play').textContent='Play'; vo.pause(); return; }
+  setT(t); raf=requestAnimationFrame(tick);
+}
+
+/* fit the 1080x1920 stage into the window for previewing */
+function fit(){
+  const s=Math.min((window.innerHeight-32)/H,(window.innerWidth-380)/W,1);
+  stage.style.transform=`scale(${s})`;
+  document.body.style.height=(H*s+32)+'px';
+  stage.style.marginRight=(-(W-W*s))+'px';
+}
+window.addEventListener('resize',fit);
+
+/* the renderer calls this */
+window.__render = t => { render(t); };
+window.__ready  = false;
+document.fonts.ready.then(()=>{ fit(); setT(0); window.__ready=true; });
+</script>
+</body>
+</html>
