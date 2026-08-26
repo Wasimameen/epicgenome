@@ -36,7 +36,7 @@ for (const v of values) {
 		[
 			'remotion', 'ffmpeg', '-hide_banner', '-loglevel', 'error', '-y',
 			'-i', file,
-			'-ss', String((frame + 0.5) / FPS),
+			'-ss', String((frame - 0.4) / FPS),
 			'-frames:v', '1',
 			out,
 		],

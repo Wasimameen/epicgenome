@@ -68,10 +68,17 @@ export const useStampState = () => {
 	/** Shatter: shards fall and fade over 0.5s, 2-frame staggers. */
 	const shatter = ramp(sec, shatterAt, shatterAt + shardTotalSec(fps), EASE.linear);
 
-	/** The "%" flickers brighter for 6 frames on the word "percent". */
+	/**
+	 * The "%" flickers brighter for 6 frames on the word "percent", then
+	 * settles. The oscillation is enveloped so it decays to zero at the
+	 * end of the window — without that it can be caught mid-peak and pop.
+	 */
 	const pctFlickerAt = t.percent - lead;
-	const flicker = within(sec, pctFlickerAt, pctFlickerAt + 6 / fps)
-		? 0.35 + 0.65 * Math.abs(Math.sin((sec - pctFlickerAt) * fps * 1.35))
+	const flickerWindow = 6 / fps;
+	const flickerP = (sec - pctFlickerAt) / flickerWindow;
+	const flicker = within(sec, pctFlickerAt, pctFlickerAt + flickerWindow)
+		? (1 - flickerP) *
+			(0.35 + 0.65 * Math.abs(Math.sin((sec - pctFlickerAt) * fps * 1.35)))
 		: 0;
 
 	return {

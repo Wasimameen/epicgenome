@@ -31,9 +31,9 @@ const tag = path.basename(file).replace(/\.[^.]+$/, '');
 
 // The ffmpeg Remotion ships has a small filter whitelist with no
 // `select`, so frames come out by seeking. `-ss` placed AFTER `-i`
-// decodes from the start and stops on the requested timestamp, which is
-// frame-accurate; half a frame of offset lands mid-frame, safely away
-// from either boundary.
+// decodes from the start and keeps the first frame whose PTS is >= the
+// seek time — so the target must be asked for slightly EARLY. Seeking to
+// (frame + 0.5)/fps lands past frame N's PTS and silently returns N+1.
 const extract = (frame, out) => {
 	const res = spawnSync(
 		'npx',
@@ -47,7 +47,7 @@ const extract = (frame, out) => {
 			'-i',
 			file,
 			'-ss',
-			String((frame + 0.5) / fps),
+			String((frame - 0.4) / fps),
 			'-frames:v',
 			'1',
 			out,

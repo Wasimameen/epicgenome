@@ -56,7 +56,14 @@ const SlamLine: React.FC<{
 	const out = ramp(sec, outSec, outSec + 0.35, EASE.expoIn);
 	if (s <= 0.0001) return null;
 
-	const mask = wipeMask(Math.min(1, Math.max(0, s)) - out, 'up', 10);
+	// The wipe runs ahead of the settle. A line box carries roughly a
+	// fifth of its height as descender space below the glyphs, so a
+	// bottom-up wipe driven straight off the spring spends its first few
+	// frames revealing empty space — the type appears to arrive late. At
+	// 3× the wipe is open by the time the spring is a frame or two in:
+	// the words hit hard, then settle into place, which is the slam.
+	const reveal = Math.min(1, Math.max(0, s) * 3);
+	const mask = wipeMask(reveal - out, 'up', 10);
 
 	return (
 		<div

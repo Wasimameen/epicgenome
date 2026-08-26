@@ -86,7 +86,7 @@ for (const target of TARGETS) {
 				'-i', file,
 				// Frame-accurate: seek after the input so ffmpeg decodes to the
 				// timestamp rather than to the nearest keyframe.
-				'-ss', String((frame + 0.5) / FPS),
+				'-ss', String((frame - 0.4) / FPS),
 				'-frames:v', '1',
 				'-pix_fmt', 'rgba',
 				rgbaPath,

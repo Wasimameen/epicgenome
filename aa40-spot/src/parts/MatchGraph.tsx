@@ -21,7 +21,7 @@ export const matchTiming = (fps: number) => {
 	return {
 		lead,
 		nodesIn,
-		lineIn: nodesIn + 0.18,
+		lineIn: nodesIn + 0.22,
 		lineDur: 0.4,
 		pulseStart: nodesIn + 0.42,
 		/** Pulse lands, rings flash, check-ring draws, chime fires. */
@@ -120,8 +120,18 @@ export const MatchGraph: React.FC = () => {
 	const youX = cx - m.spread;
 	const attX = cx + m.spread;
 
-	/* Nodes arrive from far off-frame, overdamped. */
+	/* Nodes arrive from off-frame, overdamped. `fromYou` / `fromAtt` put
+	   each one just past its own edge at rest, so the slide is a real
+	   entrance without a long invisible run-up. */
 	const enter = springAt(frame, fps, T.nodesIn, SPRING.entrance, 0.62);
+	const fromYou = -(youX + m.nodeR * 2);
+	const fromAtt = layout.width - attX + m.nodeR * 2;
+
+	/* Where the nodes actually ARE this frame. The connection is drawn
+	   between these, not between their final positions — otherwise the
+	   line hangs in mid-air while the nodes are still travelling. */
+	const youNow = youX + (1 - enter) * fromYou;
+	const attNow = attX + (1 - enter) * fromAtt;
 
 	/* Connection draws, then straightens on "directly". */
 	const draw = ramp(sec, T.lineIn, T.lineIn + T.lineDur, EASE.expoOut);
@@ -141,8 +151,8 @@ export const MatchGraph: React.FC = () => {
 	const midOut = ramp(sec, T.directly, T.directly + 0.32, EASE.expoIn);
 	const midR = m.nodeR * 0.5 * (1 - midOut);
 
-	const x0 = youX + m.nodeR;
-	const x1 = attX - m.nodeR;
+	const x0 = youNow + m.nodeR;
+	const x1 = attNow - m.nodeR;
 	const bend = (1 - straight) * m.nodeR * 0.62;
 	const c1: [number, number] = [x0 + (x1 - x0) * 0.3, cy + bend];
 	const c2: [number, number] = [x0 + (x1 - x0) * 0.7, cy - bend];
@@ -184,7 +194,13 @@ export const MatchGraph: React.FC = () => {
 				width={layout.width}
 				height={layout.height}
 				viewBox={`0 0 ${layout.width} ${layout.height}`}
-				style={{position: 'absolute', inset: 0}}
+				style={{
+					position: 'absolute',
+					inset: 0,
+					// Thin vector line-work over unknown footage needs its own
+					// contact shadow, exactly as the type does.
+					filter: mode === 'overlay' ? shapeShadow('overlay') : undefined,
+				}}
 			>
 				{/* Faint middlemen — unlabeled, and briefly on the path. */}
 				{midOut < 1
@@ -225,7 +241,7 @@ export const MatchGraph: React.FC = () => {
 				{check > 0 ? (
 					<>
 						<circle
-							cx={attX}
+							cx={attNow}
 							cy={cy}
 							r={m.nodeR * 1.32}
 							fill="none"
@@ -235,12 +251,12 @@ export const MatchGraph: React.FC = () => {
 							strokeDasharray={1}
 							strokeDashoffset={1 - check}
 							strokeLinecap="round"
-							transform={`rotate(-90 ${attX} ${cy})`}
+							transform={`rotate(-90 ${attNow} ${cy})`}
 						/>
 						<path
-							d={`M ${attX - m.nodeR * 0.38} ${cy + m.nodeR * 0.02} L ${
-								attX - m.nodeR * 0.1
-							} ${cy + m.nodeR * 0.3} L ${attX + m.nodeR * 0.42} ${cy - m.nodeR * 0.34}`}
+							d={`M ${attNow - m.nodeR * 0.38} ${cy + m.nodeR * 0.02} L ${
+								attNow - m.nodeR * 0.1
+							} ${cy + m.nodeR * 0.3} L ${attNow + m.nodeR * 0.42} ${cy - m.nodeR * 0.34}`}
 							fill="none"
 							stroke={c.gold}
 							strokeWidth={Math.max(4, m.nodeR * 0.11)}
@@ -272,7 +288,7 @@ export const MatchGraph: React.FC = () => {
 				r={m.nodeR}
 				label="YOU"
 				enter={enter}
-				from={-(youX + m.nodeR * 2 + layout.width * 0.2)}
+				from={fromYou}
 				flash={flash}
 			/>
 			<Node
@@ -281,7 +297,7 @@ export const MatchGraph: React.FC = () => {
 				r={m.nodeR}
 				label="ATTORNEY"
 				enter={enter}
-				from={layout.width - attX + m.nodeR * 2 + layout.width * 0.2}
+				from={fromAtt}
 				flash={flash}
 			/>
 
@@ -291,7 +307,7 @@ export const MatchGraph: React.FC = () => {
 					<div
 						style={{
 							position: 'absolute',
-							left: attX - 1,
+							left: attNow - 1,
 							top: cy + m.nodeR * 1.5,
 							width: 2,
 							height: Math.max(0, m.chipY - (cy + m.nodeR * 1.5)),
