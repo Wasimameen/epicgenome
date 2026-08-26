@@ -8,10 +8,13 @@ vo16.wav
 # hundreds of MB and reproducible in a minute — see out/README.md.
 out/*.mov
 
-# QA scratch. sync-map.json is the timing record and is kept.
+# QA scratch. sync-map.json is the timing record and is kept, as are the
+# three reference frames in qa/best.
 qa/frames/
 qa/sync/
 qa/alpha/
+qa/extract/
+qa/scrub/
 
 # Agent skill installs
 .agents/

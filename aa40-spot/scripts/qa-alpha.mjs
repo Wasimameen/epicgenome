@@ -22,12 +22,44 @@ const OUT = path.join(ROOT, 'qa', 'alpha');
 const FRAMES = [60, 180, 300, 400];
 const FPS = 30;
 
+/*
+ * What "has alpha" actually looks like per container, which is not what
+ * the render flags suggest:
+ *
+ *   ProRes 4444 — `prores_ks` promotes the stream to 12-bit whatever
+ *   `--pixel-format=yuva444p10le` asks for, because ProRes 4444 IS a
+ *   12-bit format. `yuva444p12le` is the correct, expected result; the
+ *   leading "yuva" is the part that matters.
+ *
+ *   VP9 in WebM — alpha does not live in the pixel format at all. The
+ *   coded video track is plain `yuv420p` and the alpha travels beside it
+ *   in BlockAdditional, flagged by the container tag `alpha_mode=1`.
+ *   Asserting `yuva420p` here fails on a perfectly good file.
+ *
+ * So the string checks are loose and the real proof is empirical: decode
+ * a frame to RGBA and require genuinely transparent pixels.
+ */
 const TARGETS = [
-	{file: 'out/aa40_9x16_alpha.mov', expectPixFmt: 'yuva444p10le', matte: true},
-	{file: 'out/aa40_9x16_alpha.webm', expectPixFmt: 'yuva420p', matte: false},
-	{file: 'out/aa40_16x9_alpha.mov', expectPixFmt: 'yuva444p10le', matte: true},
-	{file: 'out/aa40_16x9_alpha.webm', expectPixFmt: 'yuva420p', matte: false},
+	{file: 'out/aa40_9x16_alpha.mov', pixFmtRe: /^yuva444p(10|12)le$/, matte: true},
+	{
+		file: 'out/aa40_9x16_alpha.webm',
+		pixFmtRe: /^yuva?420p$/,
+		needsAlphaMode: true,
+		matte: true,
+		decoder: 'libvpx-vp9',
+	},
+	{file: 'out/aa40_16x9_alpha.mov', pixFmtRe: /^yuva444p(10|12)le$/, matte: true},
+	{
+		file: 'out/aa40_16x9_alpha.webm',
+		pixFmtRe: /^yuva?420p$/,
+		needsAlphaMode: true,
+		matte: true,
+		decoder: 'libvpx-vp9',
+	},
 ];
+
+/** A frame of this spot is mostly empty; anything less means no alpha. */
+const MIN_TRANSPARENT_PCT = 20;
 
 fs.rmSync(OUT, {recursive: true, force: true});
 fs.mkdirSync(OUT, {recursive: true});
@@ -60,17 +92,14 @@ for (const target of TARGETS) {
 	const alphaMode = /TAG:alpha_mode=(\S+)/.exec(streams)?.[1] ??
 		/alpha_mode=(\S+)/.exec(streams)?.[1];
 
-	const pixOk = pixFmt === target.expectPixFmt;
-	// alpha_mode=1 is the WebM container tag that tells players the VP9
-	// stream is to be composited. ProRes 4444 carries alpha in the codec
-	// itself and has no such tag.
-	const alphaOk = target.expectPixFmt === 'yuva420p' ? alphaMode === '1' : true;
+	const pixOk = target.pixFmtRe.test(pixFmt ?? '');
+	const alphaOk = target.needsAlphaMode ? alphaMode === '1' : true;
 
 	if (!pixOk || !alphaOk) failures++;
 	console.log(
 		`${pixOk && alphaOk ? '✓' : '✗'} ${target.file}  codec=${codec}  pix_fmt=${pixFmt}` +
 			`${alphaMode ? `  alpha_mode=${alphaMode}` : ''}` +
-			`${pixOk ? '' : `  EXPECTED ${target.expectPixFmt}`}` +
+			`${pixOk ? '' : `  EXPECTED ${target.pixFmtRe}`}` +
 			`${alphaOk ? '' : '  EXPECTED alpha_mode=1'}`,
 	);
 
@@ -83,6 +112,12 @@ for (const target of TARGETS) {
 			'npx',
 			[
 				'remotion', 'ffmpeg', '-hide_banner', '-loglevel', 'error', '-y',
+				// ffmpeg's NATIVE vp9 decoder silently discards the alpha that
+				// WebM carries in BlockAdditional — it returns a fully opaque
+				// frame and nothing warns you. libvpx-vp9 is the decoder that
+				// reads it. Without this the matte comes back 100% opaque and
+				// looks like a broken render rather than a broken read.
+				...(target.decoder ? ['-c:v', target.decoder] : []),
 				'-i', file,
 				// Frame-accurate: seek after the input so ffmpeg decodes to the
 				// timestamp rather than to the nearest keyframe.
@@ -113,14 +148,19 @@ for (const target of TARGETS) {
 			else if (a === 255) opaque++;
 		}
 		const total = png.data.length / 4;
+		const transparentPct = (transparent / total) * 100;
 		const mattePath = path.join(OUT, `${tag}_${frame}_matte.png`);
 		fs.writeFileSync(mattePath, PNG.sync.write(matte));
 		fs.rmSync(rgbaPath);
+
+		// The real proof: a decoded frame has to contain actually
+		// transparent pixels. A file that lost its alpha comes back 0%.
+		const carriesAlpha = transparentPct >= MIN_TRANSPARENT_PCT;
+		if (!carriesAlpha) failures++;
 		console.log(
-			`  frame ${String(frame).padStart(3)}  transparent ${(
-				(transparent / total) *
-				100
-			).toFixed(1)}%  opaque ${((opaque / total) * 100).toFixed(1)}%  → ${path.relative(
+			`  ${carriesAlpha ? '✓' : '✗'} frame ${String(frame).padStart(3)}  transparent ${transparentPct.toFixed(
+				1,
+			)}%  opaque ${((opaque / total) * 100).toFixed(1)}%  → ${path.relative(
 				ROOT,
 				mattePath,
 			)}`,
