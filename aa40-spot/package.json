@@ -1,0 +1,53 @@
+{
+  "name": "aa40-spot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Awesome Attorneys — \"40% At Fault\" cinematic motion graphic (Remotion)",
+  "scripts": {
+    "studio": "remotion studio --no-open",
+    "typecheck": "tsc --noEmit",
+
+    "assets": "node scripts/scan-assets.mjs",
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "transcribe": "node scripts/transcribe.mjs",
+    "beats": "node scripts/print-beats.mjs 30",
+
+    "render": "node scripts/render-all.mjs",
+    "render:9x16": "remotion render AA40-9x16 out/aa40_9x16.mp4 --codec=h264 --crf=16 --audio-bitrate=320k",
+    "render:16x9": "remotion render AA40-16x9 out/aa40_16x9.mp4 --codec=h264 --crf=16 --audio-bitrate=320k",
+    "render:9x16:prores": "remotion render AA40-9x16-overlay out/aa40_9x16_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
+    "render:9x16:webm": "remotion render AA40-9x16-overlay out/aa40_9x16_alpha.webm --codec=vp9 --pixel-format=yuva420p --image-format=png --muted",
+    "render:16x9:prores": "remotion render AA40-16x9-overlay out/aa40_16x9_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
+    "render:16x9:webm": "remotion render AA40-16x9-overlay out/aa40_16x9_alpha.webm --codec=vp9 --pixel-format=yuva420p --image-format=png --muted",
+
+    "qa:sync": "node scripts/qa-sync.mjs out/aa40_9x16.mp4 30",
+    "qa:alpha": "node scripts/qa-alpha.mjs",
+    "qa:loudness": "remotion ffmpeg -i out/aa40_9x16.mp4 -map 0:a -vn -af loudnorm=I=-16:TP=-1:LRA=11:print_format=json -f null -",
+
+    "readme": "node scripts/write-readme.mjs",
+    "all": "npm run assets && npm run transcribe && npm run beats && npm run render && npm run readme"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.517",
+    "@remotion/captions": "4.0.517",
+    "@remotion/cli": "4.0.517",
+    "@remotion/fonts": "4.0.517",
+    "@remotion/google-fonts": "4.0.517",
+    "@remotion/install-whisper-cpp": "4.0.517",
+    "@remotion/layout-utils": "4.0.517",
+    "@remotion/media": "4.0.517",
+    "@remotion/media-utils": "4.0.517",
+    "@remotion/motion-blur": "4.0.517",
+    "@remotion/renderer": "4.0.517",
+    "pngjs": "^7.0.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.517"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "typescript": "5.9.3"
+  }
+}

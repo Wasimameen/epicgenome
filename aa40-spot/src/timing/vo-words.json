@@ -1,0 +1,527 @@
+{
+  "source": "whisper",
+  "model": "medium.en",
+  "whisperCppVersion": "1.7.4",
+  "audio": "public/vo.mp3",
+  "audioDurationMs": 14106,
+  "text": "so an adjuster told you you're 40% at fault. That's their opening position, not a legal finding. Awesome Attorneys matches you directly with a Phoenix injury attorney. Get matched. Get paid. Awesomeattorneys.com",
+  "words": [
+    {
+      "word": "so",
+      "startMs": 0,
+      "endMs": 360
+    },
+    {
+      "word": "an",
+      "startMs": 360,
+      "endMs": 520
+    },
+    {
+      "word": "adjuster",
+      "startMs": 520,
+      "endMs": 1040
+    },
+    {
+      "word": "told",
+      "startMs": 1040,
+      "endMs": 1260
+    },
+    {
+      "word": "you",
+      "startMs": 1260,
+      "endMs": 1460
+    },
+    {
+      "word": "you're",
+      "startMs": 1460,
+      "endMs": 1700
+    },
+    {
+      "word": "40%",
+      "startMs": 1700,
+      "endMs": 2260
+    },
+    {
+      "word": "at",
+      "startMs": 2260,
+      "endMs": 2480
+    },
+    {
+      "word": "fault.",
+      "startMs": 2480,
+      "endMs": 3460
+    },
+    {
+      "word": "That's",
+      "startMs": 3448,
+      "endMs": 3660
+    },
+    {
+      "word": "their",
+      "startMs": 3660,
+      "endMs": 3820
+    },
+    {
+      "word": "opening",
+      "startMs": 3820,
+      "endMs": 4100
+    },
+    {
+      "word": "position,",
+      "startMs": 4100,
+      "endMs": 4840
+    },
+    {
+      "word": "not",
+      "startMs": 4937,
+      "endMs": 5180
+    },
+    {
+      "word": "a",
+      "startMs": 5180,
+      "endMs": 5340
+    },
+    {
+      "word": "legal",
+      "startMs": 5340,
+      "endMs": 5540
+    },
+    {
+      "word": "finding.",
+      "startMs": 5540,
+      "endMs": 6780
+    },
+    {
+      "word": "Awesome",
+      "startMs": 6717,
+      "endMs": 7060
+    },
+    {
+      "word": "Attorneys",
+      "startMs": 7060,
+      "endMs": 7460
+    },
+    {
+      "word": "matches",
+      "startMs": 7460,
+      "endMs": 7840
+    },
+    {
+      "word": "you",
+      "startMs": 7840,
+      "endMs": 8140
+    },
+    {
+      "word": "directly",
+      "startMs": 8140,
+      "endMs": 8600
+    },
+    {
+      "word": "with",
+      "startMs": 8600,
+      "endMs": 8800
+    },
+    {
+      "word": "a",
+      "startMs": 8800,
+      "endMs": 9000
+    },
+    {
+      "word": "Phoenix",
+      "startMs": 9000,
+      "endMs": 9240
+    },
+    {
+      "word": "injury",
+      "startMs": 9240,
+      "endMs": 9600
+    },
+    {
+      "word": "attorney.",
+      "startMs": 9600,
+      "endMs": 10500
+    },
+    {
+      "word": "Get",
+      "startMs": 10465,
+      "endMs": 10640
+    },
+    {
+      "word": "matched.",
+      "startMs": 10640,
+      "endMs": 11420
+    },
+    {
+      "word": "Get",
+      "startMs": 11368,
+      "endMs": 11540
+    },
+    {
+      "word": "paid.",
+      "startMs": 11540,
+      "endMs": 12620
+    },
+    {
+      "word": "Awesomeattorneys.com",
+      "startMs": 12378,
+      "endMs": 13900
+    }
+  ],
+  "silences": [
+    {
+      "startMs": 2895,
+      "endMs": 3438
+    },
+    {
+      "startMs": 4664,
+      "endMs": 4927
+    },
+    {
+      "startMs": 5990,
+      "endMs": 6707
+    },
+    {
+      "startMs": 10125,
+      "endMs": 10455
+    },
+    {
+      "startMs": 11165,
+      "endMs": 11358
+    },
+    {
+      "startMs": 12057,
+      "endMs": 12368
+    }
+  ],
+  "captions": [
+    {
+      "text": "so",
+      "startMs": 120,
+      "endMs": 190,
+      "timestampMs": 360,
+      "confidence": 0.0687597
+    },
+    {
+      "text": " an",
+      "startMs": 190,
+      "endMs": 340,
+      "timestampMs": 520,
+      "confidence": 0.93802
+    },
+    {
+      "text": " adjust",
+      "startMs": 340,
+      "endMs": 880,
+      "timestampMs": 800,
+      "confidence": 0.962956
+    },
+    {
+      "text": "er",
+      "startMs": 880,
+      "endMs": 1050,
+      "timestampMs": 1040,
+      "confidence": 0.960682
+    },
+    {
+      "text": " told",
+      "startMs": 1050,
+      "endMs": 1360,
+      "timestampMs": 1260,
+      "confidence": 0.995957
+    },
+    {
+      "text": " you",
+      "startMs": 1360,
+      "endMs": 1720,
+      "timestampMs": 1460,
+      "confidence": 0.99475
+    },
+    {
+      "text": " you",
+      "startMs": 1720,
+      "endMs": 1860,
+      "timestampMs": 1560,
+      "confidence": 0.847544
+    },
+    {
+      "text": "'re",
+      "startMs": 1860,
+      "endMs": 2100,
+      "timestampMs": 1700,
+      "confidence": 0.950893
+    },
+    {
+      "text": " 40",
+      "startMs": 2100,
+      "endMs": 2620,
+      "timestampMs": 1980,
+      "confidence": 0.761433
+    },
+    {
+      "text": "%",
+      "startMs": 2620,
+      "endMs": 2700,
+      "timestampMs": 2260,
+      "confidence": 0.442181
+    },
+    {
+      "text": " at",
+      "startMs": 2700,
+      "endMs": 2840,
+      "timestampMs": 2480,
+      "confidence": 0.990254
+    },
+    {
+      "text": " fault",
+      "startMs": 2840,
+      "endMs": 3430,
+      "timestampMs": 2760,
+      "confidence": 0.977554
+    },
+    {
+      "text": ".",
+      "startMs": 3430,
+      "endMs": 3510,
+      "timestampMs": 3460,
+      "confidence": 0.506152
+    },
+    {
+      "text": " That",
+      "startMs": 3510,
+      "endMs": 3710,
+      "timestampMs": 3560,
+      "confidence": 0.57787
+    },
+    {
+      "text": "'s",
+      "startMs": 3710,
+      "endMs": 3810,
+      "timestampMs": 3660,
+      "confidence": 0.993729
+    },
+    {
+      "text": " their",
+      "startMs": 3810,
+      "endMs": 4070,
+      "timestampMs": 3820,
+      "confidence": 0.99128
+    },
+    {
+      "text": " opening",
+      "startMs": 4070,
+      "endMs": 4420,
+      "timestampMs": 4100,
+      "confidence": 0.995194
+    },
+    {
+      "text": " position",
+      "startMs": 4420,
+      "endMs": 4920,
+      "timestampMs": 4620,
+      "confidence": 0.988913
+    },
+    {
+      "text": ",",
+      "startMs": 4920,
+      "endMs": 4990,
+      "timestampMs": 4840,
+      "confidence": 0.626929
+    },
+    {
+      "text": " not",
+      "startMs": 4990,
+      "endMs": 5160,
+      "timestampMs": 5180,
+      "confidence": 0.872578
+    },
+    {
+      "text": " a",
+      "startMs": 5160,
+      "endMs": 5210,
+      "timestampMs": 5340,
+      "confidence": 0.989261
+    },
+    {
+      "text": " legal",
+      "startMs": 5210,
+      "endMs": 5520,
+      "timestampMs": 5540,
+      "confidence": 0.995589
+    },
+    {
+      "text": " finding",
+      "startMs": 5520,
+      "endMs": 5900,
+      "timestampMs": 6000,
+      "confidence": 0.815544
+    },
+    {
+      "text": ".",
+      "startMs": 5900,
+      "endMs": 5920,
+      "timestampMs": 6780,
+      "confidence": 0.936395
+    },
+    {
+      "text": " Awesome",
+      "startMs": 5920,
+      "endMs": 6650,
+      "timestampMs": 7060,
+      "confidence": 0.990487
+    },
+    {
+      "text": " Att",
+      "startMs": 6650,
+      "endMs": 6710,
+      "timestampMs": 7280,
+      "confidence": 0.914988
+    },
+    {
+      "text": "orneys",
+      "startMs": 6710,
+      "endMs": 7080,
+      "timestampMs": 7460,
+      "confidence": 0.997946
+    },
+    {
+      "text": " matches",
+      "startMs": 7080,
+      "endMs": 7590,
+      "timestampMs": 7840,
+      "confidence": 0.987737
+    },
+    {
+      "text": " you",
+      "startMs": 7590,
+      "endMs": 7810,
+      "timestampMs": 8140,
+      "confidence": 0.99779
+    },
+    {
+      "text": " directly",
+      "startMs": 7810,
+      "endMs": 8390,
+      "timestampMs": 8600,
+      "confidence": 0.996865
+    },
+    {
+      "text": " with",
+      "startMs": 8390,
+      "endMs": 8680,
+      "timestampMs": 8800,
+      "confidence": 0.997805
+    },
+    {
+      "text": " a",
+      "startMs": 8680,
+      "endMs": 8750,
+      "timestampMs": 9000,
+      "confidence": 0.994355
+    },
+    {
+      "text": " Phoenix",
+      "startMs": 8750,
+      "endMs": 9260,
+      "timestampMs": 9240,
+      "confidence": 0.970042
+    },
+    {
+      "text": " injury",
+      "startMs": 9260,
+      "endMs": 9700,
+      "timestampMs": 9600,
+      "confidence": 0.601904
+    },
+    {
+      "text": " attorney",
+      "startMs": 9700,
+      "endMs": 10320,
+      "timestampMs": 10120,
+      "confidence": 0.993527
+    },
+    {
+      "text": ".",
+      "startMs": 10320,
+      "endMs": 10320,
+      "timestampMs": 10500,
+      "confidence": 0.938484
+    },
+    {
+      "text": " Get",
+      "startMs": 10320,
+      "endMs": 10570,
+      "timestampMs": 10640,
+      "confidence": 0.97491
+    },
+    {
+      "text": " matched",
+      "startMs": 10570,
+      "endMs": 11370,
+      "timestampMs": 11100,
+      "confidence": 0.97038
+    },
+    {
+      "text": ".",
+      "startMs": 11370,
+      "endMs": 11390,
+      "timestampMs": 11420,
+      "confidence": 0.607417
+    },
+    {
+      "text": " Get",
+      "startMs": 11390,
+      "endMs": 11640,
+      "timestampMs": 11540,
+      "confidence": 0.984701
+    },
+    {
+      "text": " paid",
+      "startMs": 11640,
+      "endMs": 11960,
+      "timestampMs": 12000,
+      "confidence": 0.991128
+    },
+    {
+      "text": ".",
+      "startMs": 11960,
+      "endMs": 12380,
+      "timestampMs": 12620,
+      "confidence": 0.96984
+    },
+    {
+      "text": " Awesome",
+      "startMs": 12380,
+      "endMs": 13000,
+      "timestampMs": 12780,
+      "confidence": 0.832342
+    },
+    {
+      "text": "att",
+      "startMs": 13000,
+      "endMs": 13180,
+      "timestampMs": 13000,
+      "confidence": 0.131085
+    },
+    {
+      "text": "orneys",
+      "startMs": 13180,
+      "endMs": 13540,
+      "timestampMs": 13280,
+      "confidence": 0.899931
+    },
+    {
+      "text": ".",
+      "startMs": 13540,
+      "endMs": 13720,
+      "timestampMs": 13580,
+      "confidence": 0.994397
+    },
+    {
+      "text": "com",
+      "startMs": 13720,
+      "endMs": 13920,
+      "timestampMs": 13900,
+      "confidence": 0.998102
+    }
+  ]
+}

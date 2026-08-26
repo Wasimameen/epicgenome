@@ -1,0 +1,19 @@
+node_modules/
+whisper.cpp/
+vo16.wav
+
+# Rendered deliverables.
+# The two H.264 spots, the two VP9 alpha overlays and the thumbnails are
+# small enough to keep with the source. The ProRes 4444 masters are
+# hundreds of MB and reproducible in a minute — see out/README.md.
+out/*.mov
+
+# QA scratch. sync-map.json is the timing record and is kept.
+qa/frames/
+qa/sync/
+qa/alpha/
+
+# Agent skill installs
+.agents/
+.claude/
+skills-lock.json

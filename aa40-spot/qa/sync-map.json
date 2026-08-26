@@ -1,0 +1,193 @@
+{
+  "source": "whisper",
+  "fps": 30,
+  "lead": 3,
+  "endHold": 2.6,
+  "totalSec": 16.5,
+  "totalFrames": 495,
+  "matched": [
+    "line1",
+    "forty",
+    "fault",
+    "line2",
+    "opening",
+    "position",
+    "not",
+    "finding",
+    "awesome",
+    "attorneys",
+    "matches",
+    "directly",
+    "phoenix",
+    "injury",
+    "attorney",
+    "getMatched",
+    "matched",
+    "getPaid",
+    "paid",
+    "url",
+    "percent",
+    "end"
+  ],
+  "missed": [],
+  "beats": {
+    "one": {
+      "startSec": 0,
+      "endSec": 3.448
+    },
+    "two": {
+      "startSec": 3.448,
+      "endSec": 6.617
+    },
+    "three": {
+      "startSec": 6.077,
+      "endSec": 10.365
+    },
+    "four": {
+      "startSec": 10.365,
+      "endSec": 16.5
+    },
+    "cold": {
+      "startSec": 0,
+      "endSec": 6.697
+    },
+    "sweep": {
+      "startSec": 6.197,
+      "endSec": 6.617
+    }
+  },
+  "sync": [
+    {
+      "key": "line1",
+      "sec": 0,
+      "frame": 0,
+      "hitFrame": -3
+    },
+    {
+      "key": "forty",
+      "sec": 1.7,
+      "frame": 51,
+      "hitFrame": 48
+    },
+    {
+      "key": "percent",
+      "sec": 2.002,
+      "frame": 60,
+      "hitFrame": 57
+    },
+    {
+      "key": "fault",
+      "sec": 2.48,
+      "frame": 74,
+      "hitFrame": 71
+    },
+    {
+      "key": "line2",
+      "sec": 3.448,
+      "frame": 103,
+      "hitFrame": 100
+    },
+    {
+      "key": "opening",
+      "sec": 3.82,
+      "frame": 115,
+      "hitFrame": 112
+    },
+    {
+      "key": "position",
+      "sec": 4.1,
+      "frame": 123,
+      "hitFrame": 120
+    },
+    {
+      "key": "not",
+      "sec": 4.937,
+      "frame": 148,
+      "hitFrame": 145
+    },
+    {
+      "key": "finding",
+      "sec": 5.54,
+      "frame": 166,
+      "hitFrame": 163
+    },
+    {
+      "key": "awesome",
+      "sec": 6.717,
+      "frame": 202,
+      "hitFrame": 199
+    },
+    {
+      "key": "attorneys",
+      "sec": 7.06,
+      "frame": 212,
+      "hitFrame": 209
+    },
+    {
+      "key": "matches",
+      "sec": 7.46,
+      "frame": 224,
+      "hitFrame": 221
+    },
+    {
+      "key": "directly",
+      "sec": 8.14,
+      "frame": 244,
+      "hitFrame": 241
+    },
+    {
+      "key": "phoenix",
+      "sec": 9,
+      "frame": 270,
+      "hitFrame": 267
+    },
+    {
+      "key": "injury",
+      "sec": 9.24,
+      "frame": 277,
+      "hitFrame": 274
+    },
+    {
+      "key": "attorney",
+      "sec": 9.6,
+      "frame": 288,
+      "hitFrame": 285
+    },
+    {
+      "key": "getMatched",
+      "sec": 10.465,
+      "frame": 314,
+      "hitFrame": 311
+    },
+    {
+      "key": "matched",
+      "sec": 10.64,
+      "frame": 319,
+      "hitFrame": 316
+    },
+    {
+      "key": "getPaid",
+      "sec": 11.368,
+      "frame": 341,
+      "hitFrame": 338
+    },
+    {
+      "key": "paid",
+      "sec": 11.54,
+      "frame": 346,
+      "hitFrame": 343
+    },
+    {
+      "key": "url",
+      "sec": 12.378,
+      "frame": 371,
+      "hitFrame": 368
+    },
+    {
+      "key": "end",
+      "sec": 13.9,
+      "frame": 417,
+      "hitFrame": 414
+    }
+  ]
+}
