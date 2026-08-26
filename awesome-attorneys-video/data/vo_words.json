@@ -1,0 +1,341 @@
+{
+  "duration": 20.036,
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 2.6,
+      "text": "The first offer is almost never the best offer."
+    },
+    {
+      "start": 3.22,
+      "end": 6.54,
+      "text": "Insurance companies open low because most people accept early."
+    },
+    {
+      "start": 7.1,
+      "end": 9.64,
+      "text": "And once you sign that release, your case is over."
+    },
+    {
+      "start": 10.18,
+      "end": 11.98,
+      "text": "Even if your treatment isn't."
+    },
+    {
+      "start": 12.7,
+      "end": 16.06,
+      "text": "Awesome Attorneys matches you directly with a Phoenix Injury Attorney."
+    },
+    {
+      "start": 16.58,
+      "end": 17.06,
+      "text": "Get matched."
+    },
+    {
+      "start": 17.4,
+      "end": 17.84,
+      "text": "Get paid."
+    },
+    {
+      "start": 18.48,
+      "end": 19.92,
+      "text": "AwesomeAttorneys.com"
+    }
+  ],
+  "words": [
+    {
+      "word": "The",
+      "start": 0.0,
+      "end": 0.22,
+      "prob": 0.901
+    },
+    {
+      "word": "first",
+      "start": 0.22,
+      "end": 0.48,
+      "prob": 0.981
+    },
+    {
+      "word": "offer",
+      "start": 0.48,
+      "end": 0.78,
+      "prob": 0.991
+    },
+    {
+      "word": "is",
+      "start": 0.78,
+      "end": 0.98,
+      "prob": 0.996
+    },
+    {
+      "word": "almost",
+      "start": 0.98,
+      "end": 1.24,
+      "prob": 0.996
+    },
+    {
+      "word": "never",
+      "start": 1.24,
+      "end": 1.64,
+      "prob": 0.982
+    },
+    {
+      "word": "the",
+      "start": 1.64,
+      "end": 1.88,
+      "prob": 0.998
+    },
+    {
+      "word": "best",
+      "start": 1.88,
+      "end": 2.12,
+      "prob": 0.998
+    },
+    {
+      "word": "offer.",
+      "start": 2.12,
+      "end": 2.6,
+      "prob": 0.992
+    },
+    {
+      "word": "Insurance",
+      "start": 3.22,
+      "end": 3.56,
+      "prob": 0.993
+    },
+    {
+      "word": "companies",
+      "start": 3.56,
+      "end": 3.98,
+      "prob": 0.969
+    },
+    {
+      "word": "open",
+      "start": 3.98,
+      "end": 4.36,
+      "prob": 0.99
+    },
+    {
+      "word": "low",
+      "start": 4.36,
+      "end": 4.7,
+      "prob": 0.998
+    },
+    {
+      "word": "because",
+      "start": 4.7,
+      "end": 5.08,
+      "prob": 0.944
+    },
+    {
+      "word": "most",
+      "start": 5.08,
+      "end": 5.34,
+      "prob": 0.998
+    },
+    {
+      "word": "people",
+      "start": 5.34,
+      "end": 5.66,
+      "prob": 0.997
+    },
+    {
+      "word": "accept",
+      "start": 5.66,
+      "end": 6.08,
+      "prob": 0.99
+    },
+    {
+      "word": "early.",
+      "start": 6.08,
+      "end": 6.54,
+      "prob": 0.994
+    },
+    {
+      "word": "And",
+      "start": 7.1,
+      "end": 7.16,
+      "prob": 0.949
+    },
+    {
+      "word": "once",
+      "start": 7.16,
+      "end": 7.42,
+      "prob": 0.968
+    },
+    {
+      "word": "you",
+      "start": 7.42,
+      "end": 7.62,
+      "prob": 0.999
+    },
+    {
+      "word": "sign",
+      "start": 7.62,
+      "end": 7.88,
+      "prob": 0.955
+    },
+    {
+      "word": "that",
+      "start": 7.88,
+      "end": 8.08,
+      "prob": 0.984
+    },
+    {
+      "word": "release,",
+      "start": 8.08,
+      "end": 8.5,
+      "prob": 0.996
+    },
+    {
+      "word": "your",
+      "start": 8.78,
+      "end": 8.9,
+      "prob": 0.987
+    },
+    {
+      "word": "case",
+      "start": 8.9,
+      "end": 9.14,
+      "prob": 0.995
+    },
+    {
+      "word": "is",
+      "start": 9.14,
+      "end": 9.32,
+      "prob": 0.997
+    },
+    {
+      "word": "over.",
+      "start": 9.32,
+      "end": 9.64,
+      "prob": 0.999
+    },
+    {
+      "word": "Even",
+      "start": 10.18,
+      "end": 10.3,
+      "prob": 0.981
+    },
+    {
+      "word": "if",
+      "start": 10.3,
+      "end": 10.5,
+      "prob": 0.996
+    },
+    {
+      "word": "your",
+      "start": 10.5,
+      "end": 10.66,
+      "prob": 0.989
+    },
+    {
+      "word": "treatment",
+      "start": 10.66,
+      "end": 11.1,
+      "prob": 0.994
+    },
+    {
+      "word": "isn't.",
+      "start": 11.1,
+      "end": 11.98,
+      "prob": 0.991
+    },
+    {
+      "word": "Awesome",
+      "start": 12.7,
+      "end": 12.72,
+      "prob": 0.673
+    },
+    {
+      "word": "Attorneys",
+      "start": 12.72,
+      "end": 13.16,
+      "prob": 0.81
+    },
+    {
+      "word": "matches",
+      "start": 13.16,
+      "end": 13.56,
+      "prob": 0.984
+    },
+    {
+      "word": "you",
+      "start": 13.56,
+      "end": 13.88,
+      "prob": 0.997
+    },
+    {
+      "word": "directly",
+      "start": 13.88,
+      "end": 14.32,
+      "prob": 0.998
+    },
+    {
+      "word": "with",
+      "start": 14.32,
+      "end": 14.66,
+      "prob": 0.998
+    },
+    {
+      "word": "a",
+      "start": 14.66,
+      "end": 14.8,
+      "prob": 0.97
+    },
+    {
+      "word": "Phoenix",
+      "start": 14.8,
+      "end": 15.14,
+      "prob": 0.971
+    },
+    {
+      "word": "Injury",
+      "start": 15.14,
+      "end": 15.6,
+      "prob": 0.576
+    },
+    {
+      "word": "Attorney.",
+      "start": 15.6,
+      "end": 16.06,
+      "prob": 0.847
+    },
+    {
+      "word": "Get",
+      "start": 16.58,
+      "end": 16.7,
+      "prob": 0.997
+    },
+    {
+      "word": "matched.",
+      "start": 16.7,
+      "end": 17.06,
+      "prob": 0.695
+    },
+    {
+      "word": "Get",
+      "start": 17.4,
+      "end": 17.54,
+      "prob": 0.997
+    },
+    {
+      "word": "paid.",
+      "start": 17.54,
+      "end": 17.84,
+      "prob": 0.903
+    },
+    {
+      "word": "AwesomeAttorneys",
+      "start": 18.48,
+      "end": 19.16,
+      "prob": 0.73
+    },
+    {
+      "word": ".com",
+      "start": 19.16,
+      "end": 19.92,
+      "prob": 0.997
+    }
+  ]
+}
