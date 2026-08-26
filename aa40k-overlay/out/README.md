@@ -4,8 +4,13 @@ Two families of output, for two different jobs.
 
 ### A — the finished video
 
-`aa40k_9x16_full.mp4` and `aa40k_16x9_full.mp4`. The photography, the type and
-the end card, all composed. Nothing to assemble — post it as it is.
+`aa40k_9x16_full.mp4` and `aa40k_16x9_full.mp4`. Background, type and end card,
+all composed. Nothing to assemble — post it as it is.
+
+The backgrounds are currently **drawn, not photographed**: banknote guilloche for
+the money beats, a colonnade for the court, warm panelling for the courtroom.
+They are vector, so they are sharp at 4K and weigh nothing. Drop photographs into
+`assets-in/bg/` and they take over — same moves, same timing, same transitions.
 
 The background is not a still. Every shot pushes in or pulls back across its
 whole life, alternating direction so two consecutive shots never drift the same
@@ -91,8 +96,8 @@ sidebar (`npm run dev`), or pass `--props` on the command line.
 ### `cards` — the opaque colour plates
 
 `true` (default) keeps the three card beats: the ink **NOT / A LEGAL FINDING**
-plate, the gold **GET MATCHED.** plate and the ink **GET PAID.** / end card. These
-are the only fully opaque frames in the file.
+plate, the gold **GET MATCHED.** plate and the maroon **GET PAID.** plate that
+becomes the end card. These are the only fully opaque frames in the file.
 
 `false` removes the plates entirely. The same type plays over your footage with
 its shadows, the ink-coloured type is re-coloured white so it still reads, and the
@@ -117,7 +122,9 @@ size.
 
 ### `disclaimer`
 
-The bottom line on the end card. Pass any string; it wraps inside the safe area.
+The end card's fine print. **Newline-separated** — each line becomes its own
+centred paragraph inside the bottom safe area. Ignored once you supply real end
+card artwork, since that carries its own.
 
 ### `accent`
 
@@ -208,11 +215,11 @@ numbers, so a new VO re-cuts the background along with everything else.
 
 | Shot | Roughly | What it is | Move |
 |---|---|---|---|
-| `adjuster` | 0 – 3.7s | the eye through the torn banknote — the adjuster sizing you up through money | pushes in, settles |
-| `silenced` | 3.1 – 6.9s | Franklin gagged — what their "opening position" is really doing to you | pulls back the other way |
-| `court` | 6.4 – 9.0s | the Supreme Court — what an actual *legal finding* looks like | pushes in, drifts left |
-| `counsel` | 8.4 – 12.4s | counsel on his feet — the attorney you get matched with | pulls back toward him |
-| end card | 14.5 – 18.0s | the signature card | slow push, dead still for the last 0.5s |
+| `adjuster` | 0 – 3.7s | engraved currency guilloche, iris-tight at the centre — the adjuster sizing you up through money | pushes in, settles |
+| `silenced` | 3.1 – 6.9s | the same engraving, darker, with a band struck across it — what their "opening position" is really doing to you | pulls back the other way |
+| `court` | 6.4 – 9.0s | a cold marble colonnade — what an actual *legal finding* looks like | pushes in, drifts left |
+| `counsel` | 8.4 – 12.4s | warm courtroom panelling — the attorney you get matched with | pulls back toward him |
+| end card | 14.5 – 18.0s | the signature card, rebuilt in code | slow push, dead still for the last 0.5s |
 
 To re-cut: rename the files in `assets-in/bg/` to change which photograph plays
 which role, or edit the one table in `src/timing/backdrops.ts` to change when.

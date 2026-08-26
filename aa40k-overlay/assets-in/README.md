@@ -5,8 +5,10 @@ Nothing in this folder is required — every input has a documented default, and
 
 ## The five files that matter most right now
 
-The moving background and the signature end card are built and running on
-placeholders. Drop these in and they become the real thing:
+The moving background and the end card are built and running on **drawn**
+scenes — banknote guilloche, a colonnade, warm panelling, and a code rebuild of
+your signature card. They stand on their own. Drop these in and the photography
+takes over instead:
 
 ```
 assets-in/
@@ -32,8 +34,9 @@ the order above — so `01.jpg 02.jpg 03.jpg 04.jpg` also works. `.jpg`, `.jpeg`
 `.png` and `.webp` are all fine.
 
 **All four are needed** before the photography switches on. With fewer, the
-backdrop keeps playing procedural gradients — the moves and the timing are
-identical either way, so nothing else changes when they land.
+backdrop keeps playing the drawn scenes — the moves, the timing and the
+transitions are identical either way, so nothing but the pixels changes when
+they land.
 
 **Which shot plays when** is in `src/timing/backdrops.ts`, expressed against the
 voice-over rather than against frame numbers. Swapping the order is a matter of

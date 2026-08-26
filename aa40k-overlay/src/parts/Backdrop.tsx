@@ -17,15 +17,18 @@
  * vignetted — so the palette stays white/gold/ink and the type keeps its
  * contrast over whatever is underneath.
  *
- * With no images supplied the same motion plays over procedural gradients, so
- * the timing and the moves can be judged before the photographs land.
+ * With no photographs supplied the same motion plays over drawn scenes (see
+ * BackdropArt) — banknote guilloche for the money beats, a colonnade for the
+ * court, warm panelling for the courtroom. Vector, so they are sharp at 4K and
+ * weigh nothing; photographs take over the moment they are dropped in.
  */
 
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {poseAt} from '../stage/Camera3D';
 import {driftsFor, flightFor} from '../stage/flight';
-import {SHOTS, type BackdropRole, type Shot} from '../timing/backdrops';
+import {SHOTS, type Shot} from '../timing/backdrops';
+import {BackdropArt} from './BackdropArt';
 import {BRAND} from '../brand.generated';
 import {EASE, rgba} from '../overlays/lib';
 import type {Layout} from '../theme';
@@ -74,14 +77,6 @@ const shotOpacity = (sec: number, shot: Shot): number => {
   return up * (1 - down);
 };
 
-/** Placeholder used until the photographs are dropped into `assets-in/bg/`. */
-const PLACEHOLDER: Record<BackdropRole, [string, string]> = {
-  adjuster: ['#14181f', '#3a3027'],
-  silenced: ['#0d1016', '#2b2b33'],
-  court: ['#101720', '#33404f'],
-  counsel: ['#161018', '#3d2f28'],
-};
-
 const ShotLayer: React.FC<{
   readonly shot: Shot;
   readonly sec: number;
@@ -99,8 +94,6 @@ const ShotLayer: React.FC<{
   const scale = (k.scaleFrom + (k.scaleTo - k.scaleFrom) * p) * parallax.scale;
   const x = (k.xFrom + (k.xTo - k.xFrom) * p) * layout.width + parallax.x;
   const y = (k.yFrom + (k.yTo - k.yFrom) * p) * layout.height + parallax.y;
-
-  const [a, b] = PLACEHOLDER[shot.role];
 
   return (
     <AbsoluteFill style={{opacity, overflow: 'hidden'}}>
@@ -121,10 +114,13 @@ const ShotLayer: React.FC<{
             }}
           />
         ) : (
-          <AbsoluteFill
-            style={{
-              backgroundImage: `linear-gradient(148deg, ${a} 0%, ${b} 58%, ${a} 100%)`,
-            }}
+          // Drawn, not photographed — see BackdropArt. Already in the piece's
+          // own values, so it skips the grade the photographs need.
+          <BackdropArt
+            role={shot.role}
+            width={layout.width}
+            height={layout.height}
+            progress={p}
           />
         )}
       </AbsoluteFill>

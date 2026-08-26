@@ -18,9 +18,6 @@
 import React from 'react';
 import {AbsoluteFill, useVideoConfig} from 'remotion';
 import {CardPlate, ScrimGradient} from '../stage/CardPlate';
-import {Wordmark} from '../parts/Wordmark';
-import {Pill} from '../parts/Pill';
-import {Disclaimer} from '../parts/Disclaimer';
 import {SignatureEndCard} from '../parts/EndCard';
 import {EASE, MaskReveal, SPRING, mix, useHit, useLocal, useRamp, useSpringAt} from '../overlays/lib';
 import {BRAND} from '../brand.generated';
@@ -115,38 +112,21 @@ export const Beat4: React.FC<BeatProps> = ({
   const matchedAt = h(t.getMatched);
   const paidAt = h(t.getPaid);
   const urlAt = h(t.url);
-  const endAt = local(t.end);
   const stillFrom = local(TOTAL_SEC) - 0.5;
 
   /**
-   * When the signature end card is supplied it *is* the close: "GET PAID."
-   * lifts away and the card settles onto the plate it was already sitting on.
-   * Without it, the typographic end card is built in place instead and
-   * "GET PAID." shrinks down to become its headline.
+   * The signature card *is* the close: "GET PAID." lifts away and the card
+   * settles onto the plate it was already sitting on. Supplied artwork is used
+   * when it exists, otherwise the card is drawn (EndCardArt) — this beat
+   * behaves identically either way.
    */
-  const hasSignature = Boolean(BRAND.endCard);
   const signatureAt = local(END_CARD_AT);
 
   const pMatched = useSpringAt(matchedAt + 0.06, SPRING.overshoot, 0.7);
   const pPaid = useSpringAt(paidAt + 0.06, SPRING.overshoot, 0.7);
-  /** GET PAID. eases up and shrinks to 70% to become the end-card headline */
-  const pSettle = useRamp(urlAt, 0.5, EASE.expoOut);
-  const pSettlePrev = useRamp(urlAt + 1 / fps, 0.5, EASE.expoOut);
-  const pUrl = useRamp(urlAt + 0.18, 0.5, EASE.expoOut);
-  /** ...or lifts clean away, when the signature card is taking over */
+  /** "GET PAID." lifts clean away as the signature card takes over */
   const pLift = useRamp(signatureAt, 0.4, EASE.expoIn);
   const pLiftPrev = useRamp(signatureAt + 1 / fps, 0.4, EASE.expoIn);
-
-  // End-card slots, in units of the card type size so both aspects scale.
-  // Chosen so the headline/wordmark/URL/pill stack sits centred on the frame
-  // with the disclaimer pinned to the bottom safe area — anchored lower, the
-  // card reads bottom-heavy with a dead third above it.
-  const slot = {
-    paid: -type.card * 1.4,
-    wordmark: -type.card * 0.09,
-    url: type.card * 0.69,
-    pill: type.card * 1.76,
-  };
 
   const onInk = cards;
   const shadow = onInk ? undefined : textShadow(tone);
@@ -160,19 +140,14 @@ export const Beat4: React.FC<BeatProps> = ({
    * dissolve of the content only — the background never changes and the join
    * cannot be seen.
    */
-  const plateColor = hasSignature ? BRAND.endCardBg : palette.ink;
-
-  const disclaimerBottom = layout.safe.bottom + layout.height * 0.012;
+  const plateColor = BRAND.endCardBg;
 
   // "GET PAID." moving into or out of the end card is the one fast move that
   // happens *on* a plate rather than in the 3D stage.
-  const settleSpeed = hasSignature
-    ? Math.abs(pLift - pLiftPrev) * layout.height * 0.14 * 1.6
-    : Math.abs(pSettle - pSettlePrev) * Math.abs(slot.paid) * 1.6;
+  const settleSpeed = Math.abs(pLift - pLiftPrev) * layout.height * 0.14 * 1.6;
 
   const paid = (
-    /* GET PAID. — slams in centred, then either shrinks into the typographic
-       end card or lifts clean away for the signature one */
+    /* GET PAID. — slams in centred, then lifts clean away for the card */
     <div
       style={{
         position: 'absolute',
@@ -181,10 +156,8 @@ export const Beat4: React.FC<BeatProps> = ({
         top: '50%',
         display: 'flex',
         justifyContent: 'center',
-        opacity: hasSignature ? 1 - pLift : 1,
-        transform: hasSignature
-          ? `translateY(${-layout.height * 0.14 * pLift}px) scale(${mix(1, 0.94, pLift)})`
-          : `translateY(${slot.paid * pSettle}px) scale(${mix(1, 0.7, pSettle)})`,
+        opacity: 1 - pLift,
+        transform: `translateY(${-layout.height * 0.14 * pLift}px) scale(${mix(1, 0.94, pLift)})`,
       }}
     >
       <div style={{transform: 'translateY(-50%)'}}>
@@ -201,126 +174,16 @@ export const Beat4: React.FC<BeatProps> = ({
     </div>
   );
 
-  const typographicEndCard = (
-    <>
-      {/* the wordmark */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: '50%',
-          display: 'flex',
-          justifyContent: 'center',
-          transform: `translateY(${slot.wordmark}px)`,
-        }}
-      >
-        <div style={{transform: 'translateY(-50%)'}}>
-          <Wordmark
-            at={urlAt + 0.1}
-            size={type.wordmark * 0.58}
-            white={palette.white}
-            gold={palette.gold}
-            tone={tone}
-            stack={false}
-            shadow={!onInk}
-          />
-        </div>
-      </div>
-
-      {/* the URL */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: '50%',
-          display: 'flex',
-          justifyContent: 'center',
-          transform: `translateY(${slot.url}px)`,
-        }}
-      >
-        <div style={{transform: 'translateY(-50%)'}}>
-          <MaskReveal progress={pUrl} direction="up" softness={12}>
-            <div
-              style={{
-                ...TYPE_BASE,
-                fontSize: type.url,
-                fontWeight: 700,
-                letterSpacing: '-0.01em',
-                lineHeight: 1,
-                textShadow: shadow,
-                transform: `translateY(${(1 - pUrl) * 22}px)`,
-              }}
-            >
-              <span style={{color: palette.white}}>Awesome</span>
-              <span style={{color: palette.gold}}>Attorneys</span>
-              <span style={{color: palette.white}}>.com</span>
-            </div>
-          </MaskReveal>
-        </div>
-      </div>
-
-      {/* the call to action */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: '50%',
-          display: 'flex',
-          justifyContent: 'center',
-          transform: `translateY(${slot.pill}px)`,
-        }}
-      >
-        <div style={{transform: 'translateY(-50%)'}}>
-          <Pill
-            at={urlAt + 0.45}
-            text="Get Matched"
-            size={type.pill}
-            bg={palette.gold}
-            fg={palette.ink}
-            stillFrom={stillFrom}
-          />
-        </div>
-      </div>
-    </>
-  );
-
   const endCard = (
     <>
       {paid}
-      {hasSignature ? (
-        <SignatureEndCard layout={layout} at={signatureAt} stillFrom={stillFrom} />
-      ) : (
-        typographicEndCard
-      )}
-    </>
-  );
-
-  // The signature card carries its own disclaimer; adding a second one would
-  // just be a duplicate stacked underneath it.
-  const disclaimer = hasSignature ? null : (
-    <div
-      style={{
-        position: 'absolute',
-        left: layout.safe.left,
-        right: layout.safe.right,
-        bottom: disclaimerBottom,
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      <Disclaimer
-        at={endAt}
-        text={disclaimerText}
-        size={type.disclaimer}
-        color={palette.steel}
-        tone={tone}
-        shadow={!onInk}
-        maxWidth={layout.width - layout.safe.left - layout.safe.right}
+      <SignatureEndCard
+        layout={layout}
+        at={signatureAt}
+        stillFrom={stillFrom}
+        finePrint={disclaimerText}
       />
-    </div>
+    </>
   );
 
   if (!onInk) {
@@ -337,7 +200,6 @@ export const Beat4: React.FC<BeatProps> = ({
             outAt={paidAt}
           />
           {endCard}
-          {disclaimer}
         </AbsoluteFill>
       </AbsoluteFill>
     );
@@ -373,7 +235,6 @@ export const Beat4: React.FC<BeatProps> = ({
         speedHint={settleSpeed}
       >
         {endCard}
-        {disclaimer}
       </CardPlate>
     </AbsoluteFill>
   );

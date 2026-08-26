@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 /**
- * Vendors the project's typeface into `public/fonts/` and rewrites `src/font.ts`
- * to load it from there.
+ * Vendors the project's typefaces into `public/fonts/` and rewrites
+ * `src/font.ts` to load them from there.
  *
- * The family name and the woff2 URLs still come from `@remotion/google-fonts`
- * (so this stays a Google Font, correctly versioned), but the render itself
- * reads the file off disk. That makes every render offline-safe, byte-identical
- * between machines, and immune to a CDN hiccup half way through 540 frames.
+ * Two families:
+ *   - the kinetic typeface (Manrope by default, or `font` in brand.json) —
+ *     weights 500 / 700 / 800, the whole spot outside the end card;
+ *   - a display serif (Playfair Display) used only for the end card's
+ *     "Get Matched. Get Paid." line.
+ *
+ * The family names and the woff2 URLs still come from `@remotion/google-fonts`
+ * (so these stay correctly-versioned Google Fonts), but the render reads the
+ * files off disk. That makes every render offline-safe, byte-identical between
+ * machines, and immune to a CDN hiccup half way through 540 frames.
  *
  *   node scripts/vendor-fonts.mjs
- *
- * Re-run it after changing `font` in `assets-in/brand.json` (or just run
- * `npm run assets`, which calls this for you).
  */
 
 import {execFileSync} from 'node:child_process';
@@ -23,8 +26,6 @@ import {fileURLToPath} from 'node:url';
 const require = createRequire(import.meta.url);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** weights the design system uses: 800 hero, 700 URL, 500 labels */
-const WEIGHTS = ['500', '700', '800'];
 const SUBSET = 'latin';
 
 const readBrandFont = () => {
@@ -38,79 +39,76 @@ const readBrandFont = () => {
   }
 };
 
-const family = readBrandFont();
-// @remotion/google-fonts module names strip spaces: "Inter Tight" -> "InterTight"
-const importName = family.replace(/\s+/g, '');
-
-// Reached by path rather than by specifier: the package's `exports` map does
-// not expose per-family subpaths.
-const metaPath = resolve(
-  root,
-  'node_modules/@remotion/google-fonts/dist/cjs',
-  `${importName}.js`,
-);
-
-let info;
-try {
-  info = require(metaPath).getInfo();
-} catch (err) {
-  console.error(
-    `[vendor-fonts] could not read "${family}" from @remotion/google-fonts ` +
-      `(looked for ${importName}.js).\n` +
-      `Check the spelling in assets-in/brand.json, or drop a woff2 in public/fonts/ by hand.\n` +
-      String(err),
-  );
-  process.exit(1);
-}
+/** `export const` name -> family + the weights the design system uses. */
+const FAMILIES = [
+  {constName: 'FONT', family: readBrandFont(), weights: ['500', '700', '800']},
+  {constName: 'SERIF', family: 'Playfair Display', weights: ['500', '600']},
+];
 
 const outDir = resolve(root, 'public/fonts');
 mkdirSync(outDir, {recursive: true});
 
-// A variable font serves every weight from one file, so download by URL and
-// dedupe — Manrope ends up as a single 40 kB file for all three weights.
-const byUrl = new Map();
-const available = info.fonts.normal ?? {};
-for (const weight of WEIGHTS) {
-  const url = available[weight]?.[SUBSET];
-  if (!url) {
-    console.error(`[vendor-fonts] ${family} has no ${SUBSET} weight ${weight}.`);
+const blocks = [];
+const faceLines = [];
+
+for (const {constName, family, weights} of FAMILIES) {
+  // @remotion/google-fonts module names strip spaces: "Playfair Display" -> "PlayfairDisplay".
+  const importName = family.replace(/\s+/g, '');
+  // Reached by path rather than by specifier: the package's `exports` map does
+  // not expose per-family subpaths.
+  const metaPath = resolve(root, 'node_modules/@remotion/google-fonts/dist/cjs', `${importName}.js`);
+
+  let info;
+  try {
+    info = require(metaPath).getInfo();
+  } catch (err) {
+    console.error(
+      `[vendor-fonts] could not read "${family}" from @remotion/google-fonts ` +
+        `(looked for ${importName}.js).\n${String(err)}`,
+    );
     process.exit(1);
   }
-  if (!byUrl.has(url)) {
-    byUrl.set(url, {file: null, weights: []});
+
+  // A variable font serves every weight from one file, so download by URL and
+  // dedupe — Manrope ends up as a single ~25 kB file for all three weights.
+  const byUrl = new Map();
+  const available = info.fonts.normal ?? {};
+  for (const weight of weights) {
+    const url = available[weight]?.[SUBSET];
+    if (!url) {
+      console.error(`[vendor-fonts] ${family} has no ${SUBSET} weight ${weight}.`);
+      process.exit(1);
+    }
+    if (!byUrl.has(url)) byUrl.set(url, {file: null, weights: []});
+    byUrl.get(url).weights.push(weight);
   }
-  byUrl.get(url).weights.push(weight);
-}
 
-let index = 0;
-for (const [url, entry] of byUrl) {
-  const suffix = byUrl.size === 1 ? SUBSET : `${SUBSET}-${entry.weights.join('_')}`;
-  entry.file = `${importName}-${suffix}.woff2`;
-  const dest = resolve(outDir, entry.file);
-  // curl reads the session's CA configuration; Node's fetch does not.
-  execFileSync('curl', ['-sSfL', url, '-o', dest], {stdio: 'inherit'});
-  console.log(`[vendor-fonts] ${entry.file}  <-  ${url}`);
-  index += 1;
-}
+  for (const [url, entry] of byUrl) {
+    const suffix = byUrl.size === 1 ? SUBSET : `${SUBSET}-${entry.weights.join('_')}`;
+    entry.file = `${importName}-${suffix}.woff2`;
+    execFileSync('curl', ['-sSfL', url, '-o', resolve(outDir, entry.file)], {stdio: 'inherit'});
+    console.log(`[vendor-fonts] ${entry.file}  <-  ${url}`);
+  }
 
-const faces = WEIGHTS.map((weight) => {
-  const entry = [...byUrl.values()].find((e) => e.weights.includes(weight));
-  return `  loadFont({
-    family: FONT,
+  blocks.push(`export const ${constName} = '${family}';`);
+  for (const weight of weights) {
+    const entry = [...byUrl.values()].find((e) => e.weights.includes(weight));
+    faceLines.push(`  loadFont({
+    family: ${constName},
     url: staticFile('fonts/${entry.file}'),
     weight: '${weight}',
     style: 'normal',
     format: 'woff2',
-  }),`;
-}).join('\n');
+  }),`);
+  }
+}
 
 const source = `/**
  * GENERATED by \`node scripts/vendor-fonts.mjs\` — do not edit by hand.
  *
- * ${family} ${info.version}, ${SUBSET} subset, weights ${WEIGHTS.join(' / ')}
- * (800 hero, 700 URL, 500 labels — the only weights the design system uses).
+ * ${FAMILIES.map((f) => `${f.family} (${f.weights.join(' / ')})`).join(', ')}, ${SUBSET} subset.
  *
- * The file is vendored into \`public/fonts/\` so a render never touches the
+ * Both are vendored into \`public/fonts/\` so a render never touches the
  * network. \`delayRender()\` is held until every face has resolved, so no frame
  * is ever rasterised with a fallback face (spec §6).
  */
@@ -118,12 +116,12 @@ const source = `/**
 import {loadFont} from '@remotion/fonts';
 import {cancelRender, continueRender, delayRender, staticFile} from 'remotion';
 
-export const FONT = '${family}';
+${blocks.join('\n')}
 
-const handle = delayRender('Loading ${family}');
+const handle = delayRender('Loading typefaces');
 
 export const fontReady = Promise.all([
-${faces}
+${faceLines.join('\n')}
 ])
   .then(() => {
     continueRender(handle);
@@ -143,7 +141,13 @@ export const TYPE_BASE = {
   textRendering: 'geometricPrecision',
   whiteSpace: 'nowrap',
 } as const;
+
+/** The end card's display serif. */
+export const SERIF_BASE = {
+  ...TYPE_BASE,
+  fontFamily: SERIF,
+} as const;
 `;
 
 writeFileSync(resolve(root, 'src/font.ts'), source);
-console.log(`[vendor-fonts] wrote src/font.ts (${family}, ${index} file(s))`);
+console.log(`[vendor-fonts] wrote src/font.ts (${FAMILIES.map((f) => f.family).join(', ')})`);

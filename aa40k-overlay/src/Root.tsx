@@ -64,7 +64,8 @@ export const RemotionRoot: React.FC = () => {
           aspect: '9x16',
           cards: true,
           tone: 'mixed',
-          disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+          disclaimer:
+            'Awesome Attorneys is not a law firm. General information, not legal advice. This content does not create an attorney-client relationship.\nPrior results do not guarantee a similar outcome. Every case is different. Talk to a licensed attorney about your specific situation.',
         }}
       />
 
@@ -80,7 +81,8 @@ export const RemotionRoot: React.FC = () => {
           aspect: '16x9',
           cards: true,
           tone: 'mixed',
-          disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+          disclaimer:
+            'Awesome Attorneys is not a law firm. General information, not legal advice. This content does not create an attorney-client relationship.\nPrior results do not guarantee a similar outcome. Every case is different. Talk to a licensed attorney about your specific situation.',
         }}
       />
 
@@ -97,7 +99,8 @@ export const RemotionRoot: React.FC = () => {
           aspect: '9x16',
           cards: true,
           tone: 'mixed',
-          disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+          disclaimer:
+            'Awesome Attorneys is not a law firm. General information, not legal advice. This content does not create an attorney-client relationship.\nPrior results do not guarantee a similar outcome. Every case is different. Talk to a licensed attorney about your specific situation.',
           backdrop: true,
         }}
       />
@@ -114,7 +117,8 @@ export const RemotionRoot: React.FC = () => {
           aspect: '16x9',
           cards: true,
           tone: 'mixed',
-          disclaimer: 'Attorney matching service. Not a law firm. Not legal advice.',
+          disclaimer:
+            'Awesome Attorneys is not a law firm. General information, not legal advice. This content does not create an attorney-client relationship.\nPrior results do not guarantee a similar outcome. Every case is different. Talk to a licensed attorney about your specific situation.',
           backdrop: true,
         }}
       />
