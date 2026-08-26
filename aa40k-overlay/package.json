@@ -1,0 +1,45 @@
+{
+  "name": "aa40k-overlay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "\"40% At Fault\" — transparent ProRes 4444 kinetic-typography overlay (Remotion)",
+  "scripts": {
+    "dev": "remotion studio",
+    "typecheck": "tsc --noEmit",
+
+    "assets": "node scripts/prepare-assets.mjs",
+    "vo": "node scripts/transcribe-vo.mjs",
+    "sync-sheet": "node scripts/sync-sheet.mjs",
+
+    "render:9x16": "remotion render AA40K-9x16 out/aa40k_9x16_30fps_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
+    "render:16x9": "remotion render AA40K-16x9 out/aa40k_16x9_30fps_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
+    "render:frame-9x16": "remotion render FrameLayer-9x16 out/frame_9x16_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
+    "render:frame-16x9": "remotion render FrameLayer-16x9 out/frame_16x9_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted",
+    "render:4k": "remotion render AA40K-9x16 out/aa40k_9x16_4k_alpha.mov --codec=prores --prores-profile=4444 --image-format=png --pixel-format=yuva444p10le --muted --scale=2",
+    "render:webm": "remotion render AA40K-9x16 out/aa40k_9x16_30fps_alpha.webm --codec=vp9 --pixel-format=yuva420p --image-format=png --muted",
+    "render:all": "npm run render:9x16 && npm run render:16x9 && npm run render:frame-9x16 && npm run render:frame-16x9 && npm run render:4k && npm run render:webm",
+
+    "stills": "node scripts/stills.mjs",
+    "qa": "node scripts/qa.mjs",
+    "safe-zones": "node scripts/safe-zones.mjs",
+    "motion-check": "node scripts/motion-check.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.517",
+    "@remotion/fonts": "4.0.517",
+    "@remotion/google-fonts": "4.0.517",
+    "@remotion/install-whisper-cpp": "4.0.517",
+    "@remotion/media": "4.0.517",
+    "@remotion/motion-blur": "4.0.517",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.517"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.0",
+    "esbuild": "0.28.1",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "typescript": "5.9.2"
+  }
+}

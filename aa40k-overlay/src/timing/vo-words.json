@@ -1,0 +1,7 @@
+{
+  "source": "fallback",
+  "note": "No assets-in/vo.mp3 was present when this project was built, so no transcription was run. Drop the final voice-over at assets-in/vo.mp3 and run `npm run vo` — it will overwrite this file with whisper word timings (source: \"whisper\") and every beat will re-derive with no other edits.",
+  "audioFile": null,
+  "durationSec": null,
+  "words": []
+}
