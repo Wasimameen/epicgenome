@@ -40,10 +40,11 @@ def _hard_light(cb, cs):
 
 
 def _soft_light(cb, cs):
-    # Photoshop's soft light (sqrt branch for every backdrop value)
-    return np.where(cs <= 0.5,
-                    2 * cb * cs + cb * cb * (1 - 2 * cs),
-                    np.sqrt(np.clip(cb, 0, 1)) * (2 * cs - 1) + 2 * cb * (1 - cs))
+    # Adobe soft light (PDF 1.7 / W3C compositing spec; psd-tools #189 verified it against Photoshop):
+    # D(cb) is the cubic below cb = 0.25 and sqrt above it
+    cb = np.clip(cb, 0, 1)
+    d = np.where(cb <= 0.25, ((16 * cb - 12) * cb + 4) * cb, np.sqrt(cb))
+    return np.where(cs <= 0.5, cb - (1 - 2 * cs) * cb * (1 - cb), cb + (2 * cs - 1) * (d - cb))
 
 
 def _color_dodge(cb, cs):
@@ -135,6 +136,18 @@ def _to_u8_rgba(rgba):
     return np.ascontiguousarray(rgba)
 
 
+_ASCII = {'·': '-', '—': '-', '–': '-', '→': '->', '←': '<-', '’': "'", '‘': "'", '“': '"', '”': '"',
+          '…': '...', 'é': 'e', '×': 'x', '°': ' deg'}
+
+
+def ascii_name(name):
+    """Photoshop shows the Unicode layer name, but some readers fall back to the legacy
+    Pascal name (ASCII); keep both identical by using ASCII-safe separators."""
+    out = ''.join(_ASCII.get(ch, ch) for ch in name)
+    out = out.encode('ascii', 'replace').decode('ascii').replace('?', '-')
+    return ' '.join(out.split())[:250]
+
+
 def hex_rgb(c):
     if isinstance(c, str):
         c = c.lstrip('#')
@@ -177,7 +190,7 @@ class Mask:
 class Node:
     kind = 'node'
 
-    def __init__(self, name, blend='normal', opacity=1.0, hidden=False, label=None, clip=False):
+    def __init__(self, name, blend='normal', opacity=1.0, hidden=False, label=None, clip=False, locked=False):
         if blend not in BLEND and blend != 'pass through':
             raise ValueError(f'unsupported blend mode {blend!r}')
         if label is not None and label not in LABELS:
@@ -188,6 +201,7 @@ class Node:
         self.hidden = bool(hidden)
         self.label = label
         self.clip = bool(clip)
+        self.locked = bool(locked)
 
 
 class Pixel(Node):
@@ -226,6 +240,25 @@ class Fill(Node):
         super().__init__(name, **kw)
         self.color = hex_rgb(color)
         self.mask = mask
+
+
+class Text(Node):
+    """Editable Photoshop type layer, written hidden as a 'live' twin of a raster text layer.
+
+    (x, y) is the baseline origin of the first line in canvas px; size is in px.
+    It never contributes to the composite (the raster twin carries the pixels)."""
+    kind = 'text'
+
+    def __init__(self, name, text, font, size, x, y, color='#2B2420', tracking=0, leading=None,
+                 justification='left', **kw):
+        kw['hidden'] = True
+        super().__init__(name, **kw)
+        self.text, self.font, self.size = text, font, float(size)
+        self.x, self.y = float(x), float(y)
+        self.color = hex_rgb(color)
+        self.tracking = int(round(tracking))
+        self.leading = leading
+        self.justification = justification
 
 
 class Group(Node):
@@ -315,7 +348,7 @@ class Document:
                 j += 1
             if node.clip:
                 raise ValueError(f'clipped layer {node.name!r} has no base layer below it')
-            if node.hidden:
+            if node.hidden or isinstance(node, Text):
                 i = j
                 continue
             if isinstance(node, Group):
@@ -356,10 +389,17 @@ class Document:
         def dump(node):
             counter[0] += 1
             idx = counter[0]
-            d = {'type': node.kind, 'name': node.name, 'blend': node.blend,
+            d = {'type': node.kind, 'name': ascii_name(node.name), 'blend': node.blend,
                  'opacity': node.opacity, 'hidden': node.hidden, 'clip': node.clip}
             if node.label:
                 d['label'] = node.label
+            if node.locked:
+                d['locked'] = True
+            if isinstance(node, Text):
+                d.update(text=node.text, font=node.font, size=node.size, x=node.x, y=node.y,
+                         color=list(node.color), tracking=node.tracking, leading=node.leading,
+                         justification=node.justification)
+                return d
             if isinstance(node, Group):
                 d['opened'] = node.opened
                 d['children'] = [dump(c) for c in node.children]

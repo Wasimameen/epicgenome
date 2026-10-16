@@ -44,9 +44,32 @@ function buildMask(m) {
            defaultColor: m.default, imageData: img };
 }
 
+const PX_TO_PT = 72 / manifest.dpi;      // Photoshop type is set in points; the transform scales to pixels
+
 function build(node) {
   const L = { name: node.name, id: nextId++, opacity: node.opacity, hidden: !!node.hidden };
   if (node.label) L.layerColor = node.label;
+  if (node.locked) L.protected = { transparency: false, composite: true, position: true };
+  if (node.type === 'text') {
+    stats.text = (stats.text || 0) + 1;
+    const k = 1 / PX_TO_PT;
+    const style = {
+      font: { name: node.font },
+      fontSize: +(node.size * PX_TO_PT).toFixed(3),
+      fillColor: { r: node.color[0], g: node.color[1], b: node.color[2] },
+      tracking: node.tracking || 0,
+    };
+    if (node.leading) { style.autoLeading = false; style.leading = +(node.leading * PX_TO_PT).toFixed(3); }
+    L.blendMode = 'normal';
+    L.text = {
+      text: node.text.replace(/\n/g, '\r'),
+      transform: [k, 0, 0, k, node.x, node.y],
+      antiAlias: 'smooth',
+      style,
+      paragraphStyle: { justification: node.justification || 'left' },
+    };
+    return L;
+  }
   if (node.type === 'group') {
     stats.groups++;
     L.blendMode = 'pass through';
@@ -109,10 +132,10 @@ const psd = {
       verticalResolution: manifest.dpi, verticalResolutionUnit: 'PPI', heightUnit: 'Centimeters',
     },
     thumbnailRaw: thumb(composite, 160),
-    captionDigest: undefined,
+    versionInfo: { hasRealMergedData: true, writerName: 'psdkit + ag-psd', readerName: 'psdkit', fileVersion: 1 },
   },
 };
-if (iccPath) psd.imageResources.iccProfile = new Uint8Array(fs.readFileSync(iccPath));
+// the ICC profile (image resource 1039) is inserted by finalize.py after writing: ag-psd has no writer for it
 
 const buf = writePsdBuffer(psd, { generateThumbnail: false, trimImageData: false, compress: useZip, logMissingFeatures: true });
 fs.writeFileSync(outPath, buf);

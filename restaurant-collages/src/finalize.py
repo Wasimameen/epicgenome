@@ -30,6 +30,44 @@ import psdkit  # noqa: E402
 ICC = os.path.join(HERE, 'sRGB.icc')
 
 
+def inject_icc(psd_path, icc_bytes):
+    """Insert image resource 1039 (ICC profile) into a written PSD; ag-psd cannot write it."""
+    import struct
+    with open(psd_path, 'rb') as f:
+        data = f.read()
+    off = 26
+    cm_len = struct.unpack('>I', data[off:off + 4])[0]
+    off += 4 + cm_len
+    ir_len = struct.unpack('>I', data[off:off + 4])[0]
+    ir_start, ir_end = off + 4, off + 4 + ir_len
+    block = b'8BIM' + struct.pack('>H', 1039) + b'\x00\x00' + struct.pack('>I', len(icc_bytes)) + icc_bytes
+    if len(icc_bytes) % 2:
+        block += b'\x00'
+    new_ir = data[ir_start:ir_end] + block
+    out = data[:off] + struct.pack('>I', len(new_ir)) + new_ir + data[ir_end:]
+    with open(psd_path, 'wb') as f:
+        f.write(out)
+
+
+def source_fingerprint():
+    """sha1 over every build input (code + asset indexes) and the git HEAD, stamped into each export."""
+    import glob
+    import hashlib
+    h = hashlib.sha1()
+    files = sorted(glob.glob(os.path.join(HERE, '*.py')) + glob.glob(os.path.join(HERE, '*.js'))
+                   + glob.glob(os.path.join(HERE, 'lib', '*.py'))
+                   + glob.glob(os.path.join(ROOT, 'assets', '*', 'index.json')))
+    for p in files:
+        h.update(p.encode())
+        h.update(open(p, 'rb').read())
+    try:
+        head = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True,
+                              text=True).stdout.strip()
+    except Exception:
+        head = 'unknown'
+    return {'sources_sha1': h.hexdigest()[:16], 'git_head_at_export': head, 'n_files': len(files)}
+
+
 def _tree_lines(nodes, depth=0):
     out = []
     for n in reversed(nodes):  # top of the Layers panel first, like Photoshop
@@ -42,10 +80,14 @@ def _tree_lines(nodes, depth=0):
             flags.append('clipped')
         if getattr(n, 'mask', None) is not None:
             flags.append('mask')
-        if n.hidden:
+        if n.kind == 'text':
+            flags.append('live type, hidden')
+        elif n.hidden:
             flags.append('hidden')
-        kind = {'group': '▾', 'fill': '■', 'pixel': '·'}[n.kind]
-        out.append('  ' * depth + f'{kind} {n.name}' + (f'   [{", ".join(flags)}]' if flags else ''))
+        if getattr(n, 'locked', False):
+            flags.append('locked')
+        kind = {'group': '▾', 'fill': '■', 'pixel': '·', 'text': 'T'}[n.kind]
+        out.append('  ' * depth + f'{kind} {psdkit.ascii_name(n.name)}' + (f'   [{", ".join(flags)}]' if flags else ''))
         if isinstance(n, psdkit.Group):
             out += _tree_lines(n.children, depth + 1)
     return out
@@ -82,8 +124,12 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     if res.returncode != 0:
         raise RuntimeError('write_psd failed:\n' + res.stdout + res.stderr)
     writer = json.loads(res.stdout.strip().splitlines()[-1])
-
+    with open(os.path.join(build_dir, 'writer.log'), 'w') as f:
+        f.write(res.stdout + res.stderr)
     icc = open(ICC, 'rb').read()
+    inject_icc(psd_path, icc)
+    stamp = source_fingerprint()
+
     im = Image.fromarray(comp8)
     jpg_path = os.path.join(out_dir, f'{slug}.jpg')
     im.save(jpg_path, quality=95, subsampling=0, dpi=(doc.dpi, doc.dpi), icc_profile=icc, optimize=True)
@@ -94,7 +140,8 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     tree = _tree_lines(doc.root.children)
     with open(os.path.join(out_dir, f'{slug}_layers.txt'), 'w') as f:
         f.write(f'{doc.title}\n{doc.width} x {doc.height} px @ {doc.dpi} ppi (A3), sRGB, 8-bit RGB\n')
-        f.write(f'{doc.layer_count()} layers/groups — top of the Layers panel first\n\n')
+        f.write(f'{doc.layer_count()} layers/groups — top of the Layers panel first\n')
+        f.write(f"build stamp: sources {stamp['sources_sha1']} · git {stamp['git_head_at_export']}\n\n")
         f.write('\n'.join(tree) + '\n')
 
     bad, dups = check_names(doc)
@@ -102,7 +149,7 @@ def finalize(doc, slug, verify=True, zip_psd=False):
         'slug': slug, 'psd': psd_path, 'jpg': jpg_path,
         'psd_mb': writer['mb'], 'jpg_mb': round(os.path.getsize(jpg_path) / 1048576, 1),
         'layers_total': doc.layer_count(), 'writer': writer,
-        'bad_names': bad, 'duplicate_names': dups,
+        'bad_names': bad, 'duplicate_names': dups, 'stamp': stamp,
     }
 
     if verify:
@@ -110,6 +157,14 @@ def finalize(doc, slug, verify=True, zip_psd=False):
         psd = PSDImage.open(psd_path)
         report['psd_size'] = list(psd.size)
         report['psd_layers_read'] = sum(1 for _ in psd.descendants())
+        from psd_tools.constants import Resource
+        icc_res = psd.image_resources.get_data(Resource.ICC_PROFILE)
+        report['psd_icc_bytes'] = len(icc_res) if icc_res else 0
+        report['psd_has_version_info'] = psd.image_resources.get_data(Resource.VERSION_INFO) is not None
+        report['psd_type_layers'] = sum(1 for l in psd.descendants() if l.kind == 'type')
+        _ri = psd.image_resources.get_data(Resource.RESOLUTION_INFO)
+        report['psd_resolution_ppi'] = round(getattr(_ri, 'horizontal', 0) / 65536, 2) if _ri else None
+        assert report['psd_icc_bytes'] == len(icc), 'ICC profile missing from PSD'
         embedded = np.asarray(psd.composite().convert('RGB'), np.int16)
         report['embedded_composite_maxdiff'] = int(np.abs(embedded - comp8).max())
         rerender = np.asarray(psd.composite(force=True).convert('RGB'), np.int16)
