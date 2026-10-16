@@ -222,6 +222,11 @@ class Pixel(Node):
                 y += int(r0)
             else:
                 rgba = rgba[:0, :0]
+        if rgba.size:
+            # fully transparent pixels carry no colour: store them as 0 so the PSD's RLE packs them
+            # (a retouch layer holding a whole healed photo under a sparse alpha shrinks ~20x)
+            rgba = rgba.copy()
+            rgba[rgba[..., 3] == 0, :3] = 0
         self.rgba = np.ascontiguousarray(rgba)
         self.x, self.y = x, y
         self.mask = mask
