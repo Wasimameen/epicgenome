@@ -1,0 +1,425 @@
+{
+ "area": "sensory / typeset",
+ "module": "src/lib/typeset.py (text_rgba, label_block, leader) + src/lib/sensory.py",
+ "fonts": [
+  {
+   "key": "cg-400",
+   "aliases": [
+    "serif"
+   ],
+   "path": "assets/fonts/CormorantGaramond-Regular.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/CormorantGaramond-Regular-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-Light.otf",
+   "pixel_size": null,
+   "family": "Cormorant Garamond",
+   "style": "normal",
+   "weight": 400,
+   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 400-normal), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 625,
+    "x_height": 386,
+    "ascender": 924,
+    "descender": -287
+   },
+   "glyphs_latin": 229,
+   "glyphs_latin_ext": 306,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "Cormorant Garamond normal 400",
+   "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
+  },
+  {
+   "key": "cg-400i",
+   "aliases": [
+    "italic"
+   ],
+   "path": "assets/fonts/CormorantGaramond-Italic.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/CormorantGaramond-Italic-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-LightItalic.otf",
+   "pixel_size": null,
+   "family": "Cormorant Garamond",
+   "style": "italic",
+   "weight": 400,
+   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 400-italic), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 625,
+    "x_height": 386,
+    "ascender": 924,
+    "descender": -287
+   },
+   "glyphs_latin": 231,
+   "glyphs_latin_ext": 305,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "Cormorant Garamond italic 400",
+   "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
+  },
+  {
+   "key": "cg-500i",
+   "aliases": [
+    "italic-medium"
+   ],
+   "path": "assets/fonts/CormorantGaramond-MediumItalic.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/CormorantGaramond-MediumItalic-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-Italic.otf",
+   "pixel_size": null,
+   "family": "Cormorant Garamond",
+   "style": "italic",
+   "weight": 500,
+   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 500-italic), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 625,
+    "x_height": 386,
+    "ascender": 924,
+    "descender": -287
+   },
+   "glyphs_latin": 231,
+   "glyphs_latin_ext": 305,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "Cormorant Garamond italic 500",
+   "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
+  },
+  {
+   "key": "cg-300i",
+   "aliases": [
+    "italic-light"
+   ],
+   "path": "assets/fonts/CormorantGaramond-LightItalic.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/CormorantGaramond-LightItalic-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-ExtraLightItalic.otf",
+   "pixel_size": null,
+   "family": "Cormorant Garamond",
+   "style": "italic",
+   "weight": 300,
+   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 300-italic), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 625,
+    "x_height": 386,
+    "ascender": 924,
+    "descender": -287
+   },
+   "glyphs_latin": 231,
+   "glyphs_latin_ext": 305,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "Cormorant Garamond italic 300",
+   "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
+  },
+  {
+   "key": "cg-600",
+   "aliases": [
+    "serif-semibold"
+   ],
+   "path": "assets/fonts/CormorantGaramond-SemiBold.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/CormorantGaramond-SemiBold-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-Medium.otf",
+   "pixel_size": null,
+   "family": "Cormorant Garamond",
+   "style": "normal",
+   "weight": 600,
+   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 600-normal), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 625,
+    "x_height": 386,
+    "ascender": 924,
+    "descender": -287
+   },
+   "glyphs_latin": 229,
+   "glyphs_latin_ext": 306,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "Cormorant Garamond normal 600",
+   "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
+  },
+  {
+   "key": "plex-300",
+   "aliases": [
+    "mono-light"
+   ],
+   "path": "assets/fonts/IBMPlexMono-Light.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/IBMPlexMono-Light-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-Light.otf",
+   "pixel_size": null,
+   "family": "IBM Plex Mono",
+   "style": "normal",
+   "weight": 300,
+   "source": "npm @fontsource/ibm-plex-mono (latin + latin-ext subsets, 300-normal), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-IBMPlexMono.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 698,
+    "x_height": 516,
+    "ascender": 1025,
+    "descender": -275
+   },
+   "glyphs_latin": 229,
+   "glyphs_latin_ext": 210,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "IBM Plex Mono normal 300",
+   "suggested_use": "labels, captions, numbers — uppercase, tracked +60..120"
+  },
+  {
+   "key": "plex-400",
+   "aliases": [
+    "mono"
+   ],
+   "path": "assets/fonts/IBMPlexMono-Regular.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/IBMPlexMono-Regular-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-Regular.otf",
+   "pixel_size": null,
+   "family": "IBM Plex Mono",
+   "style": "normal",
+   "weight": 400,
+   "source": "npm @fontsource/ibm-plex-mono (latin + latin-ext subsets, 400-normal), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-IBMPlexMono.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 698,
+    "x_height": 516,
+    "ascender": 1025,
+    "descender": -275
+   },
+   "glyphs_latin": 229,
+   "glyphs_latin_ext": 210,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "IBM Plex Mono normal 400",
+   "suggested_use": "labels, captions, numbers — uppercase, tracked +60..120"
+  },
+  {
+   "key": "plex-500",
+   "aliases": [
+    "mono-medium"
+   ],
+   "path": "assets/fonts/IBMPlexMono-Medium.ttf",
+   "latin_ext_path": "assets/fonts/latin-ext/IBMPlexMono-Medium-LatinExt.ttf",
+   "fallback_path": "assets/fonts/fallback/Inter-Medium.otf",
+   "pixel_size": null,
+   "family": "IBM Plex Mono",
+   "style": "normal",
+   "weight": 500,
+   "source": "npm @fontsource/ibm-plex-mono (latin + latin-ext subsets, 500-normal), woff2 -> ttf with fontTools, tables untouched",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-IBMPlexMono.txt",
+   "metrics_per_1000_em": {
+    "units_per_em": 1000,
+    "cap_height": 698,
+    "x_height": 516,
+    "ascender": 1025,
+    "descender": -275
+   },
+   "glyphs_latin": 229,
+   "glyphs_latin_ext": 210,
+   "coverage_check": "·—–’‘“”…é→×°",
+   "missing_in_latin_subset": "→",
+   "missing_after_latin_ext": "→",
+   "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
+   "description": "IBM Plex Mono normal 500",
+   "suggested_use": "labels, captions, numbers — uppercase, tracked +60..120"
+  }
+ ],
+ "fallback_fonts": [
+  {
+   "path": "assets/fonts/fallback/Inter-ExtraLightItalic.otf",
+   "family": "Inter",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-Inter.txt",
+   "use": "last-resort per-glyph fallback only"
+  },
+  {
+   "path": "assets/fonts/fallback/Inter-Italic.otf",
+   "family": "Inter",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-Inter.txt",
+   "use": "last-resort per-glyph fallback only"
+  },
+  {
+   "path": "assets/fonts/fallback/Inter-Light.otf",
+   "family": "Inter",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-Inter.txt",
+   "use": "last-resort per-glyph fallback only"
+  },
+  {
+   "path": "assets/fonts/fallback/Inter-LightItalic.otf",
+   "family": "Inter",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-Inter.txt",
+   "use": "last-resort per-glyph fallback only"
+  },
+  {
+   "path": "assets/fonts/fallback/Inter-Medium.otf",
+   "family": "Inter",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-Inter.txt",
+   "use": "last-resort per-glyph fallback only"
+  },
+  {
+   "path": "assets/fonts/fallback/Inter-Regular.otf",
+   "family": "Inter",
+   "licence": "SIL OFL 1.1 — assets/fonts/OFL-Inter.txt",
+   "use": "last-resort per-glyph fallback only"
+  }
+ ],
+ "notes": "Font files are byte-faithful format conversions of the @fontsource subsets (no outline or name changes; the arrows are synthesised in typeset.py at render time, so no Modified Version of an OFL font is distributed). Text in the PSD is rasterised (layers named \"TXT · <text>\").",
+ "sensory_generators": [
+  {
+   "function": "lib.sensory.sound_rings(at=(0, 0), r_max=600.0, n=7, r_min=None, ratio=1.0, angle=0.0, width=2.2, color='#2B2420', color_outer=None, alpha=0.85, decay=0.8, thin=0.94, spacing=1.18, arc=None, end_fade=14.0, breaks=0, break_len=(6.0, 22.0), dash=None, echo=0.0, echo_alpha=0.4, wobble=0.0, center_dot=0.0, seed=1)",
+   "purpose": "concentric sound ripples / partial arcs",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal (ink) or screen (light) at 60-100 %"
+  },
+  {
+   "function": "lib.sensory.waveform(path, amplitude=60.0, wavelength=46.0, width=2.0, color='#2B2420', alpha=0.9, decay_start=0.35, decay_end=0.85, decay_curve=1.6, strands=3, strand_amp=0.42, strand_alpha=0.55, modulation=0.65, mod_freq=2.6, style='line', bar_step=10.0, bar_width=None, axis_width=1.1, axis_alpha=0.6, attack=0.05, seed=3)",
+   "purpose": "sound wave along a curve decaying to a flat line",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.wisp(at=(0, 0), height=1300.0, ribbons=3, width=70.0, color='#E8B062', color_top=None, opacity=0.7, filaments=150, curl_scale=380.0, turbulence=1.0, lean=0.0, twist=1.3, spread=1.0, billow=0.9, silk=0.55, haze=0.35, filament_width=1.0, gain=0.8, thickness=0.09, fade_in=0.05, fade_out=0.4, seed=7)",
+   "purpose": "rising aroma / smoke ribbons",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal or screen over photos; soft light for subtle"
+  },
+  {
+   "function": "lib.sensory.light_beam(apex=(0, 0), angle=-90.0, length=2000.0, spread=12.0, aperture=0.0, color='#E8B062', intensity=0.55, edge_softness=0.45, falloff=1.1, fade_in=0.08, fade_out=0.25, core=0.25, rays=0.2, ray_count=12, dust=140, dust_size=(0.9, 4.0), dust_alpha=0.75, dust_color=None, seed=11)",
+   "purpose": "volumetric light shaft with rays + dust",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "screen / linear dodge over photos, normal on paper"
+  },
+  {
+   "function": "lib.sensory.glow(at=(0, 0), radius=400.0, color='#E8B062', intensity=0.8, ratio=1.0, angle=0.0, core=0.16, core_strength=0.55, hot_color=None, tail=1.0, seed=13)",
+   "purpose": "radial glow, hot core + halation tail",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "screen / linear dodge; multiply for warm stains on paper"
+  },
+  {
+   "function": "lib.sensory.dapple(size=(2400, 1600), at=(0, 0), leaf_size=64.0, density=0.42, color='#3A3024', opacity=0.6, layers=4, penumbra=(2.5, 7.0, 18.0, 42.0), layer_strength=(1.0, 0.92, 0.78, 0.6), twig_width=3.2, droop=0.6, angle=-25.0, light=False, light_color='#E8B062', light_gamma=1.6, breathing=0.18, edge_fade=0.0, seed=5)",
+   "purpose": "leaf-shadow gobo (or light flecks with light=True)",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "multiply 40-70 % (shadow) / screen (light)"
+  },
+  {
+   "function": "lib.sensory.intensity_field(size=(2000, 1400), at=(0, 0), blobs=None, n=5, ramp=('linen', 'honey', 'amber', 'terracotta', 'oxblood'), warp=0.12, gamma=1.0, alpha_mode='field', alpha_max=0.9, contours=0, contour_width=1.4, contour_color='#2B2420', contour_alpha=0.45, edge_fade=0.12, seed=9, return_field=False)",
+   "purpose": "smooth multi-blob intensity zones -> colour ramp (+ isolines, + field for masks)",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "multiply / soft light / color; return_field=True -> layer mask"
+  },
+  {
+   "function": "lib.sensory.view_cone(apex=(0, 0), direction=0.0, fov=60.0, length=900.0, color='#2B2420', fill=0.16, fill_falloff=1.4, edge_width=1.8, edge_alpha=0.85, edge_dash=None, arc=True, arc_dash=(2.0, 9.0), arc_width=1.6, apex_dot=7.0, apex_ring=14.0, seed=17)",
+   "purpose": "plan view cone marker",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.north_arrow(at=(0, 0), size=180.0, angle=0.0, color='#2B2420', width=1.6, label='N', font='mono', label_size=None, upright_label=True, ring=True)",
+   "purpose": "plan north point",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.arrow(points, width=2.0, color='#2B2420', head='open', head_len=None, head_angle=20.0, smooth=True, dash=None, tail_dot=0.0, opacity=1.0)",
+   "purpose": "hairline arrow",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.dotted_path(points, spacing=14.0, dot_r=2.2, color='#2B2420', smooth=True, alpha=(1.0, 1.0), grow=(1.0, 1.0), opacity=1.0, phase=0.0)",
+   "purpose": "dots along a smooth path (movement, scent trail)",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.swatch_chip(fill='#A9502F', at=(0, 0), size=(240, 170), label='auto', sublabel='auto', shape='rect', border=1.2, border_color='#2B2420', border_alpha=0.55, label_size=24, label_font='mono', sub_font='mono-light', label_color='#2B2420', label_gap=22, tracking=110, radius=None)",
+   "purpose": "colour / texture chip with mono label",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.scale_bar(at=(0, 0), px_per_unit=118.11, ticks=(0, 1, 2, 5), unit='m', height=12.0, width=1.5, color='#2B2420', label_size=24, font='mono-light', title=None, title_size=None, tracking=60)",
+   "purpose": "architectural scale bar",
+   "returns": "(rgba float32 HxWx4 straight alpha, (x, y) canvas top-left)",
+   "suggested_blend": "normal"
+  },
+  {
+   "function": "lib.sensory.paper(h, w, color='#EEE5D3', seed=21, fibres=1.0, mottle=1.0)",
+   "purpose": "opaque linen paper ground (RGB)",
+   "returns": "float32 HxWx3",
+   "suggested_blend": "background"
+  }
+ ],
+ "typeset_functions": [
+  {
+   "function": "lib.typeset.text_rgba(text, font_key, size_px, color='#2B2420', tracking=0, leading=1.2, align='left', max_width=None, uppercase=False, angle=0.0, features=None, opacity=1.0, pad=3, subpixel=(0.0, 0.0), ss=None)",
+   "purpose": "Render text to straight-alpha RGBA (float32) + placement metadata."
+  },
+  {
+   "function": "lib.typeset.label_block(label, phrase, label_key='mono', phrase_key='italic', label_size=30, phrase_size=64, color='#2B2420', label_color=None, label_tracking=110, phrase_tracking=0, gap=None, align='left', max_width=None, phrase_leading=1.12, rule=0.0, rule_gap=None, rule_width=1.6, angle=0.0, opacity=1.0, pad=3)",
+   "purpose": "Stacked annotation: small tracked uppercase mono label over an italic serif phrase."
+  },
+  {
+   "function": "lib.typeset.leader(points, width=2.0, color='#2B2420', dot_at_end=True, dot_r=None, dot_at_start=False, start_r=None, opacity=1.0, dash=None, smooth=False, ring_at_end=False)",
+   "purpose": "Hairline leader line through canvas points [(x, y), ...] with an optional dot at the"
+  },
+  {
+   "function": "lib.typeset.place(meta, x, y, anchor='origin')",
+   "purpose": "Top-left paste position so that `anchor` (a key of meta['anchors']) lands on"
+  },
+  {
+   "function": "lib.typeset.measure(text, font_key_, size_px, tracking=0, uppercase=False, features=None)",
+   "purpose": "Advance width and font metrics (px) of a single line, without rendering."
+  },
+  {
+   "function": "lib.typeset.fill_contours(contours, h, w, ss=8, band_rows=4096)",
+   "purpose": "Rasterise closed polygons (list of (N, 2) arrays, pixel coords, y down) with the"
+  },
+  {
+   "function": "lib.typeset.stroke_polyline(points, width, alpha=None, dash=None, closed=False, pad=2, box=None)",
+   "purpose": "Anti-aliased stroke of a polyline using exact box-filtered distance coverage"
+  }
+ ],
+ "palette": {
+  "ink": "#2B2420",
+  "linen": "#EFE6D6",
+  "oat": "#DCCDB4",
+  "sand": "#C9B391",
+  "honey": "#E8B062",
+  "amber": "#D98A3D",
+  "ember": "#C2602E",
+  "terracotta": "#A9502F",
+  "oxblood": "#6B2430",
+  "wine": "#4A1A26",
+  "oak": "#B07A45",
+  "sage": "#8E9A72",
+  "leaf": "#4F6B3A",
+  "canopy": "#7FA35A",
+  "glass": "#C8DAD3",
+  "celadon": "#A9C4BC",
+  "dusk": "#3D4A6B",
+  "indigo": "#262C45",
+  "violet": "#5A4E7A",
+  "steel": "#B8BCBD",
+  "paper": "#EEE5D3"
+ },
+ "contact_sheet": "build/contact/sensory.jpg"
+}
