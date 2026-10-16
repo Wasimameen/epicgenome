@@ -6,7 +6,7 @@ light, and out through the glazed glass-block entrance to the street at blue hou
 
 Spatial story (near -> far, nested):
   near   blurred leaves overhead, the festoon valance of the ground-floor ceiling
-  here   the planter at our feet, the tree, the round void (the chosen area)
+  here   the tree pit at our feet, the tree, the round void (the chosen area)
   behind the bar (west, behind the viewer)
   far    the glass-block entrance facade, the street beyond it
 
@@ -189,10 +189,6 @@ def yy_canvas():
     if _YY is None:
         _YY = np.arange(H, dtype=np.float32)[:, None] * np.ones((1, W), np.float32)
     return _YY
-
-
-def soft_noise(h, w, scale, seed, octaves=3):
-    return S.smooth_noise(h, w, scale, seed, octaves=octaves).astype(np.float32)
 
 
 # --------------------------------------------------------------------------- #
@@ -567,13 +563,11 @@ def trunk_retouch(vbs, ta, tpos, y_top=2440, keep_knots=((2575, -1), (2897, 1), 
 
 
 def bark_grade(rgb, w):
-    """Numeric twin of the 'Grade · lower trunk' fills (colour #6F6658 at 0.45, saturation 0.30) with
+    """Numeric twin of the 'Grade · lower trunk to grey bark' fill (colour #6E675C at 0.85) with
     per-pixel weight w (0..1) — used for pixels that sit outside the clipping base (the root flare)."""
     import psdkit
-    c = np.broadcast_to(rgb01('#6F6658'), rgb.shape).astype(np.float32)
-    g = np.broadcast_to(np.float32(0.5), rgb.shape).astype(np.float32)
-    out = rgb + (psdkit.BLEND['color'](rgb, c) - rgb) * (0.45 * w)[..., None]
-    out = out + (psdkit.BLEND['saturation'](out, g) - out) * (0.30 * w)[..., None]
+    c = np.broadcast_to(rgb01('#6E675C'), rgb.shape).astype(np.float32)
+    out = rgb + (psdkit.BLEND['color'](rgb, c) - rgb) * (0.85 * w)[..., None]
     return np.clip(out, 0, 1)
 
 
@@ -872,8 +866,7 @@ def build():
         B.cutout(g, f'Bar · dome pendant {i + 1} (photo cut-out)', nm, PEND_S, x_, y_, margin=30, alpha_fn=trim)
         b = info['bulb']
         pend_bulbs.append((x_ + b['cx'] * PEND_S, y_ + b['cy'] * PEND_S))
-    B.text(g, 'GLASS BRICK PROPOSED\nIN PLACE OF DECORATIVE BRICK', 'mono', LABEL, BAR_X0 + 24, 2412, tracking=90,
-           leading=1.55, color=LINEN, name='TXT · note, glass brick proposal')
+    chip(B, g, 'GLASS BRICK PROPOSED\nIN PLACE OF\nDECORATIVE BRICK', BAR_X0 + 24, 2300, 'glass brick proposal')
     # counter: fluted oak front + brushed steel top (top face, edge, specular line)
     cw_ = CTR_X1 - CTR_X0
     ch_ = FLOOR_Y - CTR_Y
@@ -932,7 +925,7 @@ def build():
                 1.0, -1, cv2.LINE_AA)
     B.shadow(g, 'Shadow · cup contact on the steel', ca, cup_x + sx_ * cs_ - ca.shape[1] / 2,
              cup_y + (sy_ + sry * 0.9) * cs_ - 12, depth=2, sigma=2.5, opacity=0.55)
-    lay, (cux, cuy, cuw, cuh) = B.cutout(g, 'Bar · espresso cup (CC0 photo cut-out)', 'espresso_cc0.png',
+    _, (cux, cuy, cuw, cuh) = B.cutout(g, 'Bar · espresso cup (CC0 photo cut-out)', 'espresso_cc0.png',
                                          cs_, cup_x, cup_y, margin=12)
     sm = np.zeros((int(np.ceil(cuh)) + 2, int(np.ceil(cuw)) + 2), np.float32)
     cv2.ellipse(sm, (int(sx_ * cs_), int(sy_ * cs_)), (int(srx * cs_ + 2), int(sry * cs_ + 2)), 0, 0, 360, 1.0, -1,
@@ -956,7 +949,6 @@ def build():
     del mos
     B.photo(g, 'Floor · cream terrazzo (perspective)', tz, tx0, ty0, mask_alpha=floor, margin=60)
     del tz
-    B.fill(g, 'Grade · terrazzo softened', '#808080', None, blend='saturation', opacity=0.35, clip=True)
     depth_fade = (1 - smoothstep(FLOOR_Y, FLOOR_Y + 420, yy_canvas())) * floor
     B.fill(g, 'Grade · floor recedes into shade', '#6E6458', depth_fade, blend='multiply', opacity=0.35, clip=True)
     del depth_fade
@@ -1027,9 +1019,7 @@ def build():
     B.px(gt, 'Retouch · lower trunk bark rebuilt', patch, kx, ky, clip=True)
     del patch, healed_trunk, trunk_a
     trunk_band = box_alpha(TRUNK_X - 85, 2380, TRUNK_X + 85, 3320) * smoothstep(2450, 2700, yy_canvas())
-    B.fill(gt, 'Grade · lower trunk to grey bark', '#6F6658', trunk_band, blend='color', opacity=0.45, clip=True)
-    B.fill(gt, 'Grade · lower trunk desaturated', '#808080', trunk_band, blend='saturation', opacity=0.30,
-           clip=True)
+    B.fill(gt, 'Grade · lower trunk to grey bark', '#6E675C', trunk_band, blend='color', opacity=0.85, clip=True)
     del trunk_band
     ao = np.zeros((90, 220), np.float32)
     ao[:, :] = smoothstep(0, 90, np.arange(90, dtype=np.float32))[:, None] ** 1.5
@@ -1041,6 +1031,7 @@ def build():
     leafy = C.blur(cv2.dilate(leafy.astype(np.uint8) * (glz > 0.3).astype(np.uint8), np.ones((3, 3), np.uint8))
                    .astype(np.float32), 0.8)
     del hsv, vbs
+    zones['lower trunk (2500-2800)'] = (tav * box_alpha(TRUNK_X - 80, 2500, TRUNK_X + 80, 2800)) > 0.5
     # --- sky at blue hour, behind the leaves (crown and branch excluded)
     sky = np.zeros((H, W), np.float32)
     gh_, gw_ = glz.shape
@@ -1053,7 +1044,7 @@ def build():
     del tav
     sky = sky_m * (1 - np.clip((tree_m - 0.5) / 0.45, 0, 1)) * circle     # leaf edges take the dusk too
     B.fill(g, 'Sky · blue hour (multiply)', PAL['dusk'], sky, blend='multiply', opacity=0.60)
-    B.fill(g, 'Sky · blue hour (colour)', '#3A4D86', sky, blend='color', opacity=0.55)
+    B.fill(g, 'Sky · blue hour (colour)', '#3A4D86', sky, blend='color', opacity=0.42)
     B.fill(g, 'Sky · deepen (soft light)', '#2E3A5C', sky, blend='soft light', opacity=0.30)
     sb = C.bbox(sky)
     rb = C.cover(rain_beads(), sb[2] - sb[0], sb[3] - sb[1], (0.6, 0.6))
@@ -1135,8 +1126,8 @@ def build():
             blend='screen', opacity=0.40)
     del cg, sky_vis
     # where the void overlaps the street and the bar, colour intensifies (soft-edged lenses)
-    B.fill(g, 'Intensity · void x street (colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.55)
-    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.60)
+    B.fill(g, 'Intensity · void x street (colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.40)
+    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.45)
     B.fill(g, 'Intensity · void x bar (honey)', PAL['honey'], lens_bar, blend='overlay', opacity=0.60)
     zones['lens street'] = (circle * fac_rect > 0.5) & (lens_fac > 0.5)
     zones['lens bar'] = (circle * bar_plane > 0.5) & (lens_bar > 0.5)
