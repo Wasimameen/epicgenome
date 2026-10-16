@@ -719,9 +719,9 @@ def build():
     del face
     yc = yy_canvas()
     B.fill(g, 'Grade · glass depth (dusk, not mortar)', PAL['dusk'],
-           fmask * blocks_mask * (1 - smoothstep(1700, 2500, yc)), blend='multiply', opacity=0.20, clip=True)
+           fmask * blocks_mask * (1 - smoothstep(1700, 2500, yc)), blend='multiply', opacity=0.25, clip=True)
     B.fill(g, 'Grade · lamplight in the low courses', PAL['honey'], fmask * blocks_mask * smoothstep(1900, 2700, yc),
-           blend='soft light', opacity=0.60, clip=True)
+           blend='soft light', opacity=0.75, clip=True)
     del yc
     zones['facade blocks outside disc'] = (blocks_mask > 0.5) & (circle < 0.5)
     zones['facade glass outside disc'] = zones['facade blocks outside disc'] & (fmask > 0.5)
@@ -795,6 +795,11 @@ def build():
     sp_y1 = el(0, 765)[1]
     panel = box_alpha(sp_x0, BULK_Y0, sp_x1, sp_y1)
     B.fill(g, 'Bar · sign panel (painted)', '#E9DFCF', panel, clip=True)
+    pl = C.texture_fill(C.load('assets/mat/plaster_warm.png', 'RGB'), BULK_Y1 - BULK_Y0, int(sp_x1 - sp_x0) + 2,
+                        scale=0.6)
+    B.photo(g, 'Bar · sign panel, limewash texture', pl, sp_x0, BULK_Y0, mask_alpha=panel, blend='multiply',
+            opacity=0.55, clip=True)
+    del pl
     shade = smoothstep(BULK_Y0, BULK_Y1, yy_canvas()) * box_alpha(BAR_X0, BULK_Y0, BAR_X1, BULK_Y1)
     B.fill(g, 'Shade · bulkhead, darker at the soffit', '#6B4A2E', shade, blend='multiply', opacity=0.35,
            clip=True)
@@ -1005,12 +1010,19 @@ def build():
     ao[:, :] = smoothstep(0, 90, np.arange(90, dtype=np.float32))[:, None] ** 1.5
     B.fill_local(gt, 'Shade · trunk base darkens into the soil', '#2E241C', ao, TRUNK_X - 110,
                  SOIL_TOP - 84, blend='multiply', opacity=0.55, clip=True)
-    del vbs
+    # leaves of the photo that the tree cut-out does not carry (they are not sky either)
+    hsv = cv2.cvtColor(np.ascontiguousarray(vbs), cv2.COLOR_RGB2HSV)
+    leafy = (((hsv[..., 0] > 45) & (hsv[..., 0] < 175) & (hsv[..., 1] > 0.16)) | (hsv[..., 2] < 0.30))
+    leafy = C.blur(cv2.dilate(leafy.astype(np.uint8) * (glz > 0.3).astype(np.uint8), np.ones((3, 3), np.uint8))
+                   .astype(np.float32), 0.8)
+    del hsv, vbs
     # --- sky at blue hour, behind the leaves (crown and branch excluded)
     sky = np.zeros((H, W), np.float32)
     gh_, gw_ = glz.shape
     sky[VB_OY:VB_OY + gh_, VB_OX:VB_OX + gw_] = glz[:H - VB_OY, :W - VB_OX]
-    del glz
+    tav[VB_OY:VB_OY + gh_, VB_OX:VB_OX + gw_] = np.maximum(tav[VB_OY:VB_OY + gh_, VB_OX:VB_OX + gw_],
+                                                           leafy[:H - VB_OY, :W - VB_OX])
+    del glz, leafy
     sky_m = sky
     tree_m = np.maximum(tav, twig_alpha)
     del tav
@@ -1027,9 +1039,9 @@ def build():
     # ============================================================ 60 tree pit front
     g = B.group('60 · Tree pit — soil lip round the trunk', label='green')
     cs = np.zeros(lip.shape[:2], np.float32)
-    cv2.ellipse(cs, (int(TRUNK_X - plx + 4), int(SOIL_TOP - ply + 6)), (88, 14), 0, 0, 360, 1.0, -1, cv2.LINE_AA)
+    cv2.ellipse(cs, (int(TRUNK_X - plx + 4), int(SOIL_TOP - ply - 2)), (70, 9), 0, 0, 360, 1.0, -1, cv2.LINE_AA)
+    B.shadow(g, 'Shadow · trunk contact on the soil', cs, plx, ply, depth=2, sigma=5, opacity=0.35)
     B.px(g, 'Tree pit · soil swallowing the trunk', lip, plx, ply)
-    B.shadow(g, 'Shadow · trunk contact on the soil', cs, plx, ply, depth=2, sigma=6, opacity=0.40)
     del back, lip
 
     # ============================================================ 70 ceiling: festoon valance
@@ -1097,8 +1109,8 @@ def build():
             blend='screen', opacity=0.40)
     del cg, sky_vis
     # where the void overlaps the street and the bar, colour intensifies (soft-edged lenses)
-    B.fill(g, 'Intensity · void x street (colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.60)
-    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.60)
+    B.fill(g, 'Intensity · void x street (colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.55)
+    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.45)
     B.fill(g, 'Intensity · void x bar (honey)', PAL['honey'], lens_bar, blend='overlay', opacity=0.60)
     zones['lens street'] = (circle * fac_rect > 0.5) & (lens_fac > 0.5)
     zones['lens bar'] = (circle * bar_plane > 0.5) & (lens_bar > 0.5)
@@ -1193,8 +1205,9 @@ def build():
     keep = box_alpha(*el(540, 395), *el(735, 560)) * nodisc
     B.photo(g, 'Drawing · elev. 01 leaf logo (ghost)', evs, ex0, ey0, mask_alpha=keep, blend='multiply',
             opacity=0.55, locked=True)
-    keep = box_alpha(BAR_X0 - 4, CTR_Y + 20, 1060, FLOOR_Y + 4) * nodisc
-    B.photo(g, 'Drawing · elev. 01 stools (ghost)', evs, ex0, ey0, mask_alpha=keep,
+    keep = np.clip(box_alpha(BAR_X0 - 4, CTR_Y + 20, 1060, FLOOR_Y + 4)
+                   + box_alpha(*el(1280, 1395), *el(1620, 1560)), 0, 1) * nodisc
+    B.photo(g, 'Drawing · elev. 01 stools & machine', evs, ex0, ey0, mask_alpha=keep,
             blend='multiply', opacity=0.45, locked=True)
     del evs, keep, nodisc
 
@@ -1294,7 +1307,7 @@ def build():
     B.leader(g, 'Leader · outside to the rain', [(ob[0] + 96, ob[3]), (ob[0] + 120, ob[3] + 190)],
              width=2.0, color=LINEN, dot_at_end=True, opacity=0.85)
     # the leaf-and-soil smell, on the terrazzo beside the tree pit, pointing at the soil
-    sb_ = B.tag(g, 'SMELL · 02', 'green leaf, damp soil', 1360, 2960)
+    sb_ = B.tag(g, 'SMELL · 02', 'green leaf, damp soil', 1420, 2930)
     B.leader(g, 'Leader · smell 02 to the soil', [(sb_[2], (sb_[1] + sb_[3]) / 2 + 20), (leaf_wisp[0] - 8,
                                                                                           leaf_wisp[1] - 4)],
              width=2.0, dot_at_end=True, opacity=0.85)
@@ -1446,6 +1459,7 @@ CROPS = {
     'stair': (2650, 1150, 3850, 2950),
     'title': (100, 2900, 1800, 3508),
     'facade_right': (4400, 1250, 4961, 2880),
+    'valance_right': (4300, 200, 4961, 700),
 }
 
 
