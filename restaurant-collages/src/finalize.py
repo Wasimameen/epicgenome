@@ -54,7 +54,11 @@ def source_fingerprint():
     import glob
     import hashlib
     h = hashlib.sha1()
-    files = sorted(glob.glob(os.path.join(HERE, '*.py')) + glob.glob(os.path.join(HERE, '*.js'))
+    # this sheet's own script(s) + everything shared; the other sheet's script is not an input
+    stem = os.path.splitext(os.path.basename(sys.argv[0]))[0]
+    own = [p for p in glob.glob(os.path.join(HERE, '*.py'))
+           if not os.path.basename(p).startswith('collage0') or os.path.basename(p).startswith(stem)]
+    files = sorted(own + glob.glob(os.path.join(HERE, '*.js'))
                    + glob.glob(os.path.join(HERE, 'lib', '*.py'))
                    + glob.glob(os.path.join(ROOT, 'assets', '*', 'index.json')))
     for p in files:
@@ -65,7 +69,8 @@ def source_fingerprint():
                               text=True).stdout.strip()
     except Exception:
         head = 'unknown'
-    return {'sources_sha1': h.hexdigest()[:16], 'git_head_at_export': head, 'n_files': len(files)}
+    return {'sources_sha1': h.hexdigest()[:16], 'git_head_at_export': head, 'n_files': len(files),
+            'files': [os.path.relpath(p, ROOT) for p in files]}
 
 
 def _tree_lines(nodes, depth=0):
@@ -133,9 +138,9 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     if stamp['sources_sha1'] != stamp0['sources_sha1']:
         raise RuntimeError('build sources changed during the export - re-run so the files match one source state')
     try:
-        dirty = subprocess.run(['git', 'status', '--porcelain', '--', 'src', 'assets'], cwd=ROOT,
+        dirty = subprocess.run(['git', 'status', '--porcelain', '--'] + stamp['files'], cwd=ROOT,
                                capture_output=True, text=True).stdout.split('\n')
-        stamp['uncommitted_source_files'] = [ln[3:] for ln in dirty if ln.strip() and not ln[3:].endswith('.pyc')]
+        stamp['uncommitted_source_files'] = [ln[3:] for ln in dirty if ln.strip()]
     except Exception:
         stamp['uncommitted_source_files'] = None
 

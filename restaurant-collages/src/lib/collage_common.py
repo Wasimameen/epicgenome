@@ -329,7 +329,8 @@ class Builder:
                                color=PAL['terracotta'], fill=0.25, apex_dot=5, apex_ring=10)
         self.gen(g, 'Key plan · view cone (this sheet)', cone)
         # north point: right end of the heading line, above the plan's top-right corner
-        self.gen(g, 'Key plan · north point', S.north_arrow(at=(W - MARGIN - 26, HEAD - 2), size=52))
+        self.gen(g, 'Key plan · north point', S.north_arrow(at=(W - MARGIN - 30, HEAD - 8), size=60,
+                                                            label_size=LABEL))
         # own labels under the plan (client labels removed), on the footer baseline
         yb = FOOT
         self.text(g, '01 VOID', 'mono', LABEL, void[0] - 60, yb, tracking=100, name='TXT · key plan label void',

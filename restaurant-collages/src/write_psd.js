@@ -26,6 +26,14 @@ function readPng(rel) {
            data: new Uint8ClampedArray(png.data.buffer, png.data.byteOffset, png.data.length) };
 }
 
+function pngSize(rel) {           // width / height straight from the IHDR chunk
+  const fd = fs.openSync(path.join(buildDir, rel), 'r');
+  const b = Buffer.alloc(24);
+  fs.readSync(fd, b, 0, 24, 0);
+  fs.closeSync(fd);
+  return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+}
+
 function solid(w, h, rgb) {
   const data = new Uint8ClampedArray(w * h * 4);
   for (let i = 0; i < data.length; i += 4) {
@@ -89,9 +97,18 @@ function build(node) {
   } else if (node.type === 'fill') {
     stats.fill++;
     L.vectorFill = { type: 'color', color: { r: node.color[0], g: node.color[1], b: node.color[2] } };
-    // Photoshop stores the rendered fill for the whole canvas; RLE makes it tiny.
-    L.left = 0; L.top = 0; L.right = W; L.bottom = H;
-    L.imageData = solid(W, H, node.color);
+    // Photoshop regenerates a fill from vectorFill; the stored pixels are only a cache for other readers.
+    // A masked fill (mask default 0) is invisible outside its mask rectangle, so the cache only needs
+    // that rectangle (a full-canvas RLE cache costs ~1 MB per fill). Unmasked fills cache the canvas.
+    let fx0 = 0, fy0 = 0, fx1 = W, fy1 = H;
+    if (node.mask && !node.mask.default) {
+      const dims = pngSize(node.mask.png);
+      fx0 = Math.max(0, node.mask.x); fy0 = Math.max(0, node.mask.y);
+      fx1 = Math.min(W, node.mask.x + dims.width); fy1 = Math.min(H, node.mask.y + dims.height);
+      if (fx1 <= fx0 || fy1 <= fy0) { fx0 = 0; fy0 = 0; fx1 = 1; fy1 = 1; }
+    }
+    L.left = fx0; L.top = fy0; L.right = fx1; L.bottom = fy1;
+    L.imageData = solid(fx1 - fx0, fy1 - fy0, node.color);
   } else {
     throw new Error('unknown node type ' + node.type);
   }
