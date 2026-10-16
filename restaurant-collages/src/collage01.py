@@ -128,7 +128,8 @@ FLOOR_WARP = [(1290, FLOOR_Y - 20), (3300, FLOOR_Y - 20), (3960, H + 40), (520, 
 # one branch reaching out of the void towards the street: a real branch of the same tree (tree_B px),
 # whole leaflets selected inside an outline (no straight or dissolve cuts), its base slipped UNDER
 # the photographed crown at a real branch, so it visibly grows out of the tree
-TWIG = dict(box=(1640, 1290, 2287, 1610), base=(1652, 1556), scale=1.1, angle=34.0, target=(2450, 1290),
+TWIG = dict(box=(1640, 1180, 2287, 1610), base=(1652, 1556), scale=1.3, angle=30.0, target=(2440, 1325),
+            base_zone=[(1630, 1480), (1780, 1480), (1780, 1610), (1630, 1610)],
             outline=[(1640, 1535), (1700, 1492), (1800, 1428), (1868, 1362), (1950, 1306), (2050, 1294),
                      (2160, 1298), (2287, 1318), (2287, 1476), (2200, 1506), (2080, 1548), (1985, 1500),
                      (1880, 1458), (1760, 1545), (1690, 1600), (1640, 1600)])
@@ -305,21 +306,24 @@ def inpaint_fringes(rgb, thresh=0.2):
     return healed, np.clip(C.blur(m.astype(np.float32), 0.7) * 1.3, 0, 1)
 
 
-def select_leaves(a, outline, box):
+def select_leaves(a, outline, box, base_zone=None):
     """Keep whole leaflets (and the thin stems between them) inside an outline drawn through the gaps
     of the foliage: leaflets are separated by a small erosion and kept or dropped as a whole, so no leaf
-    is ever cut by a straight or dissolving edge."""
+    is ever cut by a straight or dissolving edge.  Inside `base_zone` (the branch base, which is placed
+    under the photographed crown) the dense merged foliage is simply clipped by the outline."""
     bx0, by0 = box[:2]
     h, w = a.shape
     inside = C.poly_mask([(x - bx0, y - by0) for x, y in outline], h, w)
+    zone = C.poly_mask([(x - bx0, y - by0) for x, y in base_zone], h, w, feather=4) if base_zone else 0
     ell = lambda r: cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))  # noqa: E731
     solid = (a > 0.5).astype(np.uint8)
-    core = cv2.erode(solid, ell(2))
+    core = cv2.erode(solid, ell(5))              # stems (< 10 px) vanish, leaflets come apart
     n, lab = cv2.connectedComponents(core, connectivity=8)
-    frac = ndimage.mean(inside, lab, index=np.arange(1, n))
-    kept = np.isin(lab, np.flatnonzero(np.asarray(frac) > 0.6) + 1).astype(np.uint8)
-    bodies = cv2.dilate(core, ell(4)).astype(np.float32)
-    keep = np.clip(cv2.dilate(kept, ell(4)).astype(np.float32) + (1 - bodies) * (inside > 0.5), 0, 1)
+    frac = np.asarray(ndimage.mean(inside, lab, index=np.arange(1, n)))
+    kept = np.isin(lab, np.flatnonzero(frac > 0.6) + 1).astype(np.uint8)
+    bodies = cv2.dilate(core, ell(8)).astype(np.float32)
+    keep = np.clip(cv2.dilate(kept, ell(8)).astype(np.float32) * (1 - zone) + (1 - bodies) * (inside > 0.5), 0, 1)
+    keep = np.maximum(keep, zone * C.blur(inside, 3))
     return a * C.blur(keep, 0.6)
 
 
@@ -352,10 +356,10 @@ def valance_parts():
     m *= 1 - left_tail * smoothstep(1090, 1110, ys)[:, None]
     # right side tail: no stub hanging below the swags — cut along the last swag's own hem, rising to
     # a gathered cusp at the end (like the jabot)
-    hx = np.interp(xs, hem[:, 0], hem[:, 1])
-    rise = smoothstep(5880, 5990, xs)
-    ycut_r = hx * (1 - rise) + 860.0 * rise
-    m *= 1 - smoothstep(5760, 5790, xs)[None, :] * np.clip(ys[:, None] - ycut_r[None, :] + 0.5, 0, 1)
+    sel = (hem[:, 0] >= 5640) & (hem[:, 0] <= 5990)
+    fit = np.polyfit(hem[sel, 0], hem[sel, 1], 2)                  # a smooth last belly (no tail point)
+    hx = np.polyval(fit, xs) - 3
+    m *= 1 - smoothstep(5680, 5710, xs)[None, :] * np.clip(ys[:, None] - hx[None, :] + 0.5, 0, 1)
     # jabot tail: cut along a gather cusp drawn into the neighbouring hems
     xl, xc_, xr = 3560.0, 3706.0, 3905.0
     yl = float(np.interp(xl, *np.array(geo['hem_every_16px']).T))
@@ -488,63 +492,78 @@ def planter_parts():
     return back, lip_rgba, (x0, y0)
 
 
-def trunk_retouch(vbs, ta, tpos):
-    """Heal most of the stamped crescent 'eye' knots on the lower trunk (an AI-bark tell) by cloning
-    bark from 45-75 px above / below, keeping three irregularly spaced ones.  vbs = void photo at
-    canvas scale (placed at VB_OX, VB_OY), ta = tree alpha at canvas scale placed at tpos.
-    Returns (rgba patch, x, y, healed rgb strip, strip alpha) in canvas px."""
-    X0, X1, Y0, Y1 = int(TRUNK_X) - 110, int(TRUNK_X) + 110, 2400, 3304
+def trunk_retouch(vbs, ta, tpos, y_top=2440, keep_knots=((2575, -1), (2897, 1), (3175, -1))):
+    """Rebuild the bark of the lower trunk, which carries a stamped row of near-identical crescent
+    'eye' knots (an AI-bark tell): per-row cylinder shading and colour measured on the trunk itself,
+    a vertical-grain bark texture and sparse lenticels; three original knots are kept, irregularly
+    spaced.  vbs = void photo at canvas scale (placed at VB_OX, VB_OY), ta = tree alpha at canvas
+    scale placed at tpos.  Returns (rgba patch, x, y, rebuilt rgb strip, strip alpha, n replaced)."""
+    X0, X1, Y0, Y1 = int(TRUNK_X) - 110, int(TRUNK_X) + 110, y_top - 60, 3304
     rgb = vbs[Y0 - VB_OY:Y1 - VB_OY, X0 - VB_OX:X1 - VB_OX].copy()
-    a = np.zeros((Y1 - Y0, X1 - X0), np.float32)
+    hh, ww = rgb.shape[:2]
+    a = np.zeros((hh, ww), np.float32)
     tx, ty = tpos
     sub = ta[Y0 - ty:Y1 - ty, X0 - tx:X1 - tx]
     a[:sub.shape[0], :sub.shape[1]] = sub
-    trunk = cv2.erode((a > 0.95).astype(np.uint8), np.ones((7, 7), np.uint8))
+    # trunk span per row, smoothed
+    xl = np.full(hh, np.nan, np.float32)
+    xr = np.full(hh, np.nan, np.float32)
+    for r in range(hh):
+        c = np.flatnonzero(a[r] > 0.5)
+        if len(c) > 20:
+            xl[r], xr[r] = c.min(), c.max() + 1
+    ok = ~np.isnan(xl)
+    rows = np.arange(hh)
+    xl = np.interp(rows, rows[ok], xl[ok]).astype(np.float32)
+    xr = np.interp(rows, rows[ok], xr[ok]).astype(np.float32)
+    xs = np.arange(ww, dtype=np.float32)[None, :]
+    u = np.clip((xs - xl[:, None]) / np.maximum(1, (xr - xl)[:, None]), 0, 1)
+    # colour profile across the trunk (robust: median over rows per u-bin), vertical tone per row
+    nb = 48
+    bins = np.clip((u * nb).astype(int), 0, nb - 1)
+    inside = (a > 0.9)
+    prof = np.zeros((nb, 3), np.float32)
+    for b in range(nb):
+        m = inside & (bins == b)
+        prof[b] = np.median(rgb[m], axis=0) if m.sum() > 50 else np.nan
+    for c in range(3):
+        v = prof[:, c]
+        good = ~np.isnan(v)
+        prof[:, c] = np.interp(np.arange(nb), np.flatnonzero(good), v[good])
+    prof = cv2.GaussianBlur(prof[None], (0, 0), 2.0)[0] if nb > 4 else prof
     L = C.lum(rgb)
-    bg = ndimage.median_filter(L, size=(81, 3))
-    knots = (((bg - L) > 0.045) & (trunk > 0)).astype(np.uint8)
-    knots = cv2.morphologyEx(knots, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
-    knots = cv2.dilate(knots, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11)))
-    n, lab, st, cen = cv2.connectedComponentsWithStats(knots, connectivity=8)
-    comps = sorted([i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] > 80], key=lambda i: cen[i][1])
-    keep = {comps[k] for k in (1, 4, 6) if k < len(comps)}         # three, irregularly spaced
-    # trunk lean (centre x per row) for the clone offset
-    rows = np.flatnonzero((a > 0.5).sum(1) > 20)
-    cx_row = np.array([np.flatnonzero(a[r] > 0.5).mean() for r in rows])
-    lean = np.polyfit(rows, cx_row, 1)[0] if len(rows) > 10 else 0.0
-    out = rgb.copy()
-    heal = np.zeros_like(L)
-    for i in comps:
-        if i in keep:
-            continue
-        m = (lab == i)
-        x, y, w_, h_ = st[i, 0], st[i, 1], st[i, 2], st[i, 3]
-        best = None
-        for dy in (-60, 60, -48, 48, -75, 75):
-            ys0, ys1 = y + dy, y + dy + h_
-            if ys0 < 0 or ys1 > rgb.shape[0]:
-                continue
-            dx = int(round(dy * lean))
-            if x + dx < 0 or x + dx + w_ > rgb.shape[1]:
-                continue
-            cover = knots[ys0:ys1, x + dx:x + dx + w_][m[y:y + h_, x:x + w_]].mean()
-            if best is None or cover < best[0]:
-                best = (cover, dy, dx)
-        if best is None:
-            continue
-        _, dy, dx = best
-        src = rgb[y + dy:y + dy + h_, x + dx:x + dx + w_]
-        dst = rgb[y:y + h_, x:x + w_]
-        ring = cv2.dilate(m[y:y + h_, x:x + w_].astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool) \
-            & ~m[y:y + h_, x:x + w_]
-        g = (C.lum(dst)[ring].mean() + 1e-4) / (C.lum(src)[ring].mean() + 1e-4) if ring.any() else 1.0
-        out[y:y + h_, x:x + w_] = np.where(m[y:y + h_, x:x + w_, None], np.clip(src * g, 0, 1),
-                                           out[y:y + h_, x:x + w_])
-        heal[y:y + h_, x:x + w_] = np.maximum(heal[y:y + h_, x:x + w_], m[y:y + h_, x:x + w_])
-    alpha = C.blur(heal, 2.5) * (a > 0.5)
-    patch = np.dstack([out, np.clip(alpha * 1.15, 0, 1)])
-    healed = rgb * (1 - alpha[..., None]) + out * alpha[..., None]
-    return patch, X0, Y0, healed, a, len(comps) - len(keep)
+    row_med = np.array([np.median(L[r][inside[r]]) if inside[r].sum() > 10 else np.nan for r in range(hh)])
+    good = ~np.isnan(row_med)
+    row_med = np.interp(rows, rows[good], row_med[good])
+    row_f = C.blur(row_med[:, None].astype(np.float32), 40)[:, 0]
+    row_f = row_f / float(np.median(row_f))
+    base = prof[bins] * row_f[:, None, None]
+    # bark: fine vertical grain + broad streaks + sparse small lenticels
+    rng = np.random.default_rng(57)
+    g1 = cv2.GaussianBlur(rng.standard_normal((hh, ww)).astype(np.float32), (0, 0), sigmaX=1.0, sigmaY=7.0)
+    g2 = cv2.GaussianBlur(rng.standard_normal((hh, ww)).astype(np.float32), (0, 0), sigmaX=3.0, sigmaY=24.0)
+    g1 /= g1.std() + 1e-6
+    g2 /= g2.std() + 1e-6
+    tex = 0.045 * g1 + 0.05 * g2
+    lent = np.zeros((hh, ww), np.float32)
+    for _ in range(int(hh / 18)):
+        cy_, cx_ = rng.uniform(0, hh), rng.uniform(0, ww)
+        lw, lh = rng.uniform(3, 7), rng.uniform(0.8, 1.6)
+        lent = np.maximum(lent, np.clip(1 - np.hypot((xs[0] - cx_) / lw, (rows[:, None] - cy_) / lh), 0, 1))
+    out = np.clip(base * (1 + tex[..., None]) * (1 - 0.22 * lent[..., None]), 0, 1)
+    # keep three original knots (soft ellipses on the side they sit)
+    keepm = np.zeros((hh, ww), np.float32)
+    for ky, side in keep_knots:
+        r = ky - Y0
+        if 0 <= r < hh:
+            cx_ = xl[r] + (xr[r] - xl[r]) * (0.3 if side < 0 else 0.7)
+            keepm = np.maximum(keepm, np.clip(1.3 - np.hypot((xs[0] - cx_) / 34, (rows[:, None] - r) / 30), 0, 1))
+    out = out * (1 - keepm[..., None]) + rgb * keepm[..., None]
+    alpha = np.clip(a * 1.02, 0, 1) * smoothstep(60, 140, rows.astype(np.float32))[:, None]
+    patch = np.dstack([out, alpha])
+    rebuilt = rgb * (1 - alpha[..., None]) + out * alpha[..., None]
+    knots = int(round(((Y1 - y_top) / 75.0))) - len(keep_knots)
+    return patch, X0, Y0, rebuilt, a, knots
 
 
 def bark_grade(rgb, w):
@@ -587,7 +606,8 @@ def root_flare(healed, a, X0, Y0, flare=26.0, height=140):
     return out, X0, yt
 
 
-def leaf_piece(box, scale, angle, flip=False, blur=0.0, anchor=(0.0, 0.0), outline=None, tame_red=False):
+def leaf_piece(box, scale, angle, flip=False, blur=0.0, anchor=(0.0, 0.0), outline=None, tame_red=False,
+               base_zone=None):
     """A crop of the tree (void_lookup_B pixels + tree_B alpha) scaled / turned (deg CCW) / optionally
     mirrored.  box is in tree_B cut coordinates; anchor a point of the crop (tree_B px).  The violet
     fringes are inpainted first; with `outline` only whole leaflets inside it are kept.  With blur the
@@ -597,16 +617,20 @@ def leaf_piece(box, scale, angle, flip=False, blur=0.0, anchor=(0.0, 0.0), outli
     v = C.load('assets/gen/void_lookup_B.png', 'RGB')[sy0 + by0:sy0 + by1, sx0 + bx0:sx0 + bx1].copy()
     a = C.load('assets/cut/tree_B.png')[by0:by1, bx0:bx1, 3].copy()
     v, _ = inpaint_fringes(v)
-    # un-mix the white skylight from the partial-alpha leaf edges (else they glow against a blue sky)
-    sky_w = (a < 0.03).astype(np.float32)
-    bgw = C.blur(sky_w, 12)
-    bgc = np.where(bgw[..., None] > 1e-3, C.blur(v * sky_w[..., None], 12) / np.maximum(bgw, 1e-3)[..., None],
-                   v[sky_w > 0].mean(0) if sky_w.any() else 0.9)
-    part = ((a > 0.02) & (a < 0.98))[..., None]
-    v = np.where(part, np.clip((v - (1 - a[..., None]) * bgc) / np.maximum(a, 0.25)[..., None], 0, 1), v)
-    del sky_w, bgw, bgc, part
     if outline is not None:
-        a = select_leaves(a, outline, box)
+        # a crisp piece over a new (blue) sky: no white skylight left in it.  Sky-white pixels (pale lit
+        # twigs, bright leaf rims) leave the matte; specks go; colour comes from the opaque leaf body
+        hsv = cv2.cvtColor(np.ascontiguousarray(v), cv2.COLOR_RGB2HSV)
+        skyish = smoothstep(0.62, 0.78, hsv[..., 2]) * (1 - smoothstep(0.10, 0.22, hsv[..., 1]))
+        a = a * (1 - skyish)
+        a = select_leaves(a, outline, box, base_zone=base_zone)
+        a = drop_small(a, 900, thresh=0.3)
+        body = cv2.erode((a > 0.9).astype(np.uint8), np.ones((3, 3), np.uint8)).astype(np.float32)
+        bw_ = C.blur(body, 3)
+        inner = np.where(bw_[..., None] > 1e-3, C.blur(v * body[..., None], 3) / np.maximum(bw_, 1e-3)[..., None], v)
+        v = v * body[..., None] + inner * (1 - body[..., None])
+        a = np.clip((a - 0.12) / 0.8, 0, 1)          # tighten the soft fringe of the matte
+        del hsv, skyish, body, bw_, inner
     h, w = a.shape
     ax, ay = anchor[0] - bx0, anchor[1] - by0
     if flip:
@@ -932,6 +956,7 @@ def build():
     del mos
     B.photo(g, 'Floor · cream terrazzo (perspective)', tz, tx0, ty0, mask_alpha=floor, margin=60)
     del tz
+    B.fill(g, 'Grade · terrazzo softened', '#808080', None, blend='saturation', opacity=0.35, clip=True)
     depth_fade = (1 - smoothstep(FLOOR_Y, FLOOR_Y + 420, yy_canvas())) * floor
     B.fill(g, 'Grade · floor recedes into shade', '#6E6458', depth_fade, blend='multiply', opacity=0.35, clip=True)
     del depth_fade
@@ -978,7 +1003,7 @@ def build():
     del outside_disc
     # one branch reaching out of the void towards the street; its base slips under the crown
     rgb_, al_, q = leaf_piece(TWIG['box'], TWIG['scale'], TWIG['angle'], anchor=TWIG['base'],
-                              outline=TWIG['outline'])
+                              outline=TWIG['outline'], base_zone=TWIG['base_zone'])
     px0, py0 = int(round(TWIG['target'][0] - q[0])), int(round(TWIG['target'][1] - q[1]))
     th_, tw_ = al_.shape
     twig_alpha = np.zeros((H, W), np.float32)
@@ -988,7 +1013,7 @@ def build():
     B.photo(gt, 'Tree · branch breaking out of the void', rgb_, px0, py0, mask_alpha=al_, mask_xy=(px0, py0))
     del rgb_, off
     # root flare under the cut-out (only its flanks show), graded like the lower trunk
-    patch, kx, ky, healed_trunk, trunk_a, n_healed = trunk_retouch(vbs, ta, tpos)
+    patch, kx, ky, healed_trunk, trunk_a, _ = trunk_retouch(vbs, ta, tpos)
     flare, fx_, fy_ = root_flare(healed_trunk, trunk_a, kx, ky)
     B.px(gt, 'Tree · root flare at the soil (bark)', flare, fx_, fy_)
     B.cutout(gt, 'Tree · cut-out (registered on its photo)', 'tree_B.png', VB_S, tx_, ty_, margin=TREE_MARGIN)
@@ -999,7 +1024,7 @@ def build():
     B.px(gt, 'Retouch · leaf fringes healed', np.dstack([hsub, asub]), VB_OX + bx0 + max(0, tbx0),
          VB_OY + by0 + max(0, tby0), clip=True)
     del healed, ha, hsub, asub
-    B.px(gt, f'Retouch · trunk knots healed ({n_healed})', patch, kx, ky, clip=True)
+    B.px(gt, 'Retouch · lower trunk bark rebuilt', patch, kx, ky, clip=True)
     del patch, healed_trunk, trunk_a
     trunk_band = box_alpha(TRUNK_X - 85, 2380, TRUNK_X + 85, 3320) * smoothstep(2450, 2700, yy_canvas())
     B.fill(gt, 'Grade · lower trunk to grey bark', '#6F6658', trunk_band, blend='color', opacity=0.45, clip=True)
@@ -1012,7 +1037,7 @@ def build():
                  SOIL_TOP - 84, blend='multiply', opacity=0.55, clip=True)
     # leaves of the photo that the tree cut-out does not carry (they are not sky either)
     hsv = cv2.cvtColor(np.ascontiguousarray(vbs), cv2.COLOR_RGB2HSV)
-    leafy = (((hsv[..., 0] > 45) & (hsv[..., 0] < 175) & (hsv[..., 1] > 0.16)) | (hsv[..., 2] < 0.30))
+    leafy = (((hsv[..., 0] > 50) & (hsv[..., 0] < 150) & (hsv[..., 1] > 0.20)) | (hsv[..., 2] < 0.30))
     leafy = C.blur(cv2.dilate(leafy.astype(np.uint8) * (glz > 0.3).astype(np.uint8), np.ones((3, 3), np.uint8))
                    .astype(np.float32), 0.8)
     del hsv, vbs
@@ -1028,7 +1053,7 @@ def build():
     del tav
     sky = sky_m * (1 - np.clip((tree_m - 0.5) / 0.45, 0, 1)) * circle     # leaf edges take the dusk too
     B.fill(g, 'Sky · blue hour (multiply)', PAL['dusk'], sky, blend='multiply', opacity=0.60)
-    B.fill(g, 'Sky · blue hour (colour)', '#3A4D86', sky, blend='color', opacity=0.65)
+    B.fill(g, 'Sky · blue hour (colour)', '#3A4D86', sky, blend='color', opacity=0.55)
     B.fill(g, 'Sky · deepen (soft light)', '#2E3A5C', sky, blend='soft light', opacity=0.30)
     sb = C.bbox(sky)
     rb = C.cover(rain_beads(), sb[2] - sb[0], sb[3] - sb[1], (0.6, 0.6))
@@ -1073,7 +1098,8 @@ def build():
         al_ = al_ * np.clip((NEAR_MAX_Y - (np.arange(al_.shape[0])[:, None] + py0)) / 120.0, 0, 1)
         al_ = drop_small(al_, 4000)
         B.shadow(g, f'Shadow · near leaves ({side})', al_, px0, py0, depth=70, sigma=45, opacity=0.20)
-        B.photo(g, f'Near · leaves overhead ({side})', rgb_, px0, py0, mask_alpha=al_, mask_xy=(px0, py0))
+        B.photo(g, f'Near · leaves overhead ({side})', rgb_, px0, py0, mask_alpha=al_, mask_xy=(px0, py0),
+                keep_offcanvas=True)
         B.fill(g, f'Grade · backlit, in shade ({side})', '#3E4A30', None, blend='multiply', opacity=0.62, clip=True)
         del rgb_, al_
 
@@ -1110,7 +1136,7 @@ def build():
     del cg, sky_vis
     # where the void overlaps the street and the bar, colour intensifies (soft-edged lenses)
     B.fill(g, 'Intensity · void x street (colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.55)
-    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.45)
+    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.60)
     B.fill(g, 'Intensity · void x bar (honey)', PAL['honey'], lens_bar, blend='overlay', opacity=0.60)
     zones['lens street'] = (circle * fac_rect > 0.5) & (lens_fac > 0.5)
     zones['lens bar'] = (circle * bar_plane > 0.5) & (lens_bar > 0.5)
@@ -1141,7 +1167,7 @@ def build():
             mask_alpha=disc(VOID_C[0], VOID_C[1], VOID_R - 8, feather=6), blend='multiply', opacity=0.85)
     del rings
     # where the SOUND 01 leader lands: the visible point of the r=510 ring (open sky) nearest the tag
-    vis = C.blur(sky_m * (1 - tree_m) * disc(VOID_C[0], VOID_C[1], VOID_R - 60), 6)
+    vis = C.blur(sky_m * (1 - tree_m) * disc(VOID_C[0], VOID_C[1], VOID_R - 60), 16)
     best = None
     for th in np.radians(np.arange(-10, 80, 1.0)):
         px_, py_ = skx + 510 * np.cos(th), sky_y - 510 * np.sin(th)
