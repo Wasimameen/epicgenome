@@ -62,7 +62,7 @@ def build():
 
     # ================================================================ 00 paper
     g = B.group('00 · Paper', label='gray')
-    B.px(g, 'Paper · warm linen ground', S.paper(H, W, color=PAL['paper'], seed=101), 0, 0)
+    B.px(g, 'Paper · warm linen ground', C.load('assets/mat/paper_linen_A3.png', 'RGB'), 0, 0)
 
     # ================================================================ 05 drawing underlay
     g = B.group('05 · Drawing underlay — section A-A', label='violet')
@@ -97,7 +97,7 @@ def build():
     gbd = C.cover(gbd, ow, oh, (0.12, 0.5))
     win = C.rect_mask(WIN_X[0], oy0, WIN_X[1], oy1)
     B.photo(g, 'Facade · glass blocks, street refracted', gbd, ox0, oy0,
-            mask_alpha=C.rect_mask(ox0, oy0, ox1, oy1) * (1 - win))
+            mask_alpha=C.rect_mask(ox0, oy0, ox1, oy1) * (1 - win), margin=0)
     del gbd
     frame = np.clip(C.rect_mask(WIN_X[0] - 16, oy0, WIN_X[0], oy1) + C.rect_mask(WIN_X[1], oy0, WIN_X[1] + 16, oy1)
                     + C.rect_mask(WIN_X[0], 1560, WIN_X[1], 1574), 0, 1)
@@ -181,7 +181,8 @@ def build():
     cl, clx, cly = local(circle)
     B.shadow(g, 'Shadow · void disc', cl, clx, cly, dx=34, dy=46, sigma=50, opacity=0.5)
     B.px(g, 'Void · paper rim', card_edge(cl, width=12), clx - 12, cly - 12)
-    B.photo(g, 'Void · looking up the void (photo, circular mask)', vbs, VB_OX, VB_OY, mask_alpha=circle)
+    B.photo(g, 'Void · looking up the void (photo, circular mask)', vbs, VB_OX, VB_OY, mask_alpha=circle,
+            margin=260)
     del vbs
     geo = json.load(open(asset('cut', 'geo', 'void_lookup_B', 'geometry.json')))
     skx, sky = vb(*geo['ellipses']['skylight']['centre'])

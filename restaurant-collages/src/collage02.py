@@ -51,7 +51,7 @@ def build():
 
     # ================================================================ 00 paper
     g = B.group('00 · Paper', label='gray')
-    B.px(g, 'Paper · warm linen ground', S.paper(H, W, color=PAL['paper'], seed=202), 0, 0)
+    B.px(g, 'Paper · warm linen ground', C.load('assets/mat/paper_linen_A3.png', 'RGB'), 0, 0)
 
     # ================================================================ 05 drawing underlay
     g = B.group('05 · Drawing underlay — elevation 02 (cabins)', label='violet')
@@ -85,7 +85,7 @@ def build():
     del shells, fg
     B.shadow(g, 'Shadow · cabins on the page', cut, CR_X, CR_Y, dx=26, dy=30, sigma=34, opacity=0.45)
     B.photo(g, 'Cabins · four fluted-oak cabins (photo, cut to the shells)', row, CR_X, CR_Y,
-            mask_alpha=cut, mask_xy=(CR_X, CR_Y))
+            mask_alpha=cut, mask_xy=(CR_X, CR_Y), margin=160)
     # colour intensity inside each arch, deepening towards the cabin we walk into
     am = C.resize(archm, CR_S)
     del archm
@@ -99,7 +99,7 @@ def build():
         B.fill(g, f'Intensity · inside cabin {i + 1}', PAL['oxblood'], sub, blend='soft light',
                opacity=0.30 + 0.16 * i)
     B.photo(g, 'Foreground · dining tables in soft focus (photo)', row, CR_X, CR_Y + 34,
-            mask_alpha=fgm, mask_xy=(CR_X, CR_Y + 34))
+            mask_alpha=fgm, mask_xy=(CR_X, CR_Y + 34), margin=60)
     del row, cut, fgm, am
 
     # ================================================================ 25 festoon hem

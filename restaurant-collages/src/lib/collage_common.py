@@ -52,20 +52,30 @@ class Builder:
         rgba, (x, y) = out
         return self.px(g, name, rgba, x, y, **kw)
 
-    def photo(self, g, name, img, x, y, mask_alpha=None, mask_xy=None, **kw):
+    def photo(self, g, name, img, x, y, mask_alpha=None, mask_xy=None, margin=None, **kw):
         """Photo pixel layer with an optional layer mask.
 
         ``mask_alpha`` is either a full-canvas float mask (mask_xy None) or a local
-        mask placed at ``mask_xy``.  The photo keeps all its pixels; the mask decides
-        what shows, so the client can repaint it in Photoshop.
+        mask placed at ``mask_xy``.  The photo keeps its pixels behind the mask, so the
+        client can repaint the mask in Photoshop; with ``margin`` the photo is trimmed
+        to the mask's extent plus that many pixels of spare image on every side.
         """
         mask = None
+        x, y = int(round(x)), int(round(y))
         if mask_alpha is not None:
             if mask_xy is None:
                 mask = C.canvas_mask(name, mask_alpha)
             else:
                 mask = C.mask_for(mask_alpha, mask_xy[0], mask_xy[1])
-        layer = C.pixel(name, img, int(round(x)), int(round(y)), mask=mask, **kw)
+            if margin is not None:
+                mx0, my0, mx1, my1 = mask.bounds
+                cx0 = max(0, mx0 - margin - x)
+                cy0 = max(0, my0 - margin - y)
+                cx1 = min(img.shape[1], mx1 + margin - x)
+                cy1 = min(img.shape[0], my1 + margin - y)
+                img = img[cy0:cy1, cx0:cx1]
+                x, y = x + cx0, y + cy0
+        layer = C.pixel(name, img, x, y, mask=mask, **kw)
         g.add(layer)
         return layer
 
