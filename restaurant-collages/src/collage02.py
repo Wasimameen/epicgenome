@@ -79,10 +79,8 @@ def build():
     row = C.resize(C.load('assets/gen/cabins_row.png', 'RGB'), CR_S)
     shells = C.load('assets/cut/geo/cabins_row/shells_all.png', 'L')
     archm = C.load('assets/cut/geo/cabins_row/arches_all.png', 'L')
-    fg = C.load('assets/cut/geo/cabins_row/foreground_band.png', 'L')
     cut = C.resize(np.clip(shells + archm, 0, 1), CR_S)
-    fgm = C.resize(fg, CR_S)
-    del shells, fg
+    del shells
     B.shadow(g, 'Shadow · cabins on the page', cut, CR_X, CR_Y, dx=26, dy=30, sigma=34, opacity=0.45)
     B.photo(g, 'Cabins · four fluted-oak cabins (photo, cut to the shells)', row, CR_X, CR_Y,
             mask_alpha=cut, mask_xy=(CR_X, CR_Y), margin=160)
@@ -98,24 +96,28 @@ def build():
         sub[int(y0):int(y0) + (ly1 - ly0), int(x0):int(x0) + (lx1 - lx0)] = am[ly0:ly1, lx0:lx1]
         B.fill(g, f'Intensity · inside cabin {i + 1}', PAL['oxblood'], sub, blend='soft light',
                opacity=0.30 + 0.16 * i)
-    B.photo(g, 'Foreground · dining tables in soft focus (photo)', row, CR_X, CR_Y + 34,
-            mask_alpha=fgm, mask_xy=(CR_X, CR_Y + 34), margin=60)
-    del row, cut, fgm, am
+    del row, cut, am
 
     # ================================================================ 25 festoon hem
     g = B.group('25 · Festoon swag hem (nearer plane)', label='yellow')
     fv = C.load('assets/gen/festoon_valance.png', 'RGB')
     fm = C.load('assets/cut/geo/festoon_valance/valance_fabric.png', 'L')
     vx0, vx1, vy0, vy1 = 430, 5990, 250, 1160
-    fs = 0.50
+    fs = 0.52
     fv = grade(C.resize(C.crop(fv, vx0, vy0, vx1, vy1), fs), lift=0.03, sat=0.85)
     fm = C.resize(C.crop(fm, vx0, vy0, vx1, vy1), fs)
-    step = fm.shape[1] - 40
-    for k, hx in enumerate((-90, -90 + step)):
-        hy = 470
-        B.shadow(g, f'Shadow · swag hem {k + 1}', fm, hx, hy, dx=0, dy=36, sigma=30, opacity=0.40)
+    # the second copy starts on the first copy's last gather, so the join hides inside a gathered column
+    g_first, g_last = (993.5 - vx0) * fs, (5404.5 - vx0) * fs
+    hx1, hy = -90, 470
+    hx2 = hx1 + g_last - g_first
+    xs_ = np.arange(fm.shape[1], dtype=np.float32)
+    keep1 = np.clip((g_last + 8 - xs_) / 16, 0, 1)[None, :]
+    keep2 = np.clip((xs_ - (g_first - 8)) / 16, 0, 1)[None, :]
+    for k, (hx, keep) in enumerate(((hx1, keep1), (hx2, keep2))):
+        m_ = fm * keep
+        B.shadow(g, f'Shadow · swag hem {k + 1}', m_, hx, hy, dx=0, dy=36, sigma=30, opacity=0.40)
         B.photo(g, f'Festoon · ivory linen swags {k + 1} (photo, fabric mask)', fv, hx, hy,
-                mask_alpha=fm, mask_xy=(hx, hy))
+                mask_alpha=m_, mask_xy=(hx, hy))
     del fv, fm
 
     # ================================================================ 30 the cabin we walk into
@@ -162,7 +164,7 @@ def build():
     B.px(g, 'Diners · couple at a table (silhouette, shadow-play)', cpl, cpx, cpy, blend='multiply', opacity=0.82)
     B.px(g, 'Diners · waiter walking towards the cabins (silhouette)', wtr, wx, wy, blend='multiply', opacity=0.78)
     veil = C.load('assets/mat/client_drape_sheer.png')
-    vw, vh = 2250, 1720
+    vw, vh = 2250, 1980
     veil = C.cover(veil, vw, vh, (0.5, 0.75))
     vx, vy = 380, 1330
     xs_ = np.arange(vw, dtype=np.float32)
@@ -240,8 +242,8 @@ def build():
           S.sound_rings(at=(ccx, ccy - 40), r_max=560, n=5, ratio=0.42, width=3.0, color=LINEN, alpha=0.75,
                         decay=0.7, dash=(26.0, 18.0), seed=3), opacity=0.85)
     B.gen(g, 'Smell · rosemary and warm sourdough',
-          S.wisp(at=(ccx, ccy - 70), height=820, ribbons=2, width=46, color=PAL['honey'], color_top=LINEN,
-                 opacity=0.9, lean=-0.1, seed=41), blend='screen')
+          S.wisp(at=(ccx - 30, ccy - 70), height=760, ribbons=2, width=46, color=PAL['honey'], color_top=LINEN,
+                 opacity=0.9, lean=-0.55, seed=41), blend='screen')
     # table-top candle in the foreground: tt candle at ~ (870, 330) in the cut-out (scaled)
     B.gen(g, 'Smell · beeswax candle on our table',
           S.wisp(at=(tx + 0.46 * tt.shape[1], ty + 0.36 * tt.shape[0]), height=900, ribbons=3, width=70,
