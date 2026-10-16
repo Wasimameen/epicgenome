@@ -1,0 +1,299 @@
+{
+  "area": "materials",
+  "module": "src/lib/materials.py",
+  "build": "python3 -c \"from lib import materials; materials.build()\"  (run from src/)",
+  "contact_sheet": "build/contact/materials.jpg",
+  "conventions": "RGBA 8-bit straight alpha; swatches flat-lit and seamlessly tileable (period = image size); palette per ART_DIRECTION.md",
+  "files": [
+    {
+      "path": "assets/mat/velvet_terracotta.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Crushed terracotta velvet (banquette of cabin_interior.png): photographic fine pile band, periodic procedural crush/sheen, colour response of the real fabric (shadow -> oxblood, sheen -> orange). Flat-lit, seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ]
+      },
+      "tileable": true,
+      "suggested_use": "Clip into cabin banquette / cushion shapes (collage 02); multiply a terracotta->oxblood gradient on top for depth."
+    },
+    {
+      "path": "assets/mat/oak_fluted.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Fluted / slatted oak wall from cabin_interior.png: grooves rectified to exactly 50 px pitch (perfectly vertical), every flute phase normalised to the wall-average profile (evenly lit), assembled from whole real slats, golden-oak grade.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ],
+        "flute_pitch_px": 50,
+        "groove_centres_x": "x = 50*k (k = 0..31), plus wrap",
+        "flutes_per_tile": 32
+      },
+      "tileable": true,
+      "suggested_use": "Clip into the arched cabin shells / bar counter front; scale so pitch matches the drawing; keep vertical. Add a soft vertical light falloff per plane in the collage."
+    },
+    {
+      "path": "assets/mat/marble.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Warm-white polished marble with the cabin table character: gold-ochre veins with bleed, fine grey crackle network and nests, pepper flecks, clouding. Procedural (colours sampled from the table top), crisp at any scale, seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ]
+      },
+      "tileable": true,
+      "suggested_use": "Table tops (ellipse-warp), bar top, sills."
+    },
+    {
+      "path": "assets/mat/linen_glow.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Back-lit honey linen festoon swags (ceiling_lookup_A.png): swag columns rectified to 400 px, glow gradients flattened, lattice-quilted so seams run along gather lines.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ],
+        "swag_column_width_px": 400,
+        "gather_lines_x": [
+          0,
+          400,
+          800,
+          1200
+        ]
+      },
+      "tileable": true,
+      "suggested_use": "Ceiling draping planes (both collages): perspective-warp onto ceiling quads; screen/soft-light a honey glow on top."
+    },
+    {
+      "path": "assets/mat/linen_plain.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Ivory plain-weave linen (procedural): slubbed yarns, per-thread tone, wandering threads, fibre fuzz, very soft cloth undulation. Thread pitch 5 px. Flat-lit, seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ],
+        "thread_pitch_px": 5
+      },
+      "tileable": true,
+      "suggested_use": "Sheer / blind / curtain planes, label cards, base for translucent overlays (multiply or soft light at low opacity over photos for a linen-print feel)."
+    },
+    {
+      "path": "assets/mat/plaster_warm.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Warm lime plaster (wall under festoon_valance.png): real fine detail (scratches, pits, trowel grain) quilted, cloudy limewash mottle procedural, sand/plaster colour. Seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ]
+      },
+      "tileable": true,
+      "suggested_use": "Wall planes, void drum, background card planes."
+    },
+    {
+      "path": "assets/mat/glassblock.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "3 x 3 mosaic of real wavy glass blocks from glassblock_wall_A.png, re-gridded on the mortar: every block resampled to its cell, equal 18 px joints, mortar tone equalised; repeats exactly on the mortar grid.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ],
+        "mortar_centre_lines_x": [
+          0,
+          533,
+          1067
+        ],
+        "mortar_centre_lines_y": [
+          0,
+          533,
+          1067
+        ],
+        "joint_width_px": 18,
+        "block_pitch_px": [
+          533,
+          534,
+          533
+        ]
+      },
+      "tileable": true,
+      "suggested_use": "Glass-brick facade / screen (collage 01 facade, collage 02 edge screen). Tile with an offset that keeps mortar lines on the grid; overlay dusk/amber gradients in soft light."
+    },
+    {
+      "path": "assets/mat/steel_brushed.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Brushed stainless steel (procedural): horizontal grain at 3 scales, sparse scratches, broad satin bands, cool steel colour. Seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ],
+        "grain_direction": "horizontal (x)"
+      },
+      "tileable": true,
+      "suggested_use": "Void rail ring, bar details, pendants; rotate to follow the rail direction."
+    },
+    {
+      "path": "assets/mat/terrazzo_cream.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Polished cream terrazzo (procedural): cream cement matrix with fine coloured sand, chips in 4 size classes (terracotta, sage, ochre, warm/dark grey, white marble) with internal mottle and cut-edge rims, faint polish. Seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ]
+      },
+      "tileable": true,
+      "suggested_use": "Floors (perspective warp), sills, table bases, swatch cards."
+    },
+    {
+      "path": "assets/mat/greenery.png",
+      "size": [
+        1600,
+        1600
+      ],
+      "type": "RGBA",
+      "description": "RGBA foliage overlay: the void tree canopy keyed off the skylight (void_lookup_B.png), violet fringe removed, edge colour decontaminated, quilted in premultiplied RGBA. Transparent where sky. Seamless.",
+      "anchors": {
+        "tile_period_px": [
+          1600,
+          1600
+        ],
+        "mean_alpha": 0.673
+      },
+      "tileable": true,
+      "suggested_use": "Canopy fill / leafy overlays around the tree (collage 01), shadow-play (fill black at low opacity), planters."
+    },
+    {
+      "path": "assets/mat/paper_linen_A3.png",
+      "size": [
+        4961,
+        3508
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Warm linen paper ground #EEE5D3: smooth large mottling, faint felt tooth, sparse fine fibres; low-entropy (no per-pixel noise). paper_linen(3508, 4961, seed=1).",
+      "anchors": {
+        "canvas": "full A3 @ 300 ppi, place at (0, 0)"
+      },
+      "tileable": false,
+      "suggested_use": "Bottom paper layer of both collages."
+    },
+    {
+      "path": "assets/mat/grain_A3.png",
+      "size": [
+        4961,
+        3508
+      ],
+      "type": "RGBA (opaque, neutral grey)",
+      "description": "Neutral film grain, mean 0.5 (128), std 0.05; fine 0.6 px + clumped 1.4 px grain. grain(3508, 4961, seed=2, amount=0.05).",
+      "anchors": {
+        "canvas": "full A3, place at (0, 0)",
+        "neutral_value": 128
+      },
+      "tileable": true,
+      "suggested_use": "Top layer, blend overlay or soft light at 30-60 %."
+    },
+    {
+      "path": "assets/mat/client_drape_soft.png",
+      "size": [
+        2208,
+        2766
+      ],
+      "type": "RGBA (opaque)",
+      "description": "Client mood reference (client_drape_reference.png, 380x470, white border cropped to 368x461) upscaled 6x: NL-means denoise, 2-stage Lanczos, bilateral de-ringing, gentle unsharp, imperceptible grain. LOW SOURCE RES: it stays soft - use as a soft/overlay/background element only, never as a sharp foreground.",
+      "anchors": {
+        "source_crop_box_xyxy": [
+          0,
+          9,
+          368,
+          470
+        ],
+        "scale": 6,
+        "swag_ceiling_band_y": [
+          0,
+          1465
+        ],
+        "sheer_curtains_y": [
+          1244,
+          2766
+        ]
+      },
+      "tileable": false,
+      "suggested_use": "Soft-light / low-opacity ceiling-drape atmosphere."
+    },
+    {
+      "path": "assets/mat/client_drape_sheer.png",
+      "size": [
+        2208,
+        2766
+      ],
+      "type": "RGBA (straight alpha)",
+      "description": "Sheer veil from the client drape: lightened, mostly desaturated toward linen, alpha from luminance (0.10..0.82: bright fabric opaque, shadowed folds transparent).",
+      "anchors": {
+        "alpha_range": [
+          0.1,
+          0.82
+        ]
+      },
+      "tileable": false,
+      "suggested_use": "Translucent sheer-linen overlay (normal or screen) over diners / windows."
+    }
+  ],
+  "functions": {
+    "paper_linen(h, w, seed, color, mottle, fibre)": "warm linen paper RGB, low-entropy, tileable",
+    "grain(h, w, seed, amount)": "neutral mid-grey film grain (h, w) for overlay / soft light",
+    "torn_mask(mask, seed, roughness, scale)": "torn-paper edge for any mask -> float mask",
+    "deckle_rgba(mask, seed, width, color, fibres)": "white fibrous torn-edge strip RGBA layer",
+    "drop_shadow(alpha, dx, dy, blur, opacity, color, contact) -> (rgba, ox, oy)": "soft paper shadow layer",
+    "watercolour_wash(mask, color, seed, opacity, edge, granulation, blooms, wobble)": "pigment wash RGBA",
+    "halftone(gray, cell, angle, gain)": "AM halftone ink coverage 0..1",
+    "grade(rgb, stops, amount, normalize)": "gradient-map grading toward palette stops",
+    "tile(tex, h, w, offset, scale)": "repeat a tileable texture",
+    "paper_cut_edge(mask, light, width, strength, rim)": "bevel / lit cut edge RGBA for card planes",
+    "upscale_soft(img, s)": "denoise + Lanczos + de-ring + gentle sharpen upscale",
+    "quilt(sources, size, patch, overlap, ...)": "toroidal image quilting (seamless synthesis)",
+    "flatten_light(img, sigma, mask, per_channel, strength)": "remove low-frequency lighting",
+    "periodic_noise / fbm / warp_periodic": "seamless noise fields",
+    "key_foliage(im)": "key leaves off bright sky with fringe removal + edge decontamination"
+  }
+}
