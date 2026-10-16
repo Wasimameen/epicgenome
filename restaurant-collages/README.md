@@ -15,7 +15,8 @@ Both sheets show **sound, smell, taste, texture and colour** in image and words,
 
 | file | what |
 |---|---|
-| `restaurant-collage-0N-….psd` | **Layered master.** A3 landscape, 4961 × 3508 px at 300 ppi, 8-bit RGB, embedded sRGB IEC61966-2.1 profile, maximised compatibility (full composite + version info). About 160 MB each, so it is **not in git** (GitHub's limit is 100 MB per file) and is delivered separately. |
+| `restaurant-collage-0N-….psd` | **Layered master.** A3 landscape, 4961 × 3508 px at 300 ppi, 8-bit RGB, embedded sRGB IEC61966-2.1 profile, maximised compatibility (full composite + version info). About 130–170 MB each, so it is **not in git** (GitHub's limit is 100 MB per file) and is delivered separately. |
+| `fonts-to-install.zip` | The free fonts the live type uses (Cormorant Garamond and IBM Plex Mono, all weights shipped) and their SIL OFL licences |
 | `restaurant-collage-0N-….jpg` | Flattened print file: quality 95, 4:4:4, sRGB ICC, 300 ppi |
 | `restaurant-collage-0N-…_preview.jpg` | 2000 px web preview |
 | `restaurant-collage-0N-…_layers.txt` | The full layer tree (top of the Layers panel first) and the build stamp |
@@ -64,9 +65,10 @@ python3 collage01.py --final
 - `write_psd.js` writes the PSD (ag-psd). It covers:
   - groups, masks, clipping, Solid Color fills, live type layers, locks, version info;
   - and `finalize.py` inserts the ICC profile afterwards.
+- `collage02_prep.py` derives the cleaned cabins plate (foreground chairs removed, partitions cut flat at 2.4 m, pendant masks) and the seamless festoon frieze, cached in `build/c02/`.
 - `finalize.py` verifies every export and writes `build/<slug>/report.json`:
   - it re-opens the PSD with psd-tools;
   - it checks the ICC profile, the type layers and the resolution;
   - it compares the embedded composite and an independent re-render against our render;
-  - it stamps a sha1 of all build sources into `_layers.txt`.
+  - it stamps a sha1 of the sheet's build sources (and whether they were committed) into `_layers.txt`, and refuses to export if a source changes during the run.
 - The AI source photos (`assets/gen/*.png`, about 30 MB each) are not in git. Keep them locally to rebuild.
