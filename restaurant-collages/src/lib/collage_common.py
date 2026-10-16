@@ -75,6 +75,15 @@ def shadow_offset(depth):
     return int(round(LIGHT[0] * depth)), int(round(LIGHT[1] * depth))
 
 
+class TagBox(tuple):
+    """(x0, y0, x1, y1) of a tag / card, plus .group: put its leaders and extras in the same group so the
+    annotation moves as one."""
+    def __new__(cls, box, group):
+        t = super().__new__(cls, tuple(int(round(v)) for v in box))
+        t.group = group
+        return t
+
+
 class Builder:
     def __init__(self, title):
         self.doc = Document(W, H, 300, title)
@@ -176,9 +185,10 @@ class Builder:
         return layer, (x, y, w, h)
 
     # ------------------------------------------------------------------ type
-    def _live(self, g, name, text, font, size, x, y, color, tracking=0, leading=None):
+    def _live(self, g, name, text, font, size, x, y, color, tracking=0, leading=None, justification='left',
+              angle=0.0):
         g.add(Text(name, text, PS_FONT.get(font, font), size, x, y, color=color, tracking=tracking,
-                   leading=leading))
+                   leading=leading, justification=justification, angle=angle))
 
     def text(self, g, text, font, size, x, y, anchor='baseline_left', color=INK, name=None,
              opacity=1.0, blend='normal', live=True, **kw):
@@ -187,10 +197,13 @@ class Builder:
         nm = (name or ('TXT · ' + text.replace('\n', ' / ')))[:90]
         self.px(g, nm, rgba, px, py, opacity=opacity, blend=blend)
         if live:
-            ox, oy = meta['anchors']['baseline_left']
+            # the alignment origin (left end / centre / right end of the first baseline, rotated with
+            # the text) so the live twin re-flows exactly like the raster when retyped
+            ox, oy = meta['anchors']['origin']
             self._live(g, 'EDIT · ' + nm[6:] if nm.startswith(('TXT · ', 'TXT - ')) else 'EDIT · ' + nm, text, font, size,
                        px + ox, py + oy, color, kw.get('tracking', 0),
-                       size * kw.get('leading', 1.2) if '\n' in text else None)
+                       size * kw.get('leading', 1.2) if '\n' in text else None,
+                       justification=kw.get('align', 'left'), angle=kw.get('angle', 0.0))
         return meta, (px, py)
 
     def _label_block(self, g, label, phrase, x, y, color, label_color, label_size, phrase_size, short):
@@ -227,7 +240,7 @@ class Builder:
         self.px(g, f'Paper · tag {label}', tagimg, x, y)
         self._block_layers(g, rgba, meta, x + pad[0] - ix0, y + pad[1] - iy0, label, phrase, color, label_color,
                            LABEL, ps)
-        return (x, y, x + pw, y + ph)
+        return TagBox((x, y, x + pw, y + ph), g)
 
     def card(self, parent, name, entries, x, y, pad=(40, 32), gap=30, paper='#F4EEE2', color=INK,
              label_color='#A9502F', shadow=0.38, depth=14):
@@ -249,7 +262,7 @@ class Builder:
             self._block_layers(g, rgba, meta, x + pad[0] - b[0], cy - b[1], lab, phr, color, label_color,
                                LABEL, PHRASE)
             cy += (b[3] - b[1]) + gap
-        return (x, y, x + pw, y + ph)
+        return TagBox((x, y, x + pw, y + ph), g)
 
     def leader(self, g, name, points, width=2.2, color=INK, opacity=0.9, **kw):
         rgba, (x, y) = T.leader(points, width=width, color=color, **kw)
@@ -275,7 +288,7 @@ class Builder:
 
         sheet: '01' (void) or '02' (cabins) — both chosen areas are tinted on the
         same full ground-floor key plan; the active one carries the view cone."""
-        g = Group('95 · Legend — key plan, palette & materials', label='violet', opened=False)
+        g = Group('95 · Legend — key plan & palette', label='violet', opened=False)
         parent.add(g)
         # ---- swatch grid (2 rows x 4): colours on top, materials below; row-2 labels sit on FOOT
         gx0, pitch, row = 3150, 236, 190
@@ -285,16 +298,23 @@ class Builder:
         gy0 = gy1 - row
         self.text(g, 'PALETTE  &  MATERIALS', 'mono', LABEL, gx0, HEAD, tracking=120,
                   name='TXT · legend heading palette')
+        cw_ = 150
+        rim, _ = T.stroke_polyline(np.array([[0, 0], [cw_, 0], [cw_, chip_h], [0, chip_h]], float) + 3, 1.2,
+                                   closed=True, box=(0, 0, cw_ + 6, chip_h + 6))
         for i, (kind, val, lab) in enumerate(swatches):
             cx = gx0 + (i % 4) * pitch
             cy = (gy0, gy1)[i // 4]
-            if kind == 'colour':
-                fillv = PAL.get(val, val)
+            sg = Group(f'Swatch · {lab.lower()}', opened=False)
+            g.add(sg)
+            if kind == 'colour':        # a Solid Color fill: double-click to change the palette colour
+                self.fill_local(sg, f'Chip · {lab.lower()} {PAL.get(val, val)}', PAL.get(val, val),
+                                np.ones((chip_h, cw_), np.float32), cx, cy)
             else:
-                fillv = C.cover(C.load(f'assets/mat/{val}.png'), 300, 140)
-            out = S.swatch_chip(fill=fillv, at=(cx, cy), size=(150, chip_h), label=lab, sublabel='',
-                                label_size=LABEL, label_gap=gap)
-            self.gen(g, f'Swatch · {lab.lower()}', out)
+                self.px(sg, f'Chip · {lab.lower()} (material)', C.cover(C.load(f'assets/mat/{val}.png', 'RGB'), cw_,
+                                                                       chip_h), cx, cy)
+            self.px(sg, f'Chip rim · {lab.lower()}', colour_rgba(rim * 0.55, INK), cx - 3, cy - 3)
+            self.text(sg, lab.upper(), 'mono', LABEL, cx, cy + chip_h + gap + cap, tracking=110,
+                      name=f'TXT · swatch {lab.lower()}')
         # ---- key plan (full ground floor, label-free client drawing); its labels sit on FOOT
         plan = C.load('assets/lines/plan_ground_notext.png')
         ps = 0.088
@@ -304,7 +324,9 @@ class Builder:
         ky = int(FOOT - 56 - pc.shape[0])
         self.text(g, 'KEY PLAN — GROUND FLOOR', 'mono', LABEL, kx, HEAD, tracking=120,
                   name='TXT · legend heading key plan')
-        self.px(g, 'Key plan · ground floor (client)', pc, kx, ky, locked=True)
+        kp = Group('Key plan · ground floor', opened=False)
+        g.add(kp)
+        self.px(kp, 'Key plan · ground floor (client)', pc, kx, ky, locked=True)
 
         def P_(x, y):
             return kx + x * ps, ky + y * ps
@@ -312,48 +334,95 @@ class Builder:
         void = P_(4948.8, 1607.9)
         cabins = [P_(cx, 1124.1) for cx in (1163.3, 1865.3, 2566.4, 3249.3)]
         a, hx, hy = local(C.ellipse_mask(void[0], void[1], 500 * ps, 500 * ps))
-        self.fill_local(g, 'Key plan · 01 the void (tint)', PAL['canopy'], a, hx, hy, blend='multiply',
+        self.fill_local(kp, 'Key plan · 01 the void (tint)', PAL['canopy'], a, hx, hy, blend='multiply',
                         opacity=0.75 if sheet == '01' else 0.35)
         cab = np.zeros((H, W), np.float32)
         for c in cabins:
             cab = np.maximum(cab, C.ellipse_mask(c[0], c[1] - 8, 300 * ps, 300 * ps))
         a, hx, hy = local(cab)
-        self.fill_local(g, 'Key plan · 02 the cabins (tint)', PAL['terracotta'], a, hx, hy, blend='multiply',
+        self.fill_local(kp, 'Key plan · 02 the cabins (tint)', PAL['terracotta'], a, hx, hy, blend='multiply',
                         opacity=0.75 if sheet == '02' else 0.35)
         if sheet == '01':
             cone = S.view_cone(apex=void, direction=-4, fov=64, length=(6650 - 4948.8) * ps + 10,
-                               color=PAL['terracotta'], fill=0.25, apex_dot=5, apex_ring=10)
+                               color=PAL['terracotta'], fill=0.25, apex_dot=5, apex_ring=10, arc_dash=(6.0, 6.0),
+                               arc_width=2.2)
         else:
             apex = P_(2200, 2330)
             cone = S.view_cone(apex=apex, direction=94, fov=104, length=(2330 - 1180) * ps,
-                               color=PAL['terracotta'], fill=0.25, apex_dot=5, apex_ring=10)
-        self.gen(g, 'Key plan · view cone (this sheet)', cone)
-        # north point: right end of the heading line, above the plan's top-right corner
-        self.gen(g, 'Key plan · north point', S.north_arrow(at=(W - MARGIN - 30, HEAD - 8), size=60,
-                                                            label_size=LABEL))
+                               color=PAL['terracotta'], fill=0.25, apex_dot=5, apex_ring=10, arc_dash=(6.0, 6.0),
+                               arc_width=2.2)
+        self.gen(kp, 'Key plan · view cone (this sheet)', cone)
+        # north point: right end of the heading line, above the plan's top-right corner ('N' is live type)
+        nx, ny, nsz = W - MARGIN - 30, HEAD - 8, 60
+        self.gen(kp, 'Key plan · north point', S.north_arrow(at=(nx, ny), size=nsz, label=None))
+        self.text(kp, 'N', 'mono', LABEL, nx, ny - nsz / 2 * 1.18 - LABEL * 1.05 + cap / 2, anchor='origin',
+                  align='center', name='TXT · north point N')
         # own labels under the plan (client labels removed), on the footer baseline
         yb = FOOT
-        self.text(g, '01 VOID', 'mono', LABEL, void[0] - 60, yb, tracking=100, name='TXT · key plan label void',
+        self.text(kp, '01 VOID', 'mono', LABEL, void[0] - 60, yb, tracking=100, name='TXT · key plan label void',
                   color=INK if sheet == '01' else '#6E655D')
-        self.text(g, '02 CABINS', 'mono', LABEL, cabins[0][0] - 46, yb, tracking=100,
+        self.text(kp, '02 CABINS', 'mono', LABEL, cabins[0][0] - 46, yb, tracking=100,
                   name='TXT · key plan label cabins', color=INK if sheet == '02' else '#6E655D')
-        self.leader(g, 'Leader · key plan void', [(void[0], yb - 30), (void[0], void[1] + 500 * ps + 6)],
+        self.leader(kp, 'Leader · key plan void', [(void[0], yb - 30), (void[0], void[1] + 500 * ps + 6)],
                     width=1.6, dot_at_end=False, opacity=0.7)
-        self.leader(g, 'Leader · key plan cabins', [(cabins[0][0], yb - 30), (cabins[0][0], cabins[0][1] + 300 * ps + 4)],
+        self.leader(kp, 'Leader · key plan cabins', [(cabins[0][0], yb - 30), (cabins[0][0], cabins[0][1] + 300 * ps + 4)],
                     width=1.6, dot_at_end=False, opacity=0.7)
         return g
 
-    def readme(self, sheet_title):
-        """Hidden top group explaining how the file is built."""
-        txt = README_TEXT.format(title=sheet_title)
+    def readme(self, sheet_title, sources='- Client drawings (RESTAURANT.pdf); photographs generated for this project (FLUX via ElevenLabs).'):
+        """Hidden top group explaining how the file is built.  `sources` lists this sheet's own sources."""
+        fonts = sorted({n.font for n in self.doc.root.iter_layers() if getattr(n, 'kind', '') == 'text'})
+        txt = README_TEXT.format(title=sheet_title, fonts=', '.join(fonts), sources=sources.strip('\n'))
         rgba, meta = T.text_rgba(txt, 'mono', 30, color=INK, leading=1.45, max_width=2600)
         h, w = rgba.shape[:2]
         bg = C.solid(h + 160, w + 160, '#F7F2E8')
         bg[80:80 + h, 80:80 + w, :3] = rgba[..., :3] * rgba[..., 3:4] + bg[80:80 + h, 80:80 + w, :3] * (1 - rgba[..., 3:4])
         g = Group('!! READ ME — how this file is built', hidden=True, opened=False)
         self.doc.root.add(g)
-        g.add(C.pixel('READ ME · notes (hide this group to see the collage)', bg, 300, 300))
+        g.add(C.pixel('READ ME · notes (hide group to view)', bg, 300, 300))
         return g
+
+
+def terrazzo_mosaic(cache_path, Wm=3600, Hm=1900, tile_scale=0.32, n=150, seed=23):
+    """Aperiodic terrazzo plate (float RGBA): the seamless tile texture-bombed into Voronoi cells (random
+    offset + dihedral turn per cell, 2 px soft seams), so no repeat shows once perspective-warped.
+    Cached at cache_path (8-bit RGBA PNG)."""
+    if os.path.exists(cache_path):
+        return C.load(cache_path)
+    from scipy.spatial import cKDTree
+    tile = C.resize(C.load('assets/mat/terrazzo_cream.png', 'RGB'), tile_scale)
+    T_ = tile.shape[0]
+    variants = [tile, np.rot90(tile, 1), np.rot90(tile, 2), np.rot90(tile, 3),
+                tile[:, ::-1], np.rot90(tile[:, ::-1], 1), tile[::-1], np.rot90(tile[::-1], 1)]
+    variants = [np.ascontiguousarray(v) for v in variants]
+    rng = np.random.default_rng(seed)
+    seeds = np.stack([rng.uniform(-200, Wm + 200, n), rng.uniform(-200, Hm + 200, n)], 1)
+    yy, xx = np.mgrid[0:Hm, 0:Wm]
+    pts = np.stack([xx.ravel(), yy.ravel()], 1).astype(np.float32)
+    d, idx = cKDTree(seeds).query(pts, k=2)
+    idx0 = idx[:, 0].reshape(Hm, Wm)
+    seam = (d[:, 1] - d[:, 0]).reshape(Hm, Wm).astype(np.float32)
+    del pts, d, idx
+    var = rng.integers(0, 8, n)
+    offx = rng.integers(0, T_, n)
+    offy = rng.integers(0, T_, n)
+    out = np.zeros((Hm, Wm, 3), np.float32)
+    for v in range(8):
+        cells = np.flatnonzero(var == v)
+        if not len(cells):
+            continue
+        ys, xs = np.nonzero(np.isin(idx0, cells))
+        cid = idx0[ys, xs]
+        out[ys, xs] = variants[v][(ys + offy[cid]) % T_, (xs + offx[cid]) % T_]
+    bl = cv2.GaussianBlur(out, (0, 0), 1.2)
+    k = np.clip(seam / 3.0, 0, 1)
+    k = (k * k * (3 - 2 * k))[..., None]
+    out = out * k + bl * (1 - k)
+    rgba = np.dstack([out, np.ones((Hm, Wm), np.float32)])
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    from PIL import Image
+    Image.fromarray(np.clip(np.floor(rgba * 255 + 0.5), 0, 255).astype(np.uint8), 'RGBA').save(cache_path)
+    return C.load(cache_path)
 
 
 def aa_line(mask, points, width=2.0, alpha=1.0, dash=None):
@@ -390,21 +459,20 @@ HOW THIS FILE IS BUILT
   orange = interior photo planes   green = the chosen area   yellow = light & colour intensity   red = senses
 - Photos are never erased: every cut-out is the original photo with a LAYER MASK. Paint the mask white/black
   to reveal or hide more. Shadows are separate layers named 'Shadow - ...' - move them with their object.
-- Colour washes, intensities, silhouettes and photo grades ('Grade - ...') are SOLID COLOR fill layers:
-  double-click the thumbnail to recolour, or hide a grade to see the untouched photo.
+- Colour washes, intensities, silhouettes, palette chips and photo grades ('Grade - ...') are SOLID COLOR fill
+  layers: double-click the thumbnail to recolour, or hide a grade to see the untouched photo.
 - Layers marked 'clipped' (indented arrow) only show inside the layer directly below them.
-- TYPE: each 'TXT - ...' layer is the rendered text. Directly above it sits a hidden, editable type layer
-  'EDIT - ...'. To change wording: hide the TXT layer, show the EDIT layer and type. Photoshop may ask to
-  update text layers when opening - click Update. Each tag / card is its own group (paper, shadow, type).
-- Fonts (free, SIL OFL, in the 'fonts' folder delivered with this file): Cormorant Garamond (Italic, Medium
-  Italic, Regular) and IBM Plex Mono (Regular, Light). Install them before editing type.
-- Paper, client drawings and the key plan are position-locked to avoid accidental moves - unlock in the
-  Layers panel if needed.
+- TYPE: each 'TXT - ...' layer is the rendered text; directly above it sits a hidden, editable type layer
+  'EDIT - ...' (a tag has two: label and phrase). To change wording: show the EDIT layer(s), type, then hide
+  the TXT layer. Photoshop may ask to update text layers when opening - click Update. Each tag / card is its
+  own group (paper, shadow, type and its leader), so it moves as one.
+- Fonts used by the live type (free, SIL OFL; install them from fonts-to-install.zip, delivered beside this
+  file): {fonts}.
+- Paper, client drawings and the key plan are locked (position and pixels) to avoid accidental edits -
+  unlock them in the Layers panel if needed.
 
 SOURCES (all royalty-free)
-- Client: plans, sections and elevations (RESTAURANT.pdf) and the drape reference photo.
-- Photographs generated for this project with FLUX (via ElevenLabs) - AI-generated, no third-party photos.
-- Espresso cup: scikit-image sample 'coffee' (CC0). Street, materials, sound/smell graphics: made for this file.
+{sources}
 
 Hide this group (eye icon) to see the collage.
 """

@@ -69,9 +69,10 @@ function build(node) {
     };
     if (node.leading) { style.autoLeading = false; style.leading = +(node.leading * PX_TO_PT).toFixed(3); }
     L.blendMode = 'normal';
+    const a = -(node.angle || 0) * Math.PI / 180;      // page y points down: CCW on the page = negative
     L.text = {
       text: node.text.replace(/\n/g, '\r'),
-      transform: [k, 0, 0, k, node.x, node.y],
+      transform: [k * Math.cos(a), k * Math.sin(a), -k * Math.sin(a), k * Math.cos(a), node.x, node.y],
       antiAlias: 'smooth',
       style,
       paragraphStyle: { justification: node.justification || 'left' },
@@ -120,7 +121,22 @@ const children = manifest.layers.map(build);
 const composite = readPng(manifest.composite);
 // composite.png is RGB; pngjs gives RGBA with alpha 255 — exactly what PSD wants.
 
-// thumbnail (160 px max side) from the composite, nearest-neighbour box average
+function thumbJpeg() {
+  const buf = fs.readFileSync(path.join(buildDir, 'thumb.jpg'));
+  // SOF0/SOF2 marker carries the size
+  let i = 2;
+  while (i < buf.length) {
+    const marker = buf.readUInt16BE(i);
+    const len = buf.readUInt16BE(i + 2);
+    if (marker === 0xFFC0 || marker === 0xFFC2) {
+      return { width: buf.readUInt16BE(i + 7), height: buf.readUInt16BE(i + 5), data: new Uint8Array(buf) };
+    }
+    i += 2 + len;
+  }
+  throw new Error('thumb.jpg: no SOF marker');
+}
+
+// (legacy) raw thumbnail from the composite, nearest-neighbour box average
 function thumb(img, maxSide) {
   const s = maxSide / Math.max(img.width, img.height);
   const tw = Math.max(1, Math.round(img.width * s)), th = Math.max(1, Math.round(img.height * s));
@@ -148,7 +164,8 @@ const psd = {
       horizontalResolution: manifest.dpi, horizontalResolutionUnit: 'PPI', widthUnit: 'Centimeters',
       verticalResolution: manifest.dpi, verticalResolutionUnit: 'PPI', heightUnit: 'Centimeters',
     },
-    thumbnailRaw: thumb(composite, 160),
+    // resource 1036 is a JPEG thumbnail (format 1); finalize.py writes thumb.jpg next to the manifest
+    thumbnailRaw: thumbJpeg(),
     versionInfo: { hasRealMergedData: true, writerName: 'psdkit + ag-psd', readerName: 'psdkit', fileVersion: 1 },
   },
 };

@@ -122,6 +122,9 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     doc.export(build_dir, composite=comp)
     comp8 = np.asarray(Image.open(os.path.join(build_dir, 'composite.png')).convert('RGB'))
 
+    th = Image.fromarray(comp8)
+    th.thumbnail((160, 160), Image.LANCZOS)
+    th.save(os.path.join(build_dir, 'thumb.jpg'), quality=85)
     psd_path = os.path.join(out_dir, f'{slug}.psd')
     cmd = ['node', os.path.join(HERE, 'write_psd.js'), build_dir, psd_path, '--icc', ICC]
     if zip_psd:
@@ -147,6 +150,11 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     im = Image.fromarray(comp8)
     jpg_path = os.path.join(out_dir, f'{slug}.jpg')
     im.save(jpg_path, quality=95, subsampling=0, dpi=(doc.dpi, doc.dpi), icc_profile=icc, optimize=True)
+    # print variant with 3 mm bleed (36 px mirrored at every edge) for a print shop's trim
+    import cv2
+    bleed = cv2.copyMakeBorder(comp8, 36, 36, 36, 36, cv2.BORDER_REFLECT_101)
+    Image.fromarray(bleed).save(os.path.join(out_dir, f'{slug}_print-3mm-bleed.jpg'), quality=95, subsampling=0,
+                                dpi=(doc.dpi, doc.dpi), icc_profile=icc, optimize=True)
     prev = im.copy()
     prev.thumbnail((2000, 2000), Image.LANCZOS)
     prev.save(os.path.join(out_dir, f'{slug}_preview.jpg'), quality=90, icc_profile=icc)
@@ -178,6 +186,15 @@ def finalize(doc, slug, verify=True, zip_psd=False):
         report['psd_icc_bytes'] = len(icc_res) if icc_res else 0
         report['psd_has_version_info'] = psd.image_resources.get_data(Resource.VERSION_INFO) is not None
         report['psd_type_layers'] = sum(1 for l in psd.descendants() if l.kind == 'type')
+        import io
+        traw = psd.image_resources.get_data(Resource.THUMBNAIL_RESOURCE)
+        try:
+            ti = Image.open(io.BytesIO(bytes(traw.data)))
+            ti.load()
+            report['psd_thumbnail'] = [traw.fmt, ti.format, *ti.size]
+        except Exception as e:      # noqa: BLE001
+            report['psd_thumbnail'] = f'unreadable: {e}'
+        assert isinstance(report['psd_thumbnail'], list), 'PSD thumbnail missing or unreadable'
         _ri = psd.image_resources.get_data(Resource.RESOLUTION_INFO)
         report['psd_resolution_ppi'] = round(getattr(_ri, 'horizontal', 0) / 65536, 2) if _ri else None
         assert report['psd_icc_bytes'] == len(icc), 'ICC profile missing from PSD'

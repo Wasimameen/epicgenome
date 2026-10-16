@@ -255,7 +255,7 @@ class Text(Node):
     kind = 'text'
 
     def __init__(self, name, text, font, size, x, y, color='#2B2420', tracking=0, leading=None,
-                 justification='left', **kw):
+                 justification='left', angle=0.0, **kw):
         kw['hidden'] = True
         super().__init__(name, **kw)
         self.text, self.font, self.size = text, font, float(size)
@@ -264,6 +264,7 @@ class Text(Node):
         self.tracking = int(round(tracking))
         self.leading = leading
         self.justification = justification
+        self.angle = float(angle)            # degrees, counter-clockwise about (x, y)
 
 
 class Group(Node):
@@ -403,7 +404,7 @@ class Document:
             if isinstance(node, Text):
                 d.update(text=node.text, font=node.font, size=node.size, x=node.x, y=node.y,
                          color=list(node.color), tracking=node.tracking, leading=node.leading,
-                         justification=node.justification)
+                         justification=node.justification, angle=node.angle)
                 return d
             if isinstance(node, Group):
                 d['opened'] = node.opened

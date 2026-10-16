@@ -1227,9 +1227,9 @@ def _fibres(h, w, rng, n, lmin, lmax, width=1.0, curl=0.35, ss=2):
     cv = np.zeros((H, W), np.uint8)
     for _ in range(n):
         L = rng.uniform(lmin, lmax) * ss
-        k = int(rng.integers(4, 8))
+        k = int(rng.integers(12, 18))
         a0 = rng.uniform(0, 2 * np.pi)
-        da = rng.normal(0, curl, k)
+        da = rng.normal(0, curl / 2.6, k)          # many small turns: a smooth curve, never a zigzag
         ang = a0 + np.cumsum(da)
         step = L / k
         x, y = rng.uniform(-L, W + L), rng.uniform(-L, H + L)
@@ -1237,7 +1237,12 @@ def _fibres(h, w, rng, n, lmin, lmax, width=1.0, curl=0.35, ss=2):
         for a in ang:
             x, y = x + np.cos(a) * step, y + np.sin(a) * step
             pts.append((x, y))
-        p = np.round(np.array(pts) * 16).astype(np.int32)
+        P = np.array(pts)
+        for _ in range(2):                          # Chaikin corner cutting
+            Q = 0.75 * P[:-1] + 0.25 * P[1:]
+            R = 0.25 * P[:-1] + 0.75 * P[1:]
+            P = np.vstack([P[:1], np.stack([Q, R], 1).reshape(-1, 2), P[-1:]])
+        p = np.round(P * 16).astype(np.int32)
         val = int(rng.uniform(90, 255))
         th = max(1, int(round(width * ss * rng.uniform(0.6, 1.3))))
         cv2.polylines(cv, [p], False, val, th, cv2.LINE_AA, 4)
@@ -1264,8 +1269,8 @@ def paper_linen(h=A3[0], w=A3[1], seed=1, color='#EEE5D3', mottle=0.022, fibre=1
         dark = _fibres(h, w, rng, int(70 * area * fibre), 12, 55, 0.9)
         light = _fibres(h, w, rng, int(50 * area * fibre), 10, 40, 1.1)
         rare = _fibres(h, w, rng, int(4 * area * fibre), 30, 90, 1.0, curl=0.5)
-        rgb = rgb * (1 - 0.10 * dark[..., None]) + hexf('#B9A07A') * 0.10 * dark[..., None]
-        rgb = rgb * (1 - 0.30 * rare[..., None]) + hexf('#9C8462') * 0.30 * rare[..., None]
+        rgb = rgb * (1 - 0.08 * dark[..., None]) + hexf('#B9A07A') * 0.08 * dark[..., None]
+        rgb = rgb * (1 - 0.14 * rare[..., None]) + hexf('#9C8462') * 0.14 * rare[..., None]
         rgb = rgb + (1 - rgb) * 0.25 * light[..., None]
     return _finish(rgb)
 

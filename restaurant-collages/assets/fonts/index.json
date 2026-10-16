@@ -14,7 +14,7 @@
    "family": "Cormorant Garamond",
    "style": "normal",
    "weight": 400,
-   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 400-normal), woff2 -> ttf with fontTools, tables untouched",
+   "source": "CatharsisFonts/Cormorant v4.004 static TTF (fonts/ttf), full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -26,8 +26,8 @@
    "glyphs_latin": 229,
    "glyphs_latin_ext": 306,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "Cormorant Garamond normal 400",
    "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
@@ -44,7 +44,7 @@
    "family": "Cormorant Garamond",
    "style": "italic",
    "weight": 400,
-   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 400-italic), woff2 -> ttf with fontTools, tables untouched",
+   "source": "CatharsisFonts/Cormorant v4.004 static TTF (fonts/ttf), full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -56,8 +56,8 @@
    "glyphs_latin": 231,
    "glyphs_latin_ext": 305,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "Cormorant Garamond italic 400",
    "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
@@ -74,7 +74,7 @@
    "family": "Cormorant Garamond",
    "style": "italic",
    "weight": 500,
-   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 500-italic), woff2 -> ttf with fontTools, tables untouched",
+   "source": "CatharsisFonts/Cormorant v4.004 static TTF (fonts/ttf), full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -86,8 +86,8 @@
    "glyphs_latin": 231,
    "glyphs_latin_ext": 305,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "Cormorant Garamond italic 500",
    "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
@@ -104,7 +104,7 @@
    "family": "Cormorant Garamond",
    "style": "italic",
    "weight": 300,
-   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 300-italic), woff2 -> ttf with fontTools, tables untouched",
+   "source": "CatharsisFonts/Cormorant v4.004 static TTF (fonts/ttf), full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -116,8 +116,8 @@
    "glyphs_latin": 231,
    "glyphs_latin_ext": 305,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "Cormorant Garamond italic 300",
    "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
@@ -134,7 +134,7 @@
    "family": "Cormorant Garamond",
    "style": "normal",
    "weight": 600,
-   "source": "npm @fontsource/cormorant-garamond (latin + latin-ext subsets, 600-normal), woff2 -> ttf with fontTools, tables untouched",
+   "source": "CatharsisFonts/Cormorant v4.004 static TTF (fonts/ttf), full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-CormorantGaramond.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -146,8 +146,8 @@
    "glyphs_latin": 229,
    "glyphs_latin_ext": 306,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "Cormorant Garamond normal 600",
    "suggested_use": "poetic sensory phrases / display (italic), titles (regular/semibold)"
@@ -164,7 +164,7 @@
    "family": "IBM Plex Mono",
    "style": "normal",
    "weight": 300,
-   "source": "npm @fontsource/ibm-plex-mono (latin + latin-ext subsets, 300-normal), woff2 -> ttf with fontTools, tables untouched",
+   "source": "google/fonts ofl/ibmplexmono static TTF v2.3, full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-IBMPlexMono.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -176,8 +176,8 @@
    "glyphs_latin": 229,
    "glyphs_latin_ext": 210,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "IBM Plex Mono normal 300",
    "suggested_use": "labels, captions, numbers — uppercase, tracked +60..120"
@@ -194,7 +194,7 @@
    "family": "IBM Plex Mono",
    "style": "normal",
    "weight": 400,
-   "source": "npm @fontsource/ibm-plex-mono (latin + latin-ext subsets, 400-normal), woff2 -> ttf with fontTools, tables untouched",
+   "source": "google/fonts ofl/ibmplexmono static TTF v2.3, full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-IBMPlexMono.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -206,8 +206,8 @@
    "glyphs_latin": 229,
    "glyphs_latin_ext": 210,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "IBM Plex Mono normal 400",
    "suggested_use": "labels, captions, numbers — uppercase, tracked +60..120"
@@ -224,7 +224,7 @@
    "family": "IBM Plex Mono",
    "style": "normal",
    "weight": 500,
-   "source": "npm @fontsource/ibm-plex-mono (latin + latin-ext subsets, 500-normal), woff2 -> ttf with fontTools, tables untouched",
+   "source": "google/fonts ofl/ibmplexmono static TTF v2.3, full character set incl. arrows; same PostScript names and advances as the earlier fontsource subset",
    "licence": "SIL OFL 1.1 — assets/fonts/OFL-IBMPlexMono.txt",
    "metrics_per_1000_em": {
     "units_per_em": 1000,
@@ -236,8 +236,8 @@
    "glyphs_latin": 229,
    "glyphs_latin_ext": 210,
    "coverage_check": "·—–’‘“”…é→×°",
-   "missing_in_latin_subset": "→",
-   "missing_after_latin_ext": "→",
+   "missing_in_latin_subset": "",
+   "missing_after_latin_ext": "",
    "fallback_strategy": "-> and <- are synthesised at render time from the font's own up-arrow outline (rotated, mono shaft shortened to the 600-unit cell); anything else missing falls back to weight-matched Inter scaled to the cap height",
    "description": "IBM Plex Mono normal 500",
    "suggested_use": "labels, captions, numbers — uppercase, tracked +60..120"
