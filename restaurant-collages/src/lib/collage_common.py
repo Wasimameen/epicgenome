@@ -46,6 +46,8 @@ LABEL = 27          # mono labels
 HERO = 50           # one hero phrase per sheet
 PHRASE = 42         # standard phrases
 SUB = 28            # mono sublines / headings
+FOOT = 3418         # shared footer baseline: title subline, last swatch labels, key-plan labels (90 px margin)
+HEAD = 3040         # shared footer top baseline: kicker and legend headings
 
 
 def asset(*parts):
@@ -255,7 +257,7 @@ class Builder:
 
     # ------------------------------------------------------------------ page furniture
     def title_block(self, parent, kicker, lines, subline):
-        """Shared title grid: kicker baseline 3040, title baselines 3192 (+142 per line), subline +84."""
+        """Shared title grid: kicker baseline 3040, title baselines 3192 (+142 per line), subline on FOOT."""
         g = Group('Title block', opened=False)
         parent.add(g)
         self.text(g, kicker, 'mono', SUB, MARGIN, 3040, tracking=140, color=PAL['terracotta'],
@@ -264,7 +266,7 @@ class Builder:
         for i, ln in enumerate(lines):
             self.text(g, ln, 'italic', 150, MARGIN - 6, yb, name=f'TXT · title line {i + 1}')
             yb += 142
-        self.text(g, subline, 'mono-light', SUB, MARGIN, yb - 142 + 84, tracking=100, name='TXT · subline')
+        self.text(g, subline, 'mono-light', SUB, MARGIN, FOOT, tracking=100, name='TXT · subline')
         return g
 
     def legend(self, parent, sheet, swatches):
@@ -275,30 +277,34 @@ class Builder:
         same full ground-floor key plan; the active one carries the view cone."""
         g = Group('95 · Legend — key plan, palette & materials', label='violet', opened=False)
         parent.add(g)
-        # ---- swatch grid (2 rows x 4): colours on top, materials below
-        gx0, gy0 = 3330, 3080
-        self.text(g, 'PALETTE  &  MATERIALS', 'mono', LABEL, gx0, 3040, tracking=120,
+        # ---- swatch grid (2 rows x 4): colours on top, materials below; row-2 labels sit on FOOT
+        gx0, pitch, row = 3150, 236, 190
+        chip_h, gap = 70, 14
+        cap = T.text_rgba('H', 'mono', LABEL)[1]['cap_height']
+        gy1 = FOOT - chip_h - gap - cap                      # top of row 2
+        gy0 = gy1 - row
+        self.text(g, 'PALETTE  &  MATERIALS', 'mono', LABEL, gx0, HEAD, tracking=120,
                   name='TXT · legend heading palette')
         for i, (kind, val, lab) in enumerate(swatches):
-            cx = gx0 + (i % 4) * 196
-            cy = gy0 + (i // 4) * 168
+            cx = gx0 + (i % 4) * pitch
+            cy = (gy0, gy1)[i // 4]
             if kind == 'colour':
                 fillv = PAL.get(val, val)
             else:
                 fillv = C.cover(C.load(f'assets/mat/{val}.png'), 300, 140)
-            out = S.swatch_chip(fill=fillv, at=(cx, cy), size=(150, 70), label=lab, sublabel='',
-                                label_size=24, label_gap=14)
+            out = S.swatch_chip(fill=fillv, at=(cx, cy), size=(150, chip_h), label=lab, sublabel='',
+                                label_size=LABEL, label_gap=gap)
             self.gen(g, f'Swatch · {lab.lower()}', out)
-        # ---- key plan (full ground floor, label-free client drawing)
+        # ---- key plan (full ground floor, label-free client drawing); its labels sit on FOOT
         plan = C.load('assets/lines/plan_ground_notext.png')
         ps = 0.088
         pc = C.resize(LW_thicken(plan, 0.6), ps)
         del plan
         kx = W - MARGIN - pc.shape[1]
-        ky = 3088
-        self.text(g, 'KEY PLAN — GROUND FLOOR', 'mono', LABEL, kx, 3040, tracking=120,
+        ky = int(FOOT - 56 - pc.shape[0])
+        self.text(g, 'KEY PLAN — GROUND FLOOR', 'mono', LABEL, kx, HEAD, tracking=120,
                   name='TXT · legend heading key plan')
-        self.px(g, 'Key plan · ground floor (client drawing, labels removed)', pc, kx, ky, locked=True)
+        self.px(g, 'Key plan · ground floor (client)', pc, kx, ky, locked=True)
 
         def P_(x, y):
             return kx + x * ps, ky + y * ps
@@ -322,16 +328,17 @@ class Builder:
             cone = S.view_cone(apex=apex, direction=94, fov=104, length=(2330 - 1180) * ps,
                                color=PAL['terracotta'], fill=0.25, apex_dot=5, apex_ring=10)
         self.gen(g, 'Key plan · view cone (this sheet)', cone)
-        self.gen(g, 'Key plan · north point', S.north_arrow(at=(kx - 62, ky + 52), size=84))
-        # own labels under the plan (client labels removed)
-        yb = ky + pc.shape[0] + 52
-        self.text(g, '01 VOID', 'mono', 24, void[0] - 60, yb, tracking=100, name='TXT · key plan label void',
+        # north point: right end of the heading line, above the plan's top-right corner
+        self.gen(g, 'Key plan · north point', S.north_arrow(at=(W - MARGIN - 26, HEAD - 2), size=52))
+        # own labels under the plan (client labels removed), on the footer baseline
+        yb = FOOT
+        self.text(g, '01 VOID', 'mono', LABEL, void[0] - 60, yb, tracking=100, name='TXT · key plan label void',
                   color=INK if sheet == '01' else '#6E655D')
-        self.text(g, '02 CABINS', 'mono', 24, cabins[0][0] - 20, yb, tracking=100,
+        self.text(g, '02 CABINS', 'mono', LABEL, cabins[0][0] - 46, yb, tracking=100,
                   name='TXT · key plan label cabins', color=INK if sheet == '02' else '#6E655D')
         self.leader(g, 'Leader · key plan void', [(void[0], yb - 30), (void[0], void[1] + 500 * ps + 6)],
                     width=1.6, dot_at_end=False, opacity=0.7)
-        self.leader(g, 'Leader · key plan cabins', [(cabins[1][0], yb - 30), (cabins[1][0], cabins[1][1] + 40)],
+        self.leader(g, 'Leader · key plan cabins', [(cabins[0][0], yb - 30), (cabins[0][0], cabins[0][1] + 300 * ps + 4)],
                     width=1.6, dot_at_end=False, opacity=0.7)
         return g
 
@@ -346,6 +353,19 @@ class Builder:
         self.doc.root.add(g)
         g.add(C.pixel('READ ME · notes (hide this group to see the collage)', bg, 300, 300))
         return g
+
+
+def aa_line(mask, points, width=2.0, alpha=1.0, dash=None):
+    """Draw an anti-aliased polyline (canvas px, exact box-filtered coverage) into a float mask, in place."""
+    pts = np.asarray(points, np.float64)
+    cov, (x0, y0) = T.stroke_polyline(pts, width, dash=dash)
+    h, w = cov.shape
+    X0, Y0 = max(0, x0), max(0, y0)
+    X1, Y1 = min(mask.shape[1], x0 + w), min(mask.shape[0], y0 + h)
+    if X1 > X0 and Y1 > Y0:
+        sub = mask[Y0:Y1, X0:X1]
+        np.maximum(sub, cov[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0] * alpha, out=sub)
+    return mask
 
 
 def LW_thicken(rgba, px):

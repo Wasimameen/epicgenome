@@ -107,6 +107,7 @@ def check_names(doc):
 
 def finalize(doc, slug, verify=True, zip_psd=False):
     t0 = time.time()
+    stamp0 = source_fingerprint()           # sources must not change while this export runs
     out_dir = os.path.join(ROOT, 'output')
     build_dir = os.path.join(ROOT, 'build', slug)
     os.makedirs(out_dir, exist_ok=True)
@@ -129,6 +130,14 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     icc = open(ICC, 'rb').read()
     inject_icc(psd_path, icc)
     stamp = source_fingerprint()
+    if stamp['sources_sha1'] != stamp0['sources_sha1']:
+        raise RuntimeError('build sources changed during the export - re-run so the files match one source state')
+    try:
+        dirty = subprocess.run(['git', 'status', '--porcelain', '--', 'src', 'assets'], cwd=ROOT,
+                               capture_output=True, text=True).stdout.split('\n')
+        stamp['uncommitted_source_files'] = [ln[3:] for ln in dirty if ln.strip() and not ln[3:].endswith('.pyc')]
+    except Exception:
+        stamp['uncommitted_source_files'] = None
 
     im = Image.fromarray(comp8)
     jpg_path = os.path.join(out_dir, f'{slug}.jpg')
@@ -141,7 +150,9 @@ def finalize(doc, slug, verify=True, zip_psd=False):
     with open(os.path.join(out_dir, f'{slug}_layers.txt'), 'w') as f:
         f.write(f'{doc.title}\n{doc.width} x {doc.height} px @ {doc.dpi} ppi (A3), sRGB, 8-bit RGB\n')
         f.write(f'{doc.layer_count()} layers/groups — top of the Layers panel first\n')
-        f.write(f"build stamp: sources {stamp['sources_sha1']} · git {stamp['git_head_at_export']}\n\n")
+        dirty = stamp.get('uncommitted_source_files')
+        f.write(f"build stamp: sources {stamp['sources_sha1']} - git {stamp['git_head_at_export']}"
+                + (' (clean)' if dirty == [] else f' + {len(dirty or [])} uncommitted source files') + '\n\n')
         f.write('\n'.join(tree) + '\n')
 
     bad, dups = check_names(doc)

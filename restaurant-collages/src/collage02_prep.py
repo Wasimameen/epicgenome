@@ -22,7 +22,7 @@ from PIL import Image
 from lib import compose as C
 
 CACHE = C.P('build', 'c02')
-PEDESTAL_X = (1209, 2496, 3826, 5137)   # table pedestal axis in each opening (source px)
+PEDESTAL_X = (1180, 2474, 3851, 5168)   # table base disc centre = pendant axis in each opening (source px)
 YCUT = 1322.0          # source row of the 2.4 m partition top (elevation 02 registered on the jambs)
 
 
@@ -123,11 +123,33 @@ def _clean_cabins(img, geo):
             ar = geo['arches'][n]
             ys, xs = np.nonzero(T_in)
             xm = 2 * xp - xs
-            ok = (xm > ar['left_x'] + 6) & (xm < ar['right_x'] - 6)
+            ok = (xm > ar['left_x'] + 48) & (xm < ar['right_x'] - 48)      # never mirror the jamb reveals
             ok[ok] &= ~fbd[ys[ok], xm[ok]]
             out[ys[ok], xs[ok]] = img[ys[ok], xm[ok]]
             todo[ys[~ok], xs[~ok]] = True
             clone |= T_in
+    # second pass: what neither side of a booth could supply is cloned (not mirrored) from the same
+    # place in a neighbouring booth that is already clean, aligned on the table axis and the floor arc
+    for n, sh in enumerate(shells):
+        ar = geo['arches'][n]
+        box = np.zeros(fb.shape, bool)
+        box[:, int(ar['left_x']):int(ar['right_x']) + 1] = True
+        ys, xs = np.nonzero(todo & box)
+        if not len(xs):
+            continue
+        rem = np.ones(len(xs), bool)
+        for m in sorted([i for i in range(len(shells)) if i != n], key=lambda i: abs(i - n)):
+            am_ = geo['arches'][m]
+            xd = xs - PEDESTAL_X[n] + PEDESTAL_X[m]
+            yd = ys + (_arc(shells[m], xd, 'bottom_arc') - _arc(sh, xs, 'bottom_arc'))
+            xi, yi = np.round(xd).astype(int), np.clip(np.round(yd).astype(int), 0, Hs - 1)
+            ok = rem & (xi > am_['left_x'] + 48) & (xi < am_['right_x'] - 48)
+            ok[ok] &= ~todo[yi[ok], xi[ok]]
+            if not ok.any():
+                continue
+            out[ys[ok], xs[ok]] = _bilinear(out, xd[ok], yd[ok])
+            todo[ys[ok], xs[ok]] = False
+            rem &= ~ok
     if todo.any():
         # everything under the foreground that is NOT cabin is unknown too, so Telea only
         # propagates from the cabin itself (never from the lit dining tables below the floor line)
@@ -135,6 +157,31 @@ def _clean_cabins(img, geo):
         u8 = np.clip(out * 255 + 0.5, 0, 255).astype(np.uint8)
         u8 = cv2.inpaint(u8, unknown.astype(np.uint8) * 255, 9, cv2.INPAINT_TELEA)
         out = u8.astype(np.float32) / 255
+    # the defocused chairs also cast a soft penumbra well beyond their mask: rebuild the whole
+    # occluded side of each booth floor (below the banquette) as a mirror of its clean side
+    for n, sh in enumerate(shells):
+        ar = geo['arches'][n]
+        xp = PEDESTAL_X[n]
+        occ = fbd & amodal[n]
+        occ[:2250] = False
+        oc = np.nonzero(occ[:, int(ar['left_x']):int(ar['right_x'])].any(0))[0]
+        if not len(oc):
+            continue
+        side = 1 if (oc.mean() + ar['left_x']) > xp else -1          # +1: right side occluded
+        y0z = 2195
+        xs = np.arange(int(ar['left_x']) + 48, int(ar['right_x']) - 47)
+        xs = xs[(xs - xp) * side > 0]
+        xm = (2 * xp - xs).astype(int)
+        keep = (xm > ar['left_x'] + 48) & (xm < ar['right_x'] - 48)
+        xs, xm = xs[keep], xm[keep]
+        yb = _arc(sh, xs.astype(np.float64), 'bottom_arc')
+        for k, (x, xmi) in enumerate(zip(xs, xm)):
+            y1 = int(yb[k]) + 4
+            ys = np.arange(y0z, y1)
+            wv = np.clip((ys - y0z) / 30.0, 0, 1) * min(1.0, abs(x - xp) / 10.0)
+            out[ys, x] = out[ys, xmi] * wv[:, None] + out[ys, x] * (1 - wv[:, None])
+        clone[y0z:, xs.min():xs.max() + 1] |= amodal[n][y0z:, xs.min():xs.max() + 1]
+
     # tone-match each cloned opening patch to its untouched surroundings
     anyam = np.any(amodal, axis=0)
     nlab, lab = cv2.connectedComponents(clone.astype(np.uint8))
@@ -147,7 +194,7 @@ def _clean_cabins(img, geo):
             continue
         g = np.clip((img[band].mean(0) + 1e-3) / (out[edge].mean(0) + 1e-3), 0.7, 1.4)
         out[comp] = np.clip(out[comp] * g, 0, 1)
-    rep = np.zeros(fb.shape, bool)
+    rep = clone.copy()
     for n in range(len(shells)):
         T = amodal[n] & fbd
         T[:int(YCUT)] = False
@@ -158,7 +205,8 @@ def _clean_cabins(img, geo):
 
 
 def _pendant_islands(img, geo):
-    """Clean masks of the four dome shades: convex dome + cap + the lit inner rim below it."""
+    """Clean masks of the four dome shades: an analytic half-ellipse dome on the cord axis (no
+    threshold edges, so dark flute grooves behind cannot leak in), the cap, and the lit inner rim."""
     L = C.lum(img)
     m = np.zeros(L.shape, np.float32)
     shades = []
@@ -166,50 +214,50 @@ def _pendant_islands(img, geo):
         cx = int(a['centre_x'])
         x0, y0, x1, y1 = cx - 270, 1060, cx + 270, 1250
         sub = L[y0:y1, x0:x1]
+        hh, ww = sub.shape
         hard = (sub < 0.05).astype(np.uint8)
         n, lab, st, _ = cv2.connectedComponentsWithStats(hard)
         i = 1 + int(np.argmax(st[1:, 4]))
-        comp = (lab == i).astype(np.uint8)
+        comp = lab == i
         widths = comp.sum(1)
         rows = np.nonzero(widths)[0]
-        dome_top = rows[np.argmax(widths[rows] > 70)]
-        dome = np.zeros_like(comp)
-        pts = np.argwhere(comp[dome_top:] > 0)[:, ::-1] + np.array([0, dome_top])
-        hull = cv2.convexHull(pts.astype(np.int32))
+        dome_top = int(rows[np.argmax(widths[rows] > 40)])          # first row wider than the cap
+        cap_rows = rows[rows < dome_top]
+        axis = float(np.median(np.nonzero(comp[cap_rows[-12:]])[1])) if len(cap_rows) else ww / 2
+        yb = int(rows.max())                                        # last dark row = dome bottom
+        # half-width at the bottom: the smaller side (a groove behind can only inflate one side)
+        cols = np.nonzero(comp[yb - 4:yb + 1].any(0))[0]
+        hw = min(axis - cols.min(), cols.max() - axis) + 0.5
+        yy, xx = np.mgrid[0:hh, 0:ww].astype(np.float32) + 0.5
+        ry = yb + 1 - dome_top
+        # supersampled analytic half ellipse
         ss = 4
-        hm = np.zeros((sub.shape[0] * ss, sub.shape[1] * ss), np.uint8)
-        cv2.fillConvexPoly(hm, (hull.astype(np.float64) * ss + ss / 2).astype(np.int32), 255)
-        dome = cv2.resize(hm, (sub.shape[1], sub.shape[0]), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
-        yb = rows.max()
-        cols_b = np.nonzero(comp[yb - 5:yb + 1].any(0))[0]
-        rcx = (cols_b.min() + cols_b.max()) / 2
-        rw = (cols_b.max() - cols_b.min()) / 2 + 0.5
-        rim = C.ellipse_mask(rcx, yb + 2.5, rw, 7.0, h=sub.shape[0], w=sub.shape[1])
-        rim[: yb - 3] = 0
-        # cap: the narrow dark block above the dome
-        capc = np.nonzero(comp[max(0, dome_top - 6):dome_top].any(0))[0]
-        capc = capc[np.abs(capc - rcx) < 25] if len(capc) else capc
-        cap = np.zeros_like(dome)
-        if len(capc):
-            ccx = (capc.min() + capc.max()) / 2
-            cap = C.rect_mask(ccx - 9, dome_top - 26, ccx + 9, dome_top + 4, h=sub.shape[0], w=sub.shape[1])
-        else:
-            ccx = rcx
+        oy, ox = np.mgrid[0:ss, 0:ss].astype(np.float32)
+        dome = np.zeros((hh, ww), np.float32)
+        for dy_, dx_ in zip(((oy + 0.5) / ss - 0.5).ravel(), ((ox + 0.5) / ss - 0.5).ravel()):
+            X, Y = xx + dx_, yy + dy_
+            inside = (((X - axis) / hw) ** 2 + ((Y - (yb + 1)) / ry) ** 2 <= 1) & (Y <= yb + 1)
+            dome += inside
+        dome /= ss * ss
+        rim = C.ellipse_mask(axis, yb + 2.0, hw, 6.5, h=hh, w=ww)
+        rim[: yb - 2] = 0
+        cap = C.rect_mask(axis - 6, dome_top - 22, axis + 6, dome_top + 3, h=hh, w=ww)
         isl = np.clip(np.maximum.reduce([dome, rim, cap]), 0, 1)
         m[y0:y1, x0:x1] = np.maximum(m[y0:y1, x0:x1], isl)
-        shades.append({'cap_top': [float(x0 + ccx), float(y0 + dome_top - 26)],
-                       'rim': [float(x0 + rcx), float(y0 + yb + 3)], 'half_width': float(rw)})
+        shades.append({'cap_top': [float(x0 + axis), float(y0 + dome_top - 22)],
+                       'rim': [float(x0 + axis), float(y0 + yb + 2)], 'half_width': float(hw)})
     return m, shades
 
 
 def cabins_plate(force=False):
-    """-> (rgb, cut_mask, shades, geo) at SOURCE resolution (6256 x 2688)."""
+    """-> (rgb, cut_mask, pendant_mask, shades, geo) at SOURCE resolution (6256 x 2688)."""
     geo = json.load(open(C.P('assets', 'cut', 'geo', 'cabins_row', 'geometry.json')))
     p_rgb = os.path.join(CACHE, 'cabins_row_clean.png')
     p_msk = os.path.join(CACHE, 'cabins_row_cut.png')
     p_js = os.path.join(CACHE, 'cabins_row_cut.json')
-    if not force and all(os.path.exists(p) for p in (p_rgb, p_msk, p_js)):
-        return (C.load(p_rgb, 'RGB'), C.load(p_msk, 'L'), json.load(open(p_js))['shades'], geo)
+    p_pen = os.path.join(CACHE, 'cabins_row_pendants.png')
+    if not force and all(os.path.exists(p) for p in (p_rgb, p_msk, p_js, p_pen)):
+        return (C.load(p_rgb, 'RGB'), C.load(p_msk, 'L'), C.load(p_pen, 'L'), json.load(open(p_js))['shades'], geo)
     img = C.load('assets/gen/cabins_row.png', 'RGB')
     rgb = _clean_cabins(img, geo)
     Hs, Ws = img.shape[:2]
@@ -217,17 +265,18 @@ def cabins_plate(force=False):
     cut = np.zeros((Hs, Ws), np.float32)
     for s in geo['shells']:
         amod = C.load(f'assets/cut/geo/cabins_row/shell_{s["id"]}_geo.png', 'L')
+        amod = cv2.dilate(amod, np.ones((1, 23), np.uint8))       # neighbouring shells meet (no paper slivers)
         # flat 2.4 m top: at eye level the cylinder top reads as a straight edge (+4 px sag at the front)
         u = np.clip((xx[0] - s['top_arc']['xc']) / s['top_arc']['hw'], -1, 1)
         ytop = YCUT + 4.0 * np.sqrt(1 - u * u)
         topm = np.clip(yy - ytop[None, :] + 0.5, 0, 1)
         cut = np.maximum(cut, amod * topm)
     pend, shades = _pendant_islands(img, geo)
-    cut = np.maximum(cut, pend)
     _save(p_rgb, rgb)
     _save(p_msk, cut, 'L')
+    _save(p_pen, pend, 'L')
     json.dump({'ycut': YCUT, 'shades': shades}, open(p_js, 'w'), indent=1)
-    return rgb, cut, shades, geo
+    return rgb, cut, pend, shades, geo
 
 
 # --------------------------------------------------------------------------- valance
@@ -239,15 +288,16 @@ V_Y0, V_Y1 = 262, 1130          # source rows kept (heading top 280 .. lowest he
 def _valance_source():
     fv = C.load('assets/gen/festoon_valance.png', 'RGB')[V_Y0:V_Y1].copy()
     fm = C.load('assets/cut/geo/festoon_valance/valance_fabric.png', 'L')[V_Y0:V_Y1].copy()
-    # retouch the two pendant cords that cross the valance
-    u8 = np.clip(fv * 255 + 0.5, 0, 255).astype(np.uint8)
-    hole = np.zeros(fm.shape, np.uint8)
-    for xa, xb in CORDS:
-        for r in range(hole.shape[0]):
+    # retouch the two pendant cords that cross the valance: mirror-clone the same swag across its
+    # own centre (swag halves are near-symmetric), feathered over 6 px - no smeared inpaint streaks
+    src = fv.copy()
+    for (xa, xb), uc in zip(CORDS, (1331.5, 5084.5)):
+        for r in range(fv.shape[0]):
             cx = xa + (xb - xa) * ((r + V_Y0) - 300) / 750.0
-            hole[r, int(round(cx - 10)):int(round(cx + 11))] = 255
-    u8 = cv2.inpaint(u8, hole, 7, cv2.INPAINT_TELEA)
-    fv = u8.astype(np.float32) / 255
+            xs = np.arange(int(round(cx - 16)), int(round(cx + 17)))
+            w = np.clip((14.5 - np.abs(xs - cx)) / 6.0, 0, 1)[:, None]
+            xm = np.clip(np.round(2 * uc - xs).astype(int), 0, fv.shape[1] - 1)
+            fv[r, xs] = src[r, xm] * w + src[r, xs] * (1 - w)
     # close the cord slits in the fabric mask, soften the edge by ~1 px
     fm = cv2.morphologyEx(fm, cv2.MORPH_CLOSE, np.ones((1, 23), np.uint8))
     # the mask's cusps hide little triangles of plaster wall between the gathered column and the
@@ -271,16 +321,17 @@ def _valance_source():
     return fv, fm
 
 
-def valance_frieze(width_src, order='ABCDbcadBCAdcbDa', ov=14, force=False):
+def valance_frieze(width_src, order='ABCDabcdABCDabcd', ov=14, force=False, seed=11):
     """Frieze at source scale: -> (rgb, mask, gathers_x).  Upper-case = as photographed,
     lower-case = mirrored.  Joins cross-fade over 2*ov px inside a gathered column."""
-    key = f'{order}_{int(width_src)}_{ov}'
+    key = f'{order}_{int(width_src)}_{ov}_v{seed}'
     p_rgb = os.path.join(CACHE, f'valance_{key}.png')
     p_msk = os.path.join(CACHE, f'valance_{key}_mask.png')
     p_js = os.path.join(CACHE, f'valance_{key}.json')
     if not force and all(os.path.exists(p) for p in (p_rgb, p_msk, p_js)):
         return C.load(p_rgb, 'RGB'), C.load(p_msk, 'L'), json.load(open(p_js))['gathers']
     fv, fm = _valance_source()
+    rng = np.random.default_rng(seed)
     lum = C.lum(fv)
     ref = float((lum * fm).sum() / fm.sum())
     pieces = []
@@ -292,6 +343,15 @@ def valance_frieze(width_src, order='ABCDbcadBCAdcbDa', ov=14, force=False):
         rgb = np.clip(rgb * g, 0, 1)
         if ch.islower():
             rgb, msk = rgb[:, ::-1], msk[:, ::-1]
+        # every swag a little different: +-4 % width, +-5 % drop (heading stays on the top row)
+        sx, sy = 1 + rng.uniform(-0.04, 0.04), 1 + rng.uniform(-0.05, 0.05)
+        size = (int(round(rgb.shape[1] * sx)), int(round(rgb.shape[0] * sy)))
+        rgb = np.clip(cv2.resize(rgb, size, interpolation=cv2.INTER_LANCZOS4), 0, 1)[:fv.shape[0]]
+        msk = np.clip(cv2.resize(msk, size, interpolation=cv2.INTER_LANCZOS4), 0, 1)[:fv.shape[0]]
+        if rgb.shape[0] < fv.shape[0]:
+            padn = fv.shape[0] - rgb.shape[0]
+            rgb = np.pad(rgb, ((0, padn), (0, 0), (0, 0)), mode='edge')
+            msk = np.pad(msk, ((0, padn), (0, 0)))
         pieces.append((rgb, msk))
     h = fv.shape[0]
     total = sum(p[0].shape[1] - 2 * ov for p in pieces) + 2 * ov
@@ -329,11 +389,12 @@ def valance_frieze(width_src, order='ABCDbcadBCAdcbDa', ov=14, force=False):
 if __name__ == '__main__':
     import time
     t = time.time()
-    rgb, cut, shades, geo = cabins_plate(force=True)
+    rgb, cut, pend, shades, geo = cabins_plate(force=True)
     print('cabins', time.time() - t, shades)
     fr, fm, gx = valance_frieze(10200, force=True)
     print('valance', fr.shape, gx, time.time() - t)
     sp = C.P('build', 'c02')
-    C.save_preview(np.dstack([rgb, cut]), os.path.join(sp, 'cabins_cut_preview.jpg'), 1800)
+    C.save_preview(np.dstack([rgb, np.maximum(cut, pend)]), os.path.join(sp, 'cabins_cut_preview.jpg'), 1800)
+    C.save_preview(np.dstack([rgb, pend])[1050:1260], os.path.join(sp, 'pendants_preview.jpg'), 2400)
     C.save_preview(rgb[2050:2688, 300:6256], os.path.join(sp, 'cabins_clean_bottom.jpg'), 1985)
     C.save_preview(np.dstack([fr, fm]), os.path.join(sp, 'valance_preview.jpg'), 1800)
