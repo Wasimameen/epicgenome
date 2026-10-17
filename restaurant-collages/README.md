@@ -9,15 +9,16 @@ Two layered Photoshop atmosphere collages of the client's restaurant design (RES
 
 Both sheets show **sound, smell, taste, texture and colour** in image and words, use **2.5D paper-cut layering** (one light direction, cast shadows, near / middle / far planes) and **raise colour intensity where spaces overlap**:
 - 01: the void ∩ facade lens, the void ∩ bar lens and the green-gold core.
-- 02: cabin 01 → 04 deepening linen → amber → terracotta → oxblood, and the ember zone where the approach meets cabin 04.
+- 02: cabin 01 → 04 deepening linen → amber → terracotta → oxblood, and the oxblood zone where the approach meets cabin 04.
 
 ## Deliverables (`output/`)
 
 | file | what |
 |---|---|
-| `restaurant-collage-0N-….psd` | **Layered master.** A3 landscape, 4961 × 3508 px at 300 ppi, 8-bit RGB, embedded sRGB IEC61966-2.1 profile, maximised compatibility (full composite + version info). About 130–170 MB each, so it is **not in git** (GitHub's limit is 100 MB per file) and is delivered separately. |
+| `restaurant-collage-0N-….psd` | **Layered master.** A3 landscape, 4961 × 3508 px at 300 ppi, 8-bit RGB, embedded sRGB IEC61966-2.1 profile, maximised compatibility (full composite + version info). About 130–200 MB each, so it is **not in git** (GitHub's limit is 100 MB per file) and is delivered separately. |
 | `fonts-to-install.zip` | The free fonts the live type uses (Cormorant Garamond and IBM Plex Mono, all weights shipped) and their SIL OFL licences |
-| `restaurant-collage-0N-….jpg` | Flattened print file: quality 95, 4:4:4, sRGB ICC, 300 ppi |
+| `restaurant-collage-0N-….jpg` | Flattened file at trim size: quality 95, 4:4:4, sRGB ICC, 300 ppi |
+| `restaurant-collage-0N-…_print-3mm-bleed.jpg` | The same with 3 mm mirrored bleed on every edge (5033 × 3580 px) for a print shop that trims |
 | `restaurant-collage-0N-…_preview.jpg` | 2000 px web preview |
 | `restaurant-collage-0N-…_layers.txt` | The full layer tree (top of the Layers panel first) and the build stamp |
 
@@ -33,13 +34,11 @@ Both sheets show **sound, smell, taste, texture and colour** in image and words,
   - Photo grades are clipped fills too (`Grade - …`). Hide one to see the ungraded photo.
 - **Type is editable.**
   - Every `TXT - …` raster layer has a hidden live type layer `EDIT - …` above it, with the same font, size, tracking and position.
-  - To change wording: hide the TXT layer, show the EDIT layer, then type. Photoshop may ask to update text layers; click *Update*.
-  - Each tag or card is its own sub-group (`Tag - …` / `Card - …`) holding its paper, shadow and type, so it moves as one.
-- **Fonts** (free, SIL Open Font License): install them before editing type.
-  - Cormorant Garamond (Italic, Medium Italic, Regular).
-  - IBM Plex Mono (Regular, Light).
-  - Both are in `assets/fonts/`.
-- **Locked layers.** The paper, the client drawings and the key plan are position-locked to prevent accidental nudges. Unlock them in the Layers panel.
+  - To change wording: show the EDIT layer (a tag has two: label and phrase), type, then hide the TXT layer. Photoshop may ask to update text layers; click *Update*.
+  - Each tag or card is its own sub-group (`Tag - …` / `Card - …`) holding its paper, shadow, type and leader, so it moves as one.
+  - Legend palette chips are Solid Color fills and their labels are live type too.
+- **Fonts** (free, SIL Open Font License): install them from `fonts-to-install.zip` before editing type. The live type uses CormorantGaramond-Italic, IBMPlexMono-Regular, IBMPlexMono-Light and IBMPlexMono-Medium; the zip also carries the other weights.
+- **Locked layers.** The paper, the client drawings and the key plan are locked (position and pixels) to prevent accidental edits. Unlock them in the Layers panel.
 
 ## Sources and licensing
 
