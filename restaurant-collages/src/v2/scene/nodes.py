@@ -276,13 +276,13 @@ def _concrete(name):
     mid = g.noise(co, scale=7.0, detail=6, rough=0.65)
     c, _ = g.ramp(g.o(big, 'Fac'), [(0.35, (0.50, 0.48, 0.45)), (0.65, (0.66, 0.64, 0.60))])
     c = g.mix(0.5, c, g.o(mid, 'Color'), 'OVERLAY')
-    pores = g.voronoi(co, scale=140.0)
+    pores = g.voronoi(co, scale=60.0)
     pn = g.noise(co, scale=30.0, detail=1)
-    pm = g.math('MULTIPLY', g.maprange(g.o(pores, 'Distance'), 0.05, 0.14, 1.0, 0.0),
+    pm = g.math('MULTIPLY', g.maprange(g.o(pores, 'Distance'), 0.04, 0.20, 1.0, 0.0),
                 g.maprange(g.o(pn, 'Fac'), 0.40, 0.5, 0.0, 1.0))
     c = g.mix(g.math('MULTIPLY', pm, 0.8), c, (0.28, 0.27, 0.25))
     h = g.math('ADD', g.math('MULTIPLY', g.o(mid, 'Fac'), 0.4), g.math('MULTIPLY', pm, -1.0))
-    bsdf = g.principled(base=c, rough=0.86, normal=g.bump(h, 0.25, 0.002), spec=0.35)
+    bsdf = g.principled(base=c, rough=0.86, normal=g.bump(h, 0.8, 0.005), spec=0.35)
     g.l(bsdf, out.inputs['Surface'])
     return m
 
@@ -522,15 +522,15 @@ def _glass_block(name):
     # ripple: concentric-ish waves per block (blocks are 0.2 m on a grid in local x/z)
     w1 = g.n('TexWave', {'wave_type': 'RINGS', 'rings_direction': 'SPHERICAL', 'wave_profile': 'SIN'},
              Scale=38.0, Distortion=2.5, Detail=2.0)
-    cell = g.vmath('FRACTION', g.vmath('MULTIPLY', co, (5.0, 5.0, 5.0)))
+    cell = g.vmath('FRACTION', g.vmath('DIVIDE', g.vmath('SUBTRACT', co, (0.006, 0.0, 0.006)), (0.202, 0.202, 0.202)))
     g.l(g.vmath('SUBTRACT', cell, (0.5, 0.5, 0.5)), w1.inputs['Vector'])
     nz = g.noise(co, scale=14.0, detail=3)
     h = g.math('ADD', g.math('MULTIPLY', g.o(w1, 'Fac'), 0.7), g.math('MULTIPLY', g.o(nz, 'Fac'), 0.5))
     nrm = g.bump(h, 0.9, 0.004)
-    bsdf = g.principled(base=(1.0, 0.74, 0.44), trans=1.0, rough=0.12, ior=1.5, spec=0.5, normal=nrm)
-    tl = g.n('BsdfTranslucent', Color=(1.0, 0.60, 0.28))
+    bsdf = g.principled(base=(0.98, 0.86, 0.68), trans=1.0, rough=0.05, ior=1.5, spec=0.5, normal=nrm)
+    tl = g.n('BsdfTranslucent', Color=(1.0, 0.76, 0.48))
     g.l(nrm, tl.inputs['Normal'])
-    mx = g.n('MixShader', Fac=0.35)
+    mx = g.n('MixShader', Fac=0.16)
     g.l(bsdf, mx.inputs[1])
     g.l(tl.outputs[0], mx.inputs[2])
     _shadow_pass(g, out, mx.outputs[0], 0.55, (1.0, 0.74, 0.45))

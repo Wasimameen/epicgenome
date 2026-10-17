@@ -102,8 +102,8 @@ def facade():
     nz = int((GF - 0.42) / 0.202)
     G.glass_block_panel('gb_facade', (X, 0.6, 0.0), nx, nz, axis='y', coll=c)
     # warm glow behind the glass blocks only: local x -> vertical (4.3 m), local y -> along y (2.0 m)
-    G.area_light('gb_facade_sun', (X + 0.7, 1.7, 2.3), (4.2, 1.7), 650, color=(1.0, 0.7, 0.42),
-                 rot=(0, math.radians(90), 0), coll=c, camera=True)   # emits towards -x, through the blocks
+    G.area_light('gb_facade_sun', (X + 0.7, 1.7, 2.3), (4.2, 1.7), 300, color=(1.0, 0.82, 0.60),
+                 rot=(0, math.radians(90), 0), coll=c)   # emits towards -x, through the blocks
     # sheer curtains, partly drawn
     G.curtain('sheer0', -7.0, -5.6, X - 0.25, 0.02, GF - 0.45, axis='y', seed=1, coll=c)
     G.curtain('sheer1', -2.7, -1.6, X - 0.25, 0.02, GF - 0.45, axis='y', seed=2, coll=c)
@@ -175,10 +175,10 @@ def street():
         k += 1
     for i, ty in enumerate((-5.0, 4.5, 13.0)):
         G.olive_tree(f'streettree{i}', (18.6, ty, 0.0), height=8.0, spread=5.0, seed=20 + i, leaf_mat='leaf_street',
-                     coll=c, leaf_density=1.1, leaf_len=0.12, stems=1, levels=STREET_TREE)
+                     coll=c, leaf_density=1.8, leaf_len=0.075, stems=1, levels=STREET_TREE)
         G.cyl(f'treepit{i}', 0.7, 0.05, (18.6, ty, 0.0), 'soil', coll=c)
-    G.cyl('lamppost', 0.05, 4.5, (18.9, 0.2, 2.25), 'black_metal', seg=12, coll=c)
-    G.lathe('lamphead', [(0.0, 4.45), (0.18, 4.5), (0.12, 4.75), (0.0, 4.8)], (18.9, 0.2, 0), 'black_metal', coll=c)
+    G.cyl('lamppost', 0.05, 4.5, (18.9, 1.0, 2.25), 'black_metal', seg=12, coll=c)
+    G.lathe('lamphead', [(0.0, 4.45), (0.18, 4.5), (0.12, 4.75), (0.0, 4.8)], (18.9, 1.0, 0), 'black_metal', coll=c)
 
 
 def void_and_tree():
@@ -261,18 +261,19 @@ def cabins():
         G.channel_back(f'sofa_back{i}', (cx, cy), CAB_R - 0.26, math.radians(-18), math.radians(198), 0.42, 0.62,
                        lean=0.08, mat='velvet', coll=c)
         G.round_table(f'cab_table{i}', (cx, cy - 0.2), r=0.5, coll=c)
-        G.pendant_dome(f'cab_pendant{i}', (cx, cy - 0.2, 1.75), r=0.26, z_ceiling=GF, coll=c, power=60)
+        G.pendant_dome(f'cab_pendant{i}', (cx, cy - 0.2, 1.75), r=0.26, z_ceiling=GF, coll=c, power=120)
         G.candle(f'cab_candle{i}', (cx + 0.12, cy - 0.25, 0.75), coll=c)
         G.wine_glass(f'cab_glass{i}a', (cx - 0.15, cy - 0.05, 0.75), fill=0.03, coll=c)
         G.plate(f'cab_plate{i}', (cx - 0.05, cy - 0.45, 0.75), coll=c)
         # warm cove inside the top of the shell
-        G.area_light(f'cab_cove{i}', (cx, cy + 0.2, 2.3), (1.6, 1.6), 25, color=(1.0, 0.68, 0.4),
+        G.area_light(f'cab_cove{i}', (cx, cy + 0.2, 2.3), (1.6, 1.6), 80, color=(1.0, 0.68, 0.4),
                      rot=(math.pi, 0, 0), coll=c, shape='DISK')
     # glass-block screen beside the first cabin
     G.glass_block_panel('gb_screen', (6.9, 1.4, 0.0), 11, 12, axis='y', coll=c)
     G.box('gb_screen_cap', (0.12, 2.24, 0.06), (6.9, 1.4 + 1.12, 2.46), 'brass', coll=c)
-    G.area_light('gb_screen_glow', (6.35, 2.5, 1.2), (2.0, 2.2), 90, color=(1.0, 0.66, 0.38),
-                 rot=(0, math.radians(-90), 0), coll=c, camera=True)
+    # warm wash behind the screen, onto cabin 0 and the floor (seen refracted through the blocks)
+    G.area_light('gb_screen_glow', (6.35, 2.5, 1.2), (2.0, 2.2), 120, color=(1.0, 0.74, 0.50),
+                 rot=(0, math.radians(90), 0), coll=c)
 
 
 def dining():
@@ -284,7 +285,7 @@ def dining():
         G.round_table(f'table{i}', (x, y), r=0.42, coll=c)
         for k in range(3):
             a = rng.uniform(0, 2 * math.pi) if k == 0 else a + 2 * math.pi / 3 + rng.uniform(-0.3, 0.3)
-            G.tub_chair(f'chair{i}_{k}', (x + 0.72 * math.cos(a), y + 0.72 * math.sin(a)), rot=a, coll=c,
+            G.tub_chair(f'chair{i}_{k}', (x + 0.72 * math.cos(a), y + 0.72 * math.sin(a)), rot=a + math.pi, coll=c,
                         mat='velvet_olive' if (i + k) % 3 == 0 else 'velvet')
         G.candle(f'tcandle{i}', (x, y, 0.75), coll=c)
         G.wine_glass(f'tglass{i}', (x + 0.15, y + 0.1, 0.75), fill=0.025, coll=c)
@@ -303,10 +304,24 @@ def foreground_v1():
     G.plate('fg_plate_a', (tx - 0.12, ty - 0.28, 0.75), coll=c)
     G.plate('fg_plate_b', (tx + 0.22, ty - 0.08, 0.75), r=0.11, coll=c)
     G.candle('fg_candle', (tx + 0.1, ty + 0.3, 0.75), coll=c)
+    # taste: torn bread on plate a, a small dish of olive oil on plate b
+    import bmesh
+    from mathutils import Vector, Euler
+    rng = np.random.default_rng(31)
+    for k, (dx, dy) in enumerate(((-0.04, 0.01), (0.04, -0.02), (0.0, 0.05))):
+        bm = bmesh.new()
+        bmesh.ops.create_icosphere(bm, subdivisions=3, radius=0.042)
+        for v in bm.verts:
+            v.co *= 1.0 + 0.10 * rng.standard_normal()
+        bmesh.ops.scale(bm, vec=Vector((1.6, 1.0, 0.6)), verts=bm.verts)
+        ob = G.bm_obj(f'bread{k}', bm, 'bread', coll=c, loc=(tx - 0.12 + dx, ty - 0.28 + dy, 0.778))
+        ob.rotation_euler = Euler((0.1 * rng.standard_normal(), 0.1 * rng.standard_normal(), rng.uniform(0, 3.1)))
+    G.plate('fg_oil_dish', (tx + 0.22, ty - 0.08, 0.769), r=0.06, coll=c)
+    G.cyl('fg_oil', 0.04, 0.004, (tx + 0.22, ty - 0.08, 0.7795), 'olive_oil', seg=48, coll=c)
     # banquette arc on the far side of the table (east), facing the camera
     G.seat_ring('fg_banq_seat', (tx, ty), 0.85, 1.45, math.radians(-75), math.radians(75), 0.0, 0.46, coll=c)
     G.channel_back('fg_banq_back', (tx, ty), 1.32, math.radians(-73), math.radians(73), 0.42, 0.42, lean=0.1, coll=c)
-    G.tub_chair('fg_chair', (tx - 0.75, ty - 0.35), rot=math.radians(200), coll=c)
+    G.tub_chair('fg_chair', (tx - 0.75, ty - 0.35), rot=math.radians(25), coll=c)     # faces the table
 
 
 def foreground_v2():
@@ -376,12 +391,24 @@ def lights(view):
     spo.location = (VOID_C[0] - 3.5, VOID_C[1] + 1.0, 14.5)
     G.link(spo, c)
     G.look_at(spo, (9.0, -1.6, 0.0))
+    # uplight in the planter through the olive canopy: leaf shadows on the ceiling of the void
+    # (reference 10)
+    tu = bpy.data.lights.new('tree_up', 'SPOT')
+    tu.energy = 4000
+    tu.spot_size = math.radians(80)
+    tu.spot_blend = 0.5
+    tu.shadow_soft_size = 0.03
+    tu.color = (1.0, 0.80, 0.58)
+    tuo = bpy.data.objects.new('tree_up', tu)
+    tuo.location = (TREE[0], TREE[1], 0.6)
+    G.link(tuo, c)
+    G.look_at(tuo, (12.5, 0.0, 9.0))
     # facade-side pendants (dining by the glazing) and a wall sconce on the pier
     for i, y in enumerate((-5.4, -1.2, 5.4)):
         G.pendant_dome(f'fac_pendant{i}', (14.6, y, 2.6), r=0.22, z_ceiling=GF, coll=c, power=45)
     # bar-side wash on the white brick wall (north)
     for i, x in enumerate((-8, -4, 0, 4, 7.5)):
-        G.area_light(f'brickwash{i}', (x, Y1 - 0.6, GF - 0.3), (2.5, 0.3), 70, rot=(math.radians(150), 0, 0), coll=c)
+        G.area_light(f'brickwash{i}', (x, Y1 - 0.6, GF - 0.3), (2.5, 0.3), 35, rot=(math.radians(150), 0, 0), coll=c)
 
 
 def setup_render(res=(2700, 3600), samples=256, exposure=0.0):
@@ -398,7 +425,7 @@ def setup_render(res=(2700, 3600), samples=256, exposure=0.0):
     cy.use_light_tree = True
     cy.max_bounces = 10
     cy.diffuse_bounces = 4
-    cy.glossy_bounces = 4
+    cy.glossy_bounces = 8
     cy.transmission_bounces = 10
     cy.transparent_max_bounces = 16
     cy.caustics_reflective = False

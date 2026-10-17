@@ -97,17 +97,17 @@ def split_face_stone():
 
 
 def travertine():
-    base()
+    base(samples=128)
     ob = wall('travertine', 3, 3)
     ob.location = (0.35, 0.01, 0.2)
-    sun(120, 55, 3.0)
-    ortho_cam(1.0)
+    sun(120, 12, 3.0)                      # raking: pits and bands read
+    ortho_cam(0.45)
 
 
 def concrete():
-    base()
+    base(samples=128)
     wall('concrete', 3, 3)
-    sun(160, 22, 4.0)
+    sun(160, 10, 4.0)
     ortho_cam(0.8)
 
 
@@ -137,9 +137,9 @@ def glass_block():
     G.glass_block_panel('gb', (-0.65, 0.0, -0.8), 6, 8, axis='x')
     # warm glowing room beyond, with soft blurred shapes
     em = G.box('beyond', (4, 0.02, 4), (0, 1.2, 0), nodes.material('lampshade'))
-    G.area_light('back', (0, 0.9, 0.2), (2.0, 2.0), 260, color=(1.0, 0.55, 0.24), rot=(math.radians(-90), 0, 0))
-    G.box('shape1', (0.25, 0.25, 1.6), (-0.3, 0.6, -0.2), 'walnut')
-    G.cyl('shape2', 0.18, 0.02, (0.35, 0.6, 0.3), 'bulb', seg=24).rotation_euler = (math.pi / 2, 0, 0)
+    G.area_light('back', (0, 0.9, 0.2), (2.0, 2.0), 120, color=(1.0, 0.8, 0.55), rot=(math.radians(-90), 0, 0))
+    G.box('shape1', (0.25, 0.25, 1.6), (-0.3, 0.3, -0.2), 'walnut')
+    G.cyl('shape2', 0.18, 0.02, (0.35, 0.3, 0.3), 'bulb', seg=24).rotation_euler = (math.pi / 2, 0, 0)
     sun(130, 30, 1.2)
     _ = em
     persp_cam(120, (-0.03, -3.4, 0.02), (-0.03, 0, 0.02))
@@ -166,7 +166,7 @@ def linen_drape():
 
 
 def brass():
-    base(world=(0.18, 0.14, 0.1), strength=0.3)
+    base(world=(0.18, 0.14, 0.1), strength=0.08)
     # gently curved brushed sheet so the reflection grades across it
     P = np.zeros((80, 2, 3), np.float32)
     th = np.linspace(-0.5, 0.5, 80)
@@ -201,7 +201,7 @@ def olive_leaves():
     base(world=(0.95, 0.88, 0.76), strength=1.1)
     G.olive_tree('olive', (0, 0, -3.2), height=4.0, spread=3.0, seed=5, leaf_density=1.8)
     sun(60, 50, 3.5, (1.0, 0.82, 0.6))
-    persp_cam(40, (0.25, -1.3, -1.1), (0.0, 0.0, -0.3))
+    persp_cam(40, (0.6, -3.5, -1.4), (0.0, 0.0, -0.5))
 
 
 def fluted_oak():

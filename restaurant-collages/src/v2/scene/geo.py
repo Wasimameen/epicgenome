@@ -524,7 +524,8 @@ def channel_back(name, c, r, a0, a1, z0, h, lean=0.12, channels=0.16, puff=0.03,
     v = np.linspace(0, 1, nv, dtype=np.float32)
     TH, V = np.meshgrid(th, v, indexing='ij')
     s = (TH - a0) * r
-    ch = np.abs(np.sin(np.pi * s / channels)) ** 0.45 * puff * np.sin(np.pi * np.clip(V * 1.05, 0, 1)) ** 0.5
+    ch = (np.abs(np.sin(np.pi * s / channels)) ** 0.45 * puff
+          * np.clip(np.sin(np.pi * np.clip(V * 1.05, 0, 1)), 0.0, 1.0) ** 0.5)
     R = r + lean * V - ch
     Z = z0 + V * h
     # rolled top
@@ -641,6 +642,7 @@ def wine_glass(name, loc, fill=0.0, coll=None):
             (0.012, 0.115), (0.034, 0.14), (0.042, 0.17), (0.04, 0.2), (0.034, 0.225)]
     g = lathe(name, prof, loc, 'wine_glass', seg=64, coll=coll)
     add_mod(g, 'SOLIDIFY', thickness=0.0012, offset=-1)
+    subsurf(g, 2)
     out = [g]
     if fill > 0:
         zf = 0.115 + fill
@@ -677,7 +679,7 @@ def mushroom_lamp(name, loc, coll=None, power=6.0):
 def candle(name, loc, coll=None, h=0.07):
     x, y, z = loc
     holder = lathe(name + '_holder', [(0.0, 0.0), (0.035, 0.0), (0.035, 0.05), (0.031, 0.05), (0.031, 0.004),
-                                      (0.0, 0.004)], (x, y, z), 'wine_glass', coll=coll)
+                                      (0.0, 0.004)], (x, y, z), 'wine_glass', coll=coll, smooth=False)
     c = cyl(name + '_wax', 0.022, h, (x, y, z + h / 2 + 0.004), 'candle', seg=24, coll=coll)
     bm = bmesh.new()
     bmesh.ops.create_uvsphere(bm, u_segments=12, v_segments=8, radius=0.006)
