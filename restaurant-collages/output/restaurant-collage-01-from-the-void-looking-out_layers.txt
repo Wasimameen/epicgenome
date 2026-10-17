@@ -1,0 +1,287 @@
+Restaurant - Atmosphere collage 01 - From the void, looking out
+4961 x 3508 px @ 300 ppi (A3), sRGB, 8-bit RGB
+282 layers/groups — top of the Layers panel first
+build stamp: sources 501412489fc1871c - git ba5b348 (clean)
+
+▾ !! READ ME - how this file is built   [hidden]
+  · READ ME - notes (hide group to view)
+▾ 98 - Type - title & annotations
+  ▾ Tag - looking up
+    T EDIT - looking up   [live type, hidden]
+    · TXT - looking up
+    · Paper - label looking up
+    · Shadow - label looking up   [multiply, 36%]
+  ▾ Tag - looking out
+    T EDIT - looking out   [live type, hidden]
+    · TXT - looking out
+    · Paper - label looking out
+    · Shadow - label looking out   [multiply, 36%]
+  · Leader - smell 02 to the soil   [85%]
+  ▾ Tag - SMELL - 02
+    T EDIT - SMELL 02 phrase   [live type, hidden]
+    T EDIT - SMELL 02 label   [live type, hidden]
+    · TXT - SMELL 02
+    · Paper - tag SMELL - 02
+    · Shadow - tag SMELL - 02   [multiply, 38%]
+  · Leader - outside to the rain   [85%]
+  ▾ Tag - OUTSIDE - BLUE HOUR
+    T EDIT - OUTSIDE BLUE HOUR phrase   [live type, hidden]
+    T EDIT - OUTSIDE BLUE HOUR label   [live type, hidden]
+    · TXT - OUTSIDE BLUE HOUR
+    · Paper - tag OUTSIDE - BLUE HOUR
+    · Shadow - tag OUTSIDE - BLUE HOUR   [multiply, 38%]
+  · Leader - stair label to the flights   [85%]
+  T EDIT - stair to the gallery, section B-B   [live type, hidden]
+  · TXT - stair to the gallery, section B-B
+  T EDIT - entrance, glazed end   [live type, hidden]
+  · TXT - entrance, glazed end
+  ▾ Tag - LIGHT
+    T EDIT - LIGHT phrase   [live type, hidden]
+    T EDIT - LIGHT label   [live type, hidden]
+    · TXT - LIGHT
+    · Paper - tag LIGHT
+    · Shadow - tag LIGHT   [multiply, 38%]
+  · Leader - sound 01 to the rings   [85%]
+  ▾ Tag - SOUND - 01
+    T EDIT - SOUND 01 phrase   [live type, hidden]
+    T EDIT - SOUND 01 label   [live type, hidden]
+    · TXT - SOUND 01
+    · Paper - tag SOUND - 01
+    · Shadow - tag SOUND - 01   [multiply, 38%]
+  T EDIT - behind you, the bar   [live type, hidden]
+  · TXT - behind you, the bar
+  T EDIT - pointer to the cabins (02)   [live type, hidden]
+  · TXT - pointer to the cabins (02)
+  ▾ Card - At the bar
+    T EDIT - TASTE phrase   [live type, hidden]
+    T EDIT - TASTE label   [live type, hidden]
+    · TXT - TASTE
+    T EDIT - SMELL 01 phrase   [live type, hidden]
+    T EDIT - SMELL 01 label   [live type, hidden]
+    · TXT - SMELL 01
+    T EDIT - SOUND 02 phrase   [live type, hidden]
+    T EDIT - SOUND 02 label   [live type, hidden]
+    · TXT - SOUND 02
+    · Paper - card At the bar
+    · Shadow - card At the bar   [multiply, 38%]
+  ▾ Tag - TEXTURE
+    T EDIT - TEXTURE phrase   [live type, hidden]
+    T EDIT - TEXTURE label   [live type, hidden]
+    · TXT - TEXTURE
+    · Paper - tag TEXTURE
+    · Shadow - tag TEXTURE   [multiply, 38%]
+  · Colour - intensity scale (gradient)
+  ▾ Tag - COLOUR
+    T EDIT - COLOUR phrase   [live type, hidden]
+    T EDIT - COLOUR label   [live type, hidden]
+    · TXT - COLOUR
+    · Paper - tag COLOUR
+    · Shadow - tag COLOUR   [multiply, 38%]
+  ▾ Title block
+    T EDIT - subline   [live type, hidden]
+    · TXT - subline
+    T EDIT - title line 2   [live type, hidden]
+    · TXT - title line 2
+    T EDIT - title line 1   [live type, hidden]
+    · TXT - title line 1
+    T EDIT - kicker   [live type, hidden]
+    · TXT - kicker
+▾ 95 - Legend - key plan & palette
+  ▾ Key plan - ground floor
+    · Leader - key plan cabins   [70%]
+    · Leader - key plan void   [70%]
+    T EDIT - key plan label cabins   [live type, hidden]
+    · TXT - key plan label cabins
+    T EDIT - key plan label void   [live type, hidden]
+    · TXT - key plan label void
+    T EDIT - north point N   [live type, hidden]
+    · TXT - north point N
+    · Key plan - north point
+    · Key plan - view cone (this sheet)
+    ■ Key plan - 02 the cabins (tint)   [multiply, 35%, mask]
+    ■ Key plan - 01 the void (tint)   [multiply, 75%, mask]
+    · Key plan - ground floor (client)   [locked]
+  T EDIT - legend heading key plan   [live type, hidden]
+  · TXT - legend heading key plan
+  ▾ Swatch - glass block
+    T EDIT - swatch glass block   [live type, hidden]
+    · TXT - swatch glass block
+    · Chip rim - glass block
+    · Chip - glass block (material)
+  ▾ Swatch - terrazzo
+    T EDIT - swatch terrazzo   [live type, hidden]
+    · TXT - swatch terrazzo
+    · Chip rim - terrazzo
+    · Chip - terrazzo (material)
+  ▾ Swatch - linen
+    T EDIT - swatch linen   [live type, hidden]
+    · TXT - swatch linen
+    · Chip rim - linen
+    · Chip - linen (material)
+  ▾ Swatch - steel
+    T EDIT - swatch steel   [live type, hidden]
+    · TXT - swatch steel
+    · Chip rim - steel
+    · Chip - steel (material)
+  ▾ Swatch - dusk
+    T EDIT - swatch dusk   [live type, hidden]
+    · TXT - swatch dusk
+    · Chip rim - dusk
+    ■ Chip - dusk #3D4A6B   [mask]
+  ▾ Swatch - violet
+    T EDIT - swatch violet   [live type, hidden]
+    · TXT - swatch violet
+    · Chip rim - violet
+    ■ Chip - violet #5A4E7A   [mask]
+  ▾ Swatch - green-gold
+    T EDIT - swatch green-gold   [live type, hidden]
+    · TXT - swatch green-gold
+    · Chip rim - green-gold
+    ■ Chip - green-gold #B9D46A   [mask]
+  ▾ Swatch - amber
+    T EDIT - swatch amber   [live type, hidden]
+    · TXT - swatch amber
+    · Chip rim - amber
+    ■ Chip - amber #D98A3D   [mask]
+  T EDIT - legend heading palette   [live type, hidden]
+  · TXT - legend heading palette
+▾ 94 - Viewpoint - where we stand & look
+  · Viewer - you stand here (eye point)
+  · Viewer - paper halo   [85%]
+  · Sightline - looking up (dashed ink)
+  · Sightline - casing (up)   [70%]
+  · Sightline - looking out (dashed ink)
+  · Sightline - casing (out)   [70%]
+  · Hairline - street & bar planes behind   [70%]
+▾ 90 - Drawings - client linework
+  · Drawing - elev. 01 stools & machine   [multiply, 45%, mask, locked]
+  · Drawing - elev. 01 leaf logo (ghost)   [multiply, 55%, mask, locked]
+  · Drawing - stair to the gallery (B-B)   [multiply, 55%, mask, locked]
+▾ 85 - Senses - sound & smell
+  · Smell - petrichor at the door   [screen, 45%]
+  · Smell - green leaf & damp soil   [45%]
+  · Smell - roasted coffee from the cup   [screen]
+  · Rain - falling outside (slanted dashes)   [screen, 85%, mask]
+  · Sound - espresso hiss, fading arcs   [mask]
+  · Sound - voices rise up the void   [95%, mask]
+▾ 80 - Light & colour intensity
+  ■ Intensity - terracotta to the cabins   [soft light, 55%, mask]
+  ■ Intensity - amber warmth at the bar   [soft light, 45%, mask]
+  ■ Light - blue hour on the trunk   [soft light, 45%, mask]
+  ■ Intensity - void x bar (honey)   [overlay, 60%, mask]
+  ■ Intensity - void x street (violet, soft)   [soft light, 45%, mask]
+  ■ Intensity - void x street (violet, colour)   [color, 40%, mask]
+  · Light - canopy glow   [screen, 40%, mask]
+  ■ Intensity - green-gold core (saturation)   [saturation, 30%, mask]
+  ■ Intensity - green-gold core (soft light)   [soft light, 85%, mask]
+  · Light - pool on the counter 4   [screen, 80%]
+  · Light - pool on the counter 3   [screen, 80%]
+  · Light - pool on the counter 2   [screen, 80%]
+  · Light - pool on the counter 1   [screen, 80%]
+  · Light - pendant 4 glow (amber)   [screen, 85%]
+  · Light - pendant 3 glow (amber)   [screen, 85%]
+  · Light - pendant 2 glow (amber)   [screen, 85%]
+  · Light - pendant 1 glow (amber)   [screen, 85%]
+  · Light - last blue light down the void   [screen, 60%, mask]
+▾ 75 - Near - leaves overhead
+  ■ Grade - leaf green, in shade (right)   [multiply, 40%, clipped]
+  · Near - leaves overhead (top right)   [mask]
+  · Shadow - near leaves (top right)   [multiply, 20%]
+  ■ Grade - leaf green, in shade (left)   [multiply, 40%, clipped]
+  · Near - leaves overhead (top left)   [mask]
+  · Shadow - near leaves (top left)   [multiply, 20%]
+▾ 70 - Overhead - the festoon valance
+  ■ Grade - lift (linen, screen)   [screen, 16%, clipped]
+  ■ Grade - to palette linen (colour)   [color, 45%, clipped]
+  ■ Grade - desaturate (grey)   [saturation, 42%, clipped]
+  · Valance - swags (photo, fabric mask)   [mask]
+  · Shadow - valance hem on the page   [multiply, 36%]
+▾ 60 - Tree pit - soil lip round the trunk
+  ■ Grade - damp soil lift (brown, lip)   [screen, 30%, clipped]
+  · Tree pit - soil swallowing the trunk
+  · Shadow - trunk contact on the soil   [multiply, 35%]
+▾ 50 - The void - looking up
+  · Sky - rain beads on the skylight   [screen, 60%, mask]
+  ■ Sky - deepen (soft light)   [soft light, 30%, mask]
+  ■ Sky - blue hour (colour)   [color, 42%, mask]
+  ■ Sky - blue hour (multiply)   [multiply, 60%, mask]
+  ▾ 55 - Tree - rising through the void
+    ■ Shade - trunk base darkens into the soil   [multiply, 55%, clipped, mask]
+    ■ Grade - lower trunk to grey bark   [color, 85%, clipped, mask]
+    · Retouch - lower trunk bark rebuilt   [clipped]
+    · Retouch - leaf fringes recoloured   [clipped]
+    · Tree - cut-out (registered on its photo)   [mask]
+    · Tree - root flare at the soil (bark)
+    · Tree - branch breaking out of the void   [mask]
+    · Shadow - branch breaking out (page)   [multiply, 30%]
+    · Shadow - tree on the page   [multiply, 30%]
+  · Retouch - fringes healed (photo)   [clipped]
+  · Void - looking up (photo, disc mask)   [mask]
+  · Void - paper rim
+  · Shadow - void disc   [multiply, 25%]
+▾ 45 - Tree pit - terrazzo kerb & soil
+  ■ Grade - damp soil lift (brown)   [screen, 30%, clipped, mask]
+  · Tree pit - terrazzo kerb & damp soil
+  · Shadow - kerb on the terrazzo   [multiply, 45%]
+▾ 40 - Ground - terrazzo floor
+  · Floor - leaf-shadow dapple   [multiply, 30%, mask]
+  ■ Grade - floor recedes into shade   [multiply, 35%, clipped, mask]
+  · Floor - cream terrazzo (perspective)   [mask]
+▾ 30 - Behind you - the bar (elevation 01)
+  ■ Grade - saucer desaturated   [saturation, 35%, clipped, mask]
+  · Bar - espresso cup (CC0 photo cut-out)   [mask]
+  · Shadow - cup contact on the steel   [multiply, 55%]
+  ■ Bar - stool 4 silhouette (elev. 01)   [78%, mask]
+  · Shadow - stool 4 on the floor   [multiply, 45%]
+  ■ Bar - stool 3 silhouette (elev. 01)   [78%, mask]
+  · Shadow - stool 3 on the floor   [multiply, 45%]
+  ■ Bar - stool 2 silhouette (elev. 01)   [78%, mask]
+  · Shadow - stool 2 on the floor   [multiply, 45%]
+  ■ Bar - stool 1 silhouette (elev. 01)   [78%, mask]
+  · Shadow - stool 1 on the floor   [multiply, 45%]
+  · Light - machine top edge (linen)   [85%]
+  · Bar - machine, brushed steel (overlay)   [overlay, 60%, clipped]
+  ■ Bar - espresso machine (elev. 01)   [mask]
+  · Shadow - espresso machine on the wall   [multiply, 40%]
+  ■ Light - steel arris specular (white)   [screen, 85%, mask]
+  ■ Shade - top far edge (steel grey)   [multiply, 30%, clipped, mask]
+  ■ Shade - steel edge (steel grey)   [multiply, 45%, clipped, mask]
+  · Bar - brushed steel counter top   [mask]
+  · Shadow - counter top overhang   [multiply, 50%]
+  ■ Grade - lift the oak (linen)   [screen, 22%, clipped]
+  ■ Shade - counter under the top (dark oak)   [multiply, 30%, clipped, mask]
+  · Bar - fluted oak counter front   [mask]
+  · Bar - dome pendant 4 (photo cut-out)   [mask]
+  · Bar - dome pendant 3 (photo cut-out)   [mask]
+  · Bar - dome pendant 2 (photo cut-out)   [mask]
+  · Bar - dome pendant 1 (photo cut-out)   [mask]
+  · Bar - bulkhead underside (warm lit)
+  · Shadow - bulkhead soffit on the wall   [multiply, 45%]
+  ■ Grade - warm amber bar light   [soft light, 55%, clipped]
+  · Bar - glass-brick back wall (photo)   [mask]
+  T EDIT - bar sign RESTAURANT (elev. 01)   [live type, hidden]
+  · TXT - bar sign RESTAURANT (elev. 01)
+  · Bar - sign panel joint   [55%]
+  ■ Shade - bulkhead to soffit (brown)   [multiply, 35%, clipped, mask]
+  · Bar - sign panel, limewash texture   [multiply, 55%, clipped, mask]
+  ■ Bar - sign panel (painted)   [clipped, mask]
+  · Bar - fluted oak bulkhead (sign band)   [mask]
+  · Shadow - bar planes on the page   [multiply, 34%]
+▾ 20 - Entrance - glass block & door
+  · Door - pull handle (brushed steel)
+  · Shadow - pull handle   [multiply, 50%]
+  · Door - anodised steel frame
+  · Shadow - door frame on the glass   [multiply, 35%]
+  · Glazing - rain beads on the glass   [80%]
+  · Glazing - reflection on the glass   [screen, 22%]
+  ■ Grade - lamplight in the low courses   [soft light, 75%, clipped, mask]
+  ■ Grade - glass depth (dusk, not mortar)   [multiply, 25%, clipped, mask]
+  ■ Grade - glass sheen (celadon)   [screen, 25%, clipped]
+  · Facade - glass blocks, street refracted   [mask]
+▾ 10 - Outside - the street at blue hour
+  ■ Grade - warm wet street   [soft light, 50%, clipped, mask]
+  ■ Grade - lift the shadows   [screen, 45%, clipped]
+  · Outside - street at blue hour (photo)   [mask]
+  · Shadow - entrance facade on the page   [multiply, 30%]
+▾ 00 - Paper
+  · Paper - warm linen ground   [locked]

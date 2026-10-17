@@ -1,0 +1,1356 @@
+{
+ "module": "src/lib/linework.py",
+ "generated_by": "linework.build()",
+ "conventions": {
+  "format": "8-bit RGBA PNG, straight alpha, RGB = ink #2B2420 everywhere, alpha = (1 - grey/255) ** 0.72, paper = alpha 0",
+  "dpi": 600,
+  "coords": "pixel coords of each file, x right, y down, origin top-left; *_x / *_y keys, centre = [x, y], bbox = [x0, y0, x1, y1]",
+  "page_pt": "page point = origin_pt + px / px_per_pt (page top-left origin)"
+ },
+ "functions": {
+  "render_region(page, x_pt, y_pt, w_pt, h_pt, dpi=600, pdf=None)": "uint8 grey render of a page rectangle straight from the vector PDF (pdftoppm)",
+  "ink_rgba(gray, color='#2B2420', gamma=0.72, floor=0.0)": "grey -> straight-alpha ink RGBA, paper exactly alpha 0",
+  "recolor(rgba, hex)": "same alpha, new flat ink colour",
+  "thicken(rgba, px)": "grow line weight by px (fractional ok) - use before strong downscaling",
+  "hand_wobble(rgba, amount=1.5, seed=0, wavelength=None, fine=0.35, pressure=0.0)": "subtle deterministic hand-drawn jitter (+ optional pen-pressure fade)",
+  "render_view(name, clean=True)": "re-render one of VIEWS ('AA','BB','E01','E02','E04','PG','PF','AXO') at 600 dpi"
+ },
+ "assets": [
+  {
+   "path": "assets/lines/section_AA.png",
+   "size": [
+    5666,
+    4318
+   ],
+   "description": "SECTION A-A, building only: both storeys with ceiling drapery, the double-height void with the tree, stainless rail, bar with RESTAURANT signage + pendants + stools, service stairs. Level/dimension column, label text, leaders + arrowheads and title removed from the vector content (not erased).",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 2,
+    "sheet_png": "assets/drawings/sheet-2.png",
+    "origin_pt": [
+     787.08,
+     185.16
+    ],
+    "origin_sheet300_px": [
+     3279.5,
+     771.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 42,
+    "building_frame_pt": [
+     789.12,
+     187.2,
+     1464.96,
+     701.28
+    ]
+   },
+   "anchors": {
+    "roof_top_y": 18.0,
+    "roof_underside_y": 88.0,
+    "ceiling_first_floor_y": 252.0,
+    "ffl_first_y": 1889.0,
+    "first_slab_underside_y": 1959.5,
+    "ceiling_ground_floor_y": 2123.0,
+    "ffl_ground_y": 4228.5,
+    "ground_slab_bottom_y": 4298.5,
+    "outer_wall_left_x": 19.0,
+    "outer_wall_right_x": 5647.0,
+    "first_slab_openings_x": [
+     [
+      1454,
+      3460
+     ],
+     [
+      5132,
+      5575
+     ]
+    ],
+    "rail_top_y": 1468.0,
+    "rail_x": [
+     1454,
+     3462
+    ],
+    "rail_lines_y": [
+     1468.0,
+     1491.0
+    ],
+    "px_per_m": 467.82,
+    "void_left_x": 1454,
+    "void_right_x": 3460,
+    "void_centre_x": 2457.0,
+    "trunk_at_ffl_ground_x": 2392.0,
+    "trunk_width_at_ground_px": 57.3,
+    "trunk_at_ffl_first_x": 2320.5,
+    "trunk_mid_height_x": 2356.3,
+    "trunk_lean_deg": -1.75
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/section_AA_full.png",
+   "size": [
+    8220,
+    5046
+   ],
+   "description": "SECTION A-A as drawn: building + level marks (FFL +11/+16/+20 m), 4000/5000 dims, all labels with leaders, and the SECTION A-A title with underline.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 2,
+    "sheet_png": "assets/drawings/sheet-2.png",
+    "origin_pt": [
+     597.72,
+     160.2
+    ],
+    "origin_sheet300_px": [
+     2490.5,
+     667.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": false,
+    "pdf_objects_neutralised": 73,
+    "building_frame_pt": [
+     789.12,
+     187.2,
+     1464.96,
+     701.28
+    ]
+   },
+   "anchors": {
+    "section_AA_origin_in_this_file": [
+     1578,
+     208
+    ],
+    "roof_top_y": 226.0,
+    "roof_underside_y": 296.0,
+    "ceiling_first_floor_y": 460.0,
+    "ffl_first_y": 2097.0,
+    "first_slab_underside_y": 2167.5,
+    "ceiling_ground_floor_y": 2331.0,
+    "ffl_ground_y": 4436.5,
+    "ground_slab_bottom_y": 4506.5,
+    "outer_wall_left_x": 1597.0,
+    "outer_wall_right_x": 7225.0,
+    "first_slab_openings_x": [
+     [
+      3032.0,
+      5038.0
+     ],
+     [
+      6710.0,
+      7153.0
+     ]
+    ],
+    "rail_top_y": 1676.0,
+    "rail_x": [
+     3032.0,
+     5040.0
+    ],
+    "rail_lines_y": [
+     1676.0,
+     1699.0
+    ],
+    "px_per_m": 467.82,
+    "void_left_x": 3032.0,
+    "void_right_x": 5038.0,
+    "void_centre_x": 4035.0,
+    "trunk_at_ffl_ground_x": 3970.0,
+    "trunk_width_at_ground_px": 57.3,
+    "trunk_at_ffl_first_x": 3898.5,
+    "trunk_mid_height_x": 3934.3,
+    "trunk_lean_deg": -1.75
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/section_BB.png",
+   "size": [
+    13466,
+    4318
+   ],
+   "description": "SECTION B-B (long section), building only: party hall with curtains, 4 ground-floor cabins under festoon drapery with pendants, first-floor cabins + planters, first-floor bar, void with tree and stainless rail, both stair flights, dining. Annotations removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 2,
+    "sheet_png": "assets/drawings/sheet-2.png",
+    "origin_pt": [
+     334.92,
+     917.88
+    ],
+    "origin_sheet300_px": [
+     1395.5,
+     3824.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 70,
+    "building_frame_pt": [
+     336.96,
+     919.92,
+     1948.8,
+     1434.0
+    ]
+   },
+   "anchors": {
+    "roof_top_y": 16.0,
+    "roof_underside_y": 86.0,
+    "ceiling_first_floor_y": 249.5,
+    "ffl_first_y": 1886.0,
+    "first_slab_underside_y": 1958.5,
+    "ceiling_ground_floor_y": 2121.0,
+    "ffl_ground_y": 4226.5,
+    "ground_slab_bottom_y": 4296.5,
+    "outer_wall_left_x": 16.5,
+    "outer_wall_right_x": 13445.0,
+    "first_slab_openings_x": [
+     [
+      8883,
+      11316
+     ]
+    ],
+    "rail_top_y": 1466.0,
+    "rail_x": [
+     8882,
+     10876
+    ],
+    "rail_lines_y": [
+     1466.0,
+     1489.0
+    ],
+    "px_per_m": 467.8,
+    "void_rail_x": [
+     8882,
+     10876
+    ],
+    "trunk_at_ffl_ground_x": 9937.1,
+    "trunk_width_at_ground_px": 56.3,
+    "trunk_at_ffl_first_x": 9886.0,
+    "trunk_mid_height_x": 9911.6,
+    "trunk_lean_deg": -1.25,
+    "split": {
+     "ground_wall_x": [
+      7124,
+      7197
+     ],
+     "counter_top_y": 1395,
+     "counter_left_x": 6771,
+     "first_floor_panel_edge_x": [
+      6846,
+      6849
+     ],
+     "slab_cut_y": 1962
+    }
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/section_BB_left.png",
+   "size": [
+    7199,
+    4318
+   ],
+   "description": "SECTION B-B left portion: party hall + the 4 ground-floor private cabins (drapery, pendants, banquettes) and above them the first-floor toilets/brick wall + first-floor cabins with planters. Stepped cut: first floor ends at the edge of the cabin fluting, ground floor at the far face of the wall between cabins and bar (transparent beyond).",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 2,
+    "sheet_png": "assets/drawings/sheet-2.png",
+    "origin_pt": [
+     334.92,
+     917.88
+    ],
+    "origin_sheet300_px": [
+     1395.5,
+     3824.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 70,
+    "building_frame_pt": [
+     336.96,
+     919.92,
+     1948.8,
+     1434.0
+    ],
+    "crop_of": "assets/lines/section_BB.png",
+    "crop_x": [
+     0,
+     7199
+    ]
+   },
+   "anchors": {
+    "offset_in_section_BB": [
+     0,
+     0
+    ],
+    "roof_top_y": 16.0,
+    "roof_underside_y": 86.0,
+    "ceiling_first_floor_y": 249.5,
+    "ffl_first_y": 1886.0,
+    "first_slab_underside_y": 1958.5,
+    "ceiling_ground_floor_y": 2121.0,
+    "ffl_ground_y": 4226.5,
+    "ground_slab_bottom_y": 4296.5,
+    "outer_wall_left_x": 16.5,
+    "px_per_m": 467.8,
+    "split": {
+     "ground_wall_x": [
+      7124,
+      7197
+     ],
+     "counter_top_y": 1395,
+     "counter_left_x": 6771,
+     "first_floor_panel_edge_x": [
+      6846,
+      6849
+     ],
+     "slab_cut_y": 1962
+    }
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/section_BB_right.png",
+   "size": [
+    6697,
+    4318
+   ],
+   "description": "SECTION B-B right portion: first-floor bar, the void with the tree and stainless steel rail, the double stair flights, ground-floor bar counter, dining, entrance-end wall. Stepped cut (first-floor bar counter / wall face / ground-floor wall) mirrors section_BB_left.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 2,
+    "sheet_png": "assets/drawings/sheet-2.png",
+    "origin_pt": [
+     334.92,
+     917.88
+    ],
+    "origin_sheet300_px": [
+     1395.5,
+     3824.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 70,
+    "building_frame_pt": [
+     336.96,
+     919.92,
+     1948.8,
+     1434.0
+    ],
+    "crop_of": "assets/lines/section_BB.png",
+    "crop_x": [
+     6769,
+     13466
+    ]
+   },
+   "anchors": {
+    "offset_in_section_BB": [
+     6769,
+     0
+    ],
+    "roof_top_y": 16.0,
+    "roof_underside_y": 86.0,
+    "ceiling_first_floor_y": 249.5,
+    "ffl_first_y": 1886.0,
+    "first_slab_underside_y": 1958.5,
+    "ceiling_ground_floor_y": 2121.0,
+    "ffl_ground_y": 4226.5,
+    "ground_slab_bottom_y": 4296.5,
+    "outer_wall_right_x": 6676.0,
+    "first_slab_openings_x": [
+     [
+      2114.0,
+      4547.0
+     ]
+    ],
+    "rail_top_y": 1466.0,
+    "rail_x": [
+     2113.0,
+     4107.0
+    ],
+    "rail_lines_y": [
+     1466.0,
+     1489.0
+    ],
+    "px_per_m": 467.8,
+    "void_rail_x": [
+     2113.0,
+     4107.0
+    ],
+    "trunk_at_ffl_ground_x": 3168.1,
+    "trunk_width_at_ground_px": 56.3,
+    "trunk_at_ffl_first_x": 3117.0,
+    "trunk_mid_height_x": 3142.6,
+    "trunk_lean_deg": -1.25,
+    "split": {
+     "ground_wall_x": [
+      355.0,
+      428.0
+     ],
+     "counter_top_y": 1395.0,
+     "counter_left_x": 2.0,
+     "first_floor_panel_edge_x": [
+      77.0,
+      80.0
+     ],
+     "slab_cut_y": 1962.0
+    }
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/elev02_cabins.png",
+   "size": [
+    5652,
+    2144
+   ],
+   "description": "ELEVATION 02 - ground-floor private cabin seating, drawing only: festoon ceiling draping across the top, 4 fluted cabin shells with arched openings, pendant in each, round banquettes + tables, CABIN 01-04 names. Right-hand labels/leaders, 2400 dim and title removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 3,
+    "sheet_png": "assets/drawings/sheet-3.png",
+    "origin_pt": [
+     1220.52,
+     460.68
+    ],
+    "origin_sheet300_px": [
+     5085.5,
+     1919.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 25,
+    "building_frame_pt": [
+     1222.56,
+     462.72,
+     1896.72,
+     715.92
+    ]
+   },
+   "anchors": {
+    "ceiling_y": 19.0,
+    "drapery_top_y": 19.0,
+    "drapery_bottom_y": 595,
+    "floor_y": 2124.5,
+    "wall_left_x": [
+     19.0,
+     89.5
+    ],
+    "wall_right_x": [
+     5562.0,
+     5632.0
+    ],
+    "cabins": [
+     {
+      "n": 1,
+      "left_x": 89.5,
+      "right_x": 1387.5,
+      "centre_x": 738.5,
+      "opening_x": [
+       550,
+       966
+      ],
+      "opening_centre_x": 758.0,
+      "opening_top_y": 1003,
+      "pendant_x": 748.5,
+      "pendant_cord_x": 748.5,
+      "pendant_shade_bbox": [
+       661,
+       829,
+       836,
+       1088
+      ]
+     },
+     {
+      "n": 2,
+      "left_x": 1459.5,
+      "right_x": 2791.5,
+      "centre_x": 2125.5,
+      "opening_x": [
+       1884,
+       2368
+      ],
+      "opening_centre_x": 2126.0,
+      "opening_top_y": 1003,
+      "pendant_x": 2152.5,
+      "pendant_cord_x": 2152.5,
+      "pendant_shade_bbox": [
+       2065,
+       829,
+       2240,
+       1088
+      ]
+     },
+     {
+      "n": 3,
+      "left_x": 2861.5,
+      "right_x": 4196.0,
+      "centre_x": 3528.8,
+      "opening_x": [
+       3286,
+       3772
+      ],
+      "opening_centre_x": 3529.0,
+      "opening_top_y": 1003,
+      "pendant_x": 3556.5,
+      "pendant_cord_x": 3556.5,
+      "pendant_shade_bbox": [
+       3469,
+       829,
+       3644,
+       1088
+      ]
+     },
+     {
+      "n": 4,
+      "left_x": 4266.0,
+      "right_x": 5562.0,
+      "centre_x": 4914.0,
+      "opening_x": [
+       4690,
+       5103
+      ],
+      "opening_centre_x": 4896.5,
+      "opening_top_y": 1003,
+      "pendant_x": 4922.5,
+      "pendant_cord_x": 4922.5,
+      "pendant_shade_bbox": [
+       4835,
+       829,
+       5010,
+       1088
+      ]
+     }
+    ],
+    "cabin_joints_x": [
+     [
+      1387.5,
+      1459.5
+     ],
+     [
+      2791.5,
+      2861.5
+     ],
+     [
+      4196.0,
+      4266.0
+     ]
+    ],
+    "pendants_x": [
+     748.5,
+     2152.5,
+     3556.5,
+     4922.5
+    ],
+    "opening_centres_x": [
+     758.0,
+     2126.0,
+     3529.0,
+     4896.5
+    ]
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/elev02_full.png",
+   "size": [
+    6786,
+    2496
+   ],
+   "description": "ELEVATION 02 as drawn, with the 2400 height dimension, right-hand labels (CEILING DRAPING, PENDANT LIGHT, ROUND SOFA SEATING INSIDE, CURVE WALL FROM OUT SIDE, ROUND TABLE) and title.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 3,
+    "sheet_png": "assets/drawings/sheet-3.png",
+    "origin_pt": [
+     1177.8,
+     459.72
+    ],
+    "origin_sheet300_px": [
+     4907.5,
+     1915.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": false,
+    "pdf_objects_neutralised": 73,
+    "building_frame_pt": [
+     1222.56,
+     462.72,
+     1896.72,
+     715.92
+    ]
+   },
+   "anchors": {
+    "elev02_cabins_origin_in_this_file": [
+     356,
+     8
+    ],
+    "ceiling_y": 27.0,
+    "drapery_top_y": 27.0,
+    "drapery_bottom_y": 603.0,
+    "floor_y": 2132.5,
+    "wall_left_x": [
+     375.0,
+     445.5
+    ],
+    "wall_right_x": [
+     5918.0,
+     5988.0
+    ],
+    "cabins": [
+     {
+      "n": 1,
+      "left_x": 445.5,
+      "right_x": 1743.5,
+      "centre_x": 1094.5,
+      "opening_x": [
+       906.0,
+       1322.0
+      ],
+      "opening_centre_x": 1114.0,
+      "opening_top_y": 1011.0,
+      "pendant_x": 1104.5,
+      "pendant_cord_x": 1104.5,
+      "pendant_shade_bbox": [
+       1017.0,
+       837.0,
+       1192.0,
+       1096.0
+      ]
+     },
+     {
+      "n": 2,
+      "left_x": 1815.5,
+      "right_x": 3147.5,
+      "centre_x": 2481.5,
+      "opening_x": [
+       2240.0,
+       2724.0
+      ],
+      "opening_centre_x": 2482.0,
+      "opening_top_y": 1011.0,
+      "pendant_x": 2508.5,
+      "pendant_cord_x": 2508.5,
+      "pendant_shade_bbox": [
+       2421.0,
+       837.0,
+       2596.0,
+       1096.0
+      ]
+     },
+     {
+      "n": 3,
+      "left_x": 3217.5,
+      "right_x": 4552.0,
+      "centre_x": 3884.8,
+      "opening_x": [
+       3642.0,
+       4128.0
+      ],
+      "opening_centre_x": 3885.0,
+      "opening_top_y": 1011.0,
+      "pendant_x": 3912.5,
+      "pendant_cord_x": 3912.5,
+      "pendant_shade_bbox": [
+       3825.0,
+       837.0,
+       4000.0,
+       1096.0
+      ]
+     },
+     {
+      "n": 4,
+      "left_x": 4622.0,
+      "right_x": 5918.0,
+      "centre_x": 5270.0,
+      "opening_x": [
+       5046.0,
+       5459.0
+      ],
+      "opening_centre_x": 5252.5,
+      "opening_top_y": 1011.0,
+      "pendant_x": 5278.5,
+      "pendant_cord_x": 5278.5,
+      "pendant_shade_bbox": [
+       5191.0,
+       837.0,
+       5366.0,
+       1096.0
+      ]
+     }
+    ],
+    "cabin_joints_x": [
+     [
+      1743.5,
+      1815.5
+     ],
+     [
+      3147.5,
+      3217.5
+     ],
+     [
+      4552.0,
+      4622.0
+     ]
+    ],
+    "pendants_x": [
+     1104.5,
+     2508.5,
+     3912.5,
+     5278.5
+    ],
+    "opening_centres_x": [
+     1114.0,
+     2482.0,
+     3885.0,
+     5252.5
+    ]
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/elev01_bar.png",
+   "size": [
+    2006,
+    2074
+   ],
+   "description": "ELEVATION 01 - ground-floor bar, drawing only: fluted counter-hanging ceiling with RESTAURANT signage + leaf logo, decorative brick back wall, 4 dome pendants, POS + espresso machine on the counter, fluted counter front, 4 stools. Dims/labels/title removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 3,
+    "sheet_png": "assets/drawings/sheet-3.png",
+    "origin_pt": [
+     468.84,
+     476.28
+    ],
+    "origin_sheet300_px": [
+     1953.5,
+     1984.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 45,
+    "building_frame_pt": [
+     470.88,
+     478.32,
+     707.52,
+     723.12
+    ]
+   },
+   "anchors": {
+    "top_y": 17.5,
+    "floor_y": 2052.5,
+    "left_x": 18.0,
+    "right_x": 1985.0
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/elev04_partyhall.png",
+   "size": [
+    3272,
+    2150
+   ],
+   "description": "ELEVATION 04 - party hall, drawing only: festoon draping, tied-back sheer curtains, curved fluted wall, pendants, arched-back dining chairs at the long table. Labels/title removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 3,
+    "sheet_png": "assets/drawings/sheet-3.png",
+    "origin_pt": [
+     1335.72,
+     1085.64
+    ],
+    "origin_sheet300_px": [
+     5565.5,
+     4523.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 22,
+    "building_frame_pt": [
+     1337.76,
+     1087.68,
+     1726.32,
+     1341.6
+    ]
+   },
+   "anchors": {
+    "top_y": 18.0,
+    "floor_y": 2123.5,
+    "left_x": 19.0,
+    "right_x": 3249.5
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/plan_ground.png",
+   "size": [
+    6752,
+    2846
+   ],
+   "description": "PROPOSED GROUND FLOOR plan only (room names kept): kitchen strip, party hall, 4 private cabins, curved banquette, bar, dashed open-void circle with the tree, stairs, glazed entrance end. Section markers A/B, their cut lines and the title removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 1,
+    "sheet_png": "assets/drawings/sheet-1.png",
+    "origin_pt": [
+     659.88,
+     420.6
+    ],
+    "origin_sheet300_px": [
+     2749.5,
+     1752.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 12,
+    "building_frame_pt": [
+     661.92,
+     422.64,
+     1468.08,
+     760.08
+    ]
+   },
+   "anchors": {
+    "void_circle": {
+     "cx": 4948.8,
+     "cy": 1607.9,
+     "r": 500.2,
+     "coverage": 0.86,
+     "note": "dashed circle = edge of the double-height void above"
+    },
+    "cabins": [
+     {
+      "n": 1,
+      "centre": [
+       1163.3,
+       1124.1
+      ],
+      "table_r": 124.7,
+      "sofa_outer_r": 302,
+      "cell_x": [
+       835,
+       1487
+      ],
+      "back_wall_inner_y": 787,
+      "back_wall_outer_y": 756,
+      "front_outer_y": 1527,
+      "opening_x": [
+       1046,
+       1277
+      ],
+      "wall_bands_x": [
+       [
+        804,
+        834
+       ],
+       [
+        1488,
+        1519
+       ]
+      ]
+     },
+     {
+      "n": 2,
+      "centre": [
+       1865.3,
+       1124.1
+      ],
+      "table_r": 124.7,
+      "sofa_outer_r": 311,
+      "cell_x": [
+       1520,
+       2189
+      ],
+      "back_wall_inner_y": 787,
+      "back_wall_outer_y": 756,
+      "front_outer_y": 1527,
+      "opening_x": [
+       1730,
+       1978
+      ],
+      "wall_bands_x": [
+       [
+        1488,
+        1519
+       ],
+       [
+        2190,
+        2220
+       ]
+      ]
+     },
+     {
+      "n": 3,
+      "centre": [
+       2566.4,
+       1124.1
+      ],
+      "table_r": 124.8,
+      "sofa_outer_r": 311,
+      "cell_x": [
+       2221,
+       2891
+      ],
+      "back_wall_inner_y": 787,
+      "back_wall_outer_y": 756,
+      "front_outer_y": 1527,
+      "opening_x": [
+       2431,
+       2680
+      ],
+      "wall_bands_x": [
+       [
+        2190,
+        2220
+       ],
+       [
+        2892,
+        2922
+       ]
+      ]
+     },
+     {
+      "n": 4,
+      "centre": [
+       3249.3,
+       1124.1
+      ],
+      "table_r": 124.7,
+      "sofa_outer_r": 311,
+      "cell_x": [
+       2923,
+       3574
+      ],
+      "back_wall_inner_y": 787,
+      "back_wall_outer_y": 756,
+      "front_outer_y": 1527,
+      "opening_x": [
+       3134,
+       3574
+      ],
+      "wall_bands_x": [
+       [
+        2892,
+        2922
+       ],
+       [
+        3575,
+        3605
+       ]
+      ]
+     }
+    ],
+    "cabin_centres": [
+     [
+      1163.3,
+      1124.1
+     ],
+     [
+      1865.3,
+      1124.1
+     ],
+     [
+      2566.4,
+      1124.1
+     ],
+     [
+      3249.3,
+      1124.1
+     ]
+    ],
+    "bar": {
+     "bbox": [
+      3605,
+      1114,
+      4312,
+      2101
+     ],
+     "back_wall_x": [
+      3575,
+      3605
+     ],
+     "note": "counter outline bbox; x0 = face of the wall the counter returns into",
+     "stools": [
+      [
+       4372.5,
+       1307.8
+      ],
+      [
+       4372.3,
+       1507.7
+      ],
+      [
+       4372.3,
+       1714.7
+      ],
+      [
+       4372.5,
+       1904.9
+      ]
+     ]
+    },
+    "entrance_wall": {
+     "outer_x": 6731.5,
+     "inner_x": 6650.0
+    },
+    "entrance_wall_x": 6731.5,
+    "plan_outer": {
+     "left_x": 18.5,
+     "right_x": 6731.5,
+     "top_y": 17.5,
+     "bottom_y": 2824.5
+    },
+    "tree_canopy": {
+     "cx": 4949.4,
+     "cy": 1607.1,
+     "r": 219.8,
+     "coverage": 1.0
+    }
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/plan_ground_cabins.png",
+   "size": [
+    2881,
+    855
+   ],
+   "description": "Tight crop of the ground-floor plan: the row of 4 private cabins (curved shells, round banquettes, tables, chairs) between the corridor wall and their curved fronts.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 1,
+    "sheet_png": "assets/drawings/sheet-1.png",
+    "origin_pt": [
+     659.88,
+     420.6
+    ],
+    "origin_sheet300_px": [
+     2749.5,
+     1752.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 12,
+    "building_frame_pt": [
+     661.92,
+     422.64,
+     1468.08,
+     760.08
+    ],
+    "crop_of": "assets/lines/plan_ground.png",
+    "crop_box": [
+     764,
+     732,
+     3645,
+     1587
+    ]
+   },
+   "anchors": {
+    "offset_in_plan_ground": [
+     764,
+     732
+    ],
+    "cabins": [
+     {
+      "n": 1,
+      "centre": [
+       399.3,
+       392.1
+      ],
+      "table_r": 124.7,
+      "sofa_outer_r": 302,
+      "cell_x": [
+       71.0,
+       723.0
+      ],
+      "back_wall_inner_y": 55.0,
+      "back_wall_outer_y": 24.0,
+      "front_outer_y": 795.0,
+      "opening_x": [
+       282.0,
+       513.0
+      ],
+      "wall_bands_x": [
+       [
+        40.0,
+        70.0
+       ],
+       [
+        724.0,
+        755.0
+       ]
+      ]
+     },
+     {
+      "n": 2,
+      "centre": [
+       1101.3,
+       392.1
+      ],
+      "table_r": 124.7,
+      "sofa_outer_r": 311,
+      "cell_x": [
+       756.0,
+       1425.0
+      ],
+      "back_wall_inner_y": 55.0,
+      "back_wall_outer_y": 24.0,
+      "front_outer_y": 795.0,
+      "opening_x": [
+       966.0,
+       1214.0
+      ],
+      "wall_bands_x": [
+       [
+        724.0,
+        755.0
+       ],
+       [
+        1426.0,
+        1456.0
+       ]
+      ]
+     },
+     {
+      "n": 3,
+      "centre": [
+       1802.4,
+       392.1
+      ],
+      "table_r": 124.8,
+      "sofa_outer_r": 311,
+      "cell_x": [
+       1457.0,
+       2127.0
+      ],
+      "back_wall_inner_y": 55.0,
+      "back_wall_outer_y": 24.0,
+      "front_outer_y": 795.0,
+      "opening_x": [
+       1667.0,
+       1916.0
+      ],
+      "wall_bands_x": [
+       [
+        1426.0,
+        1456.0
+       ],
+       [
+        2128.0,
+        2158.0
+       ]
+      ]
+     },
+     {
+      "n": 4,
+      "centre": [
+       2485.3,
+       392.1
+      ],
+      "table_r": 124.7,
+      "sofa_outer_r": 311,
+      "cell_x": [
+       2159.0,
+       2810.0
+      ],
+      "back_wall_inner_y": 55.0,
+      "back_wall_outer_y": 24.0,
+      "front_outer_y": 795.0,
+      "opening_x": [
+       2370.0,
+       2810.0
+      ],
+      "wall_bands_x": [
+       [
+        2128.0,
+        2158.0
+       ],
+       [
+        2811.0,
+        2841.0
+       ]
+      ]
+     }
+    ],
+    "cabin_centres": [
+     [
+      399.3,
+      392.1
+     ],
+     [
+      1101.3,
+      392.1
+     ],
+     [
+      1802.4,
+      392.1
+     ],
+     [
+      2485.3,
+      392.1
+     ]
+    ]
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/plan_ground_void.png",
+   "size": [
+    1180,
+    1180
+   ],
+   "description": "Tight crop of the ground-floor plan around the open void: dashed void circle with the tree-canopy symbol and OPEN VOID label (square, void centred).",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 1,
+    "sheet_png": "assets/drawings/sheet-1.png",
+    "origin_pt": [
+     659.88,
+     420.6
+    ],
+    "origin_sheet300_px": [
+     2749.5,
+     1752.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 12,
+    "building_frame_pt": [
+     661.92,
+     422.64,
+     1468.08,
+     760.08
+    ],
+    "crop_of": "assets/lines/plan_ground.png",
+    "crop_box": [
+     4358,
+     1017,
+     5538,
+     2197
+    ]
+   },
+   "anchors": {
+    "offset_in_plan_ground": [
+     4358,
+     1017
+    ],
+    "void_circle": {
+     "cx": 590.8,
+     "cy": 590.9,
+     "r": 500.2,
+     "coverage": 0.86,
+     "note": "dashed circle = edge of the double-height void above"
+    },
+    "tree_canopy": {
+     "cx": 591.4,
+     "cy": 590.1,
+     "r": 219.8,
+     "coverage": 1.0
+    }
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/plan_first.png",
+   "size": [
+    6752,
+    2846
+   ],
+   "description": "PROPOSED FIRST FLOOR plan only: toilets, 3 first-floor cabins with planters, dining, round banquettes, bar, the void ring (OPEN BELLOW) with tree canopy, stairs. Markers/title removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 1,
+    "sheet_png": "assets/drawings/sheet-1.png",
+    "origin_pt": [
+     659.88,
+     896.76
+    ],
+    "origin_sheet300_px": [
+     2749.5,
+     3736.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 12,
+    "building_frame_pt": [
+     661.92,
+     898.8,
+     1468.08,
+     1236.24
+    ]
+   },
+   "anchors": {
+    "void_circle": {
+     "cx": 4949.4,
+     "cy": 1609.1,
+     "r": 506.9,
+     "coverage": 1.0,
+     "ring_line_radii": [
+      500.9,
+      512.9
+     ],
+     "note": "double-line ring = void edge at first floor (OPEN BELLOW); r = ring centre line"
+    },
+    "tree_canopy": {
+     "cx": 4949.4,
+     "cy": 1609.1,
+     "r": 219.8,
+     "coverage": 1.0
+    }
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  },
+  {
+   "path": "assets/lines/axo_exploded.png",
+   "size": [
+    9248,
+    12556
+   ],
+   "description": "EXPLODED AXONOMETRIC: roof slab with round skylight drum, peeled-off walls, both stair flights, ground floor grid with the cabin shells, bar and the tree. Grey wall faces become a translucent ink wash (alpha ~0.38). Sheet frame/title block removed.",
+   "source": {
+    "pdf": "assets/client_RESTAURANT_drawings.pdf",
+    "page": 4,
+    "sheet_png": "assets/drawings/sheet-4.png",
+    "origin_pt": [
+     629.16,
+     85.08
+    ],
+    "origin_sheet300_px": [
+     2621.5,
+     354.5
+    ],
+    "px_per_pt": 8.3333,
+    "dpi": 600,
+    "annotations_removed": true,
+    "pdf_objects_neutralised": 73
+   },
+   "anchors": {
+    "tree_bbox": [
+     5228.0,
+     6488.0,
+     6048.0,
+     7976.0
+    ],
+    "tree_base": [
+     5673.0,
+     7976.0
+    ],
+    "note": "tree measured on a render of its CAD layer (CAY) alone; base = foot of trunk"
+   },
+   "suggested_use": "Overlay in ink (multiply 60-90 %, or normal at 35-70 % opacity) over the photographic layers; scale with compose.resize (alpha-correct). Below ~0.45x apply thicken(rgba, 0.4 / scale) first so the 1-px hairlines survive; recolor() for tinted ghosts; hand_wobble() for a sketchier hand."
+  }
+ ]
+}

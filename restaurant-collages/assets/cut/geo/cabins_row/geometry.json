@@ -1,0 +1,387 @@
+{
+ "source": "assets/gen/cabins_row.png",
+ "size": [
+  6256,
+  2688
+ ],
+ "arches": [
+  {
+   "id": 1,
+   "left_x": 647.95,
+   "right_x": 1375.35,
+   "centre_x": 1011.65,
+   "spring_y": 1057.32,
+   "crown_y": 682.0,
+   "bottom_y": 2499.69,
+   "bottom_y_at_left_jamb": 2477.7,
+   "bottom_y_at_right_jamb": 2492.62,
+   "rx": 363.7,
+   "ry": 375.32,
+   "jamb_lines": {
+    "left": [
+     649.93,
+     -0.0
+    ],
+    "right": [
+     1378.19,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "head_correction": {
+    "coeffs": [
+     -2.21,
+     -2.43,
+     0.16,
+     0.75,
+     0.3,
+     -0.13,
+     -0.34,
+     0.27
+    ],
+    "t_range": [
+     3.19,
+     6.23
+    ],
+    "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+    "max_abs_px": 5.13,
+    "edge_resid_rms_px": 0.23,
+    "pure_ellipse_resid_rms_px": 2.43
+   },
+   "frame_outer": {
+    "left_x": 632.4,
+    "right_x": 1388.76,
+    "crown_y": 674.19,
+    "spring_y": 1071.4,
+    "note": "outer edge of the smooth arch frame band"
+   },
+   "reveal_back_edge": {
+    "side": "L",
+    "x_at_y1400": 694.3,
+    "note": "visible jamb reveal (inside the opening) ends here"
+   }
+  },
+  {
+   "id": 2,
+   "left_x": 2038.98,
+   "right_x": 2798.2,
+   "centre_x": 2418.59,
+   "spring_y": 1030.38,
+   "crown_y": 661.19,
+   "bottom_y": 2531.01,
+   "bottom_y_at_left_jamb": 2514.54,
+   "bottom_y_at_right_jamb": 2520.53,
+   "rx": 379.61,
+   "ry": 369.19,
+   "jamb_lines": {
+    "left": [
+     2044.4,
+     -0.01
+    ],
+    "right": [
+     2800.86,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "head_correction": {
+    "coeffs": [
+     -0.08,
+     -1.34,
+     -0.89,
+     -0.2,
+     -0.78,
+     -0.45,
+     -0.11,
+     -0.12
+    ],
+    "t_range": [
+     3.19,
+     6.23
+    ],
+    "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+    "max_abs_px": 3.12,
+    "edge_resid_rms_px": 0.28,
+    "pure_ellipse_resid_rms_px": 1.34
+   },
+   "frame_outer": {
+    "left_x": 2020.93,
+    "right_x": 2815.3,
+    "crown_y": 645.19,
+    "spring_y": 1055.42,
+    "note": "outer edge of the smooth arch frame band"
+   },
+   "reveal_back_edge": {
+    "side": "L",
+    "x_at_y1400": 2057.03,
+    "note": "visible jamb reveal (inside the opening) ends here"
+   }
+  },
+  {
+   "id": 3,
+   "left_x": 3502.12,
+   "right_x": 4286.79,
+   "centre_x": 3894.45,
+   "spring_y": 1033.41,
+   "crown_y": 660.88,
+   "bottom_y": 2552.66,
+   "bottom_y_at_left_jamb": 2543.1,
+   "bottom_y_at_right_jamb": 2534.87,
+   "rx": 392.34,
+   "ry": 372.53,
+   "jamb_lines": {
+    "left": [
+     3500.82,
+     0.0
+    ],
+    "right": [
+     4290.52,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "head_correction": {
+    "coeffs": [
+     -0.17,
+     -1.33,
+     -0.61,
+     -0.47,
+     -0.74,
+     0.09,
+     -0.13,
+     -0.08
+    ],
+    "t_range": [
+     3.19,
+     6.23
+    ],
+    "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+    "max_abs_px": 2.71,
+    "edge_resid_rms_px": 0.41,
+    "pure_ellipse_resid_rms_px": 1.28
+   },
+   "frame_outer": {
+    "left_x": 3486.18,
+    "right_x": 4302.93,
+    "crown_y": 644.69,
+    "spring_y": 1041.89,
+    "note": "outer edge of the smooth arch frame band"
+   },
+   "reveal_back_edge": {
+    "side": "R",
+    "x_at_y1400": 4258.04,
+    "note": "visible jamb reveal (inside the opening) ends here"
+   }
+  },
+  {
+   "id": 4,
+   "left_x": 4917.91,
+   "right_x": 5740.94,
+   "centre_x": 5329.42,
+   "spring_y": 1056.06,
+   "crown_y": 662.63,
+   "bottom_y": 2524.72,
+   "bottom_y_at_left_jamb": 2515.08,
+   "bottom_y_at_right_jamb": 2505.6,
+   "rx": 411.52,
+   "ry": 393.44,
+   "jamb_lines": {
+    "left": [
+     4915.35,
+     0.0
+    ],
+    "right": [
+     5744.38,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "head_correction": {
+    "coeffs": [
+     -1.91,
+     2.74,
+     -2.02,
+     0.38,
+     0.03,
+     0.51,
+     -0.28,
+     0.12
+    ],
+    "t_range": [
+     3.19,
+     6.23
+    ],
+    "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+    "max_abs_px": 5.46,
+    "edge_resid_rms_px": 0.4,
+    "pure_ellipse_resid_rms_px": 2.78
+   },
+   "frame_outer": {
+    "left_x": 4901.35,
+    "right_x": 5756.85,
+    "crown_y": 649.75,
+    "spring_y": 1056.67,
+    "note": "outer edge of the smooth arch frame band"
+   },
+   "reveal_back_edge": {
+    "side": "R",
+    "x_at_y1400": 5692.03,
+    "note": "visible jamb reveal (inside the opening) ends here"
+   }
+  }
+ ],
+ "shells": [
+  {
+   "id": 1,
+   "left_x": 442.15,
+   "right_x": 1747.62,
+   "centre_x": 1094.89,
+   "top_y": 402.94,
+   "top_y_at_sides": 458.75,
+   "bottom_y": 2500.36,
+   "bottom_y_at_sides": 2418.0,
+   "side_lines": {
+    "left": [
+     442.66,
+     -0.0
+    ],
+    "right": [
+     1747.52,
+     0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "top_arc": {
+    "c0": 458.75,
+    "k": -55.81,
+    "xc": 1095.01,
+    "hw": 652.55,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "shared_k": false,
+    "rms": 0.73
+   },
+   "bottom_arc": {
+    "c0": 2418.0,
+    "k": 82.36,
+    "xc": 1094.82,
+    "hw": 652.84,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "note": "floor line = bottom of stainless kick plate"
+   }
+  },
+  {
+   "id": 2,
+   "left_x": 1771.31,
+   "right_x": 3131.13,
+   "centre_x": 2451.22,
+   "top_y": 357.91,
+   "top_y_at_sides": 413.72,
+   "bottom_y": 2531.1,
+   "bottom_y_at_sides": 2453.73,
+   "side_lines": {
+    "left": [
+     1771.45,
+     -0.0
+    ],
+    "right": [
+     3131.56,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "top_arc": {
+    "c0": 413.72,
+    "k": -55.81,
+    "xc": 2451.39,
+    "hw": 680.0,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "shared_k": true,
+    "rms": 0.64
+   },
+   "bottom_arc": {
+    "c0": 2453.73,
+    "k": 77.37,
+    "xc": 2451.12,
+    "hw": 679.86,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "note": "floor line = bottom of stainless kick plate"
+   }
+  },
+  {
+   "id": 3,
+   "left_x": 3140.37,
+   "right_x": 4538.26,
+   "centre_x": 3839.31,
+   "top_y": 334.81,
+   "top_y_at_sides": 390.62,
+   "bottom_y": 2552.91,
+   "bottom_y_at_sides": 2472.78,
+   "side_lines": {
+    "left": [
+     3140.58,
+     -0.0
+    ],
+    "right": [
+     4538.32,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "top_arc": {
+    "c0": 390.62,
+    "k": -55.81,
+    "xc": 3839.4,
+    "hw": 698.9,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "shared_k": true,
+    "rms": 0.54
+   },
+   "bottom_arc": {
+    "c0": 2472.78,
+    "k": 80.14,
+    "xc": 3839.27,
+    "hw": 698.97,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "note": "floor line = bottom of stainless kick plate"
+   }
+  },
+  {
+   "id": 4,
+   "left_x": 4555.9,
+   "right_x": 5979.87,
+   "centre_x": 5267.89,
+   "top_y": 350.75,
+   "top_y_at_sides": 406.56,
+   "bottom_y": 2525.02,
+   "bottom_y_at_sides": 2446.26,
+   "side_lines": {
+    "left": [
+     4555.93,
+     -0.0
+    ],
+    "right": [
+     5980.26,
+     -0.0
+    ],
+    "form": "x = a + b*y"
+   },
+   "top_arc": {
+    "c0": 406.56,
+    "k": -55.81,
+    "xc": 5268.01,
+    "hw": 712.09,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "shared_k": true,
+    "rms": 0.87
+   },
+   "bottom_arc": {
+    "c0": 2446.26,
+    "k": 78.75,
+    "xc": 5267.82,
+    "hw": 711.92,
+    "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+    "note": "floor line = bottom of stainless kick plate"
+   }
+  }
+ ]
+}

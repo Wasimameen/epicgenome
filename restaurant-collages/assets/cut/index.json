@@ -1,0 +1,489 @@
+{
+ "area": "cutouts",
+ "module": "src/lib/cutouts.py",
+ "root_relative": true,
+ "note": "RGBA 8-bit straight alpha, native source resolution, trimmed with a 4 px margin. src_box = crop in the source photo (x0, y0, x1, y1). All anchor coordinates are in the asset's own pixel space. assets/cut/geo/ belongs to another area.",
+ "assets": [
+  {
+   "path": "assets/cut/fig_couple_table.png",
+   "size": [
+    972,
+    761
+   ],
+   "description": "seated couple at a bistro table with two red-wine glasses, plate, bentwood chairs both sides. Photographic grey silhouette (soft luminance key, 2 px solved edge band, colours decontaminated against the white studio ground, floor contact shadows removed).",
+   "suggested_use": "shadow-play behind sheer linen, foreground diners; scale freely down, multiply or normal blend",
+   "src_box": [
+    33,
+    527,
+    1005,
+    1288
+   ],
+   "ground_y": 753,
+   "x_extent": [
+    5,
+    967
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 753,
+    "x_extent": [
+     5,
+     967
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_couple_table_flat.png",
+   "size": [
+    972,
+    761
+   ],
+   "description": "seated couple at a bistro table with two red-wine glasses, plate, bentwood chairs both sides. Same alpha, RGB = ink #2B2420 (pure silhouette).",
+   "suggested_use": "shadow-play silhouettes, multiply at 20-60 % behind linen layers",
+   "src_box": [
+    33,
+    527,
+    1005,
+    1288
+   ],
+   "ground_y": 753,
+   "x_extent": [
+    5,
+    967
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 753,
+    "x_extent": [
+     5,
+     967
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_waiter.png",
+   "size": [
+    494,
+    984
+   ],
+   "description": "walking waiter in waistcoat and apron carrying a tray. Photographic grey silhouette (soft luminance key, 2 px solved edge band, colours decontaminated against the white studio ground, floor contact shadows removed).",
+   "suggested_use": "shadow-play behind sheer linen, foreground diners; scale freely down, multiply or normal blend",
+   "src_box": [
+    990,
+    298,
+    1484,
+    1282
+   ],
+   "ground_y": 976,
+   "x_extent": [
+    4,
+    489
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 976,
+    "x_extent": [
+     4,
+     489
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_waiter_flat.png",
+   "size": [
+    494,
+    984
+   ],
+   "description": "walking waiter in waistcoat and apron carrying a tray. Same alpha, RGB = ink #2B2420 (pure silhouette).",
+   "suggested_use": "shadow-play silhouettes, multiply at 20-60 % behind linen layers",
+   "src_box": [
+    990,
+    298,
+    1484,
+    1282
+   ],
+   "ground_y": 976,
+   "x_extent": [
+    4,
+    489
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 976,
+    "x_extent": [
+     4,
+     489
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_standing_pair.png",
+   "size": [
+    505,
+    965
+   ],
+   "description": "standing couple laughing, each holding a red-wine glass. Photographic grey silhouette (soft luminance key, 2 px solved edge band, colours decontaminated against the white studio ground, floor contact shadows removed).",
+   "suggested_use": "shadow-play behind sheer linen, foreground diners; scale freely down, multiply or normal blend",
+   "src_box": [
+    1519,
+    321,
+    2024,
+    1286
+   ],
+   "ground_y": 957,
+   "x_extent": [
+    5,
+    499
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 957,
+    "x_extent": [
+     5,
+     499
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_standing_pair_flat.png",
+   "size": [
+    505,
+    965
+   ],
+   "description": "standing couple laughing, each holding a red-wine glass. Same alpha, RGB = ink #2B2420 (pure silhouette).",
+   "suggested_use": "shadow-play silhouettes, multiply at 20-60 % behind linen layers",
+   "src_box": [
+    1519,
+    321,
+    2024,
+    1286
+   ],
+   "ground_y": 957,
+   "x_extent": [
+    5,
+    499
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 957,
+    "x_extent": [
+     5,
+     499
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_woman_coffee.png",
+   "size": [
+    657,
+    729
+   ],
+   "description": "woman seated alone at a bistro table with a coffee cup, bentwood chair. Photographic grey silhouette (soft luminance key, 2 px solved edge band, colours decontaminated against the white studio ground, floor contact shadows removed).",
+   "suggested_use": "shadow-play behind sheer linen, foreground diners; scale freely down, multiply or normal blend",
+   "src_box": [
+    2058,
+    566,
+    2715,
+    1295
+   ],
+   "ground_y": 722,
+   "x_extent": [
+    4,
+    652
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 722,
+    "x_extent": [
+     4,
+     652
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/fig_woman_coffee_flat.png",
+   "size": [
+    657,
+    729
+   ],
+   "description": "woman seated alone at a bistro table with a coffee cup, bentwood chair. Same alpha, RGB = ink #2B2420 (pure silhouette).",
+   "suggested_use": "shadow-play silhouettes, multiply at 20-60 % behind linen layers",
+   "src_box": [
+    2058,
+    566,
+    2715,
+    1295
+   ],
+   "ground_y": 722,
+   "x_extent": [
+    4,
+    652
+   ],
+   "source": "assets/gen/diners_silhouettes.png",
+   "anchors": {
+    "ground_y": 722,
+    "x_extent": [
+     4,
+     652
+    ]
+   }
+  },
+  {
+   "path": "assets/cut/pendant_valance_L.png",
+   "size": [
+    513,
+    1909
+   ],
+   "description": "black enamel dome pendant (L of the valance photo) with its full cord running off the top edge (y=0) and the warm amber bulb; cord matte = projection key clipped to a fitted tube, shade = sub-pixel contour, bulb = fitted ellipse.",
+   "suggested_use": "hang from a festoon ceiling; cord top sits flush with the image top edge; add a screen/linear-dodge glow at the bulb anchor",
+   "src_box": [
+    1306,
+    0,
+    1819,
+    1909
+   ],
+   "cord_top": [
+    277.7,
+    0
+   ],
+   "shade_axis_x": 258.2,
+   "shade_top_y": 1554,
+   "brim_y": 1856.0,
+   "shade_half_width": 178.8,
+   "bulb": {
+    "cx": 255.7,
+    "cy": 1816.2,
+    "rx": 81.4,
+    "ry": 87.6
+   },
+   "source": "assets/gen/festoon_valance.png"
+  },
+  {
+   "path": "assets/cut/pendant_valance_R.png",
+   "size": [
+    518,
+    1908
+   ],
+   "description": "black enamel dome pendant (R of the valance photo) with its full cord running off the top edge (y=0) and the warm amber bulb; cord matte = projection key clipped to a fitted tube, shade = sub-pixel contour, bulb = fitted ellipse.",
+   "suggested_use": "hang from a festoon ceiling; cord top sits flush with the image top edge; add a screen/linear-dodge glow at the bulb anchor",
+   "src_box": [
+    4520,
+    0,
+    5038,
+    1908
+   ],
+   "cord_top": [
+    233.0,
+    0
+   ],
+   "shade_axis_x": 249.9,
+   "shade_top_y": 1532,
+   "brim_y": 1846.7,
+   "shade_half_width": 178.9,
+   "bulb": {
+    "cx": 245.8,
+    "cy": 1821.4,
+    "rx": 88.1,
+    "ry": 81.6
+   },
+   "source": "assets/gen/festoon_valance.png"
+  },
+  {
+   "path": "assets/cut/pendant_cabin.png",
+   "size": [
+    690,
+    1421
+   ],
+   "description": "glossy black dome pendant from the cabin with cap, curved cord and dark ceiling rose (rose top was hidden by linen folds: completed as an ellipse, its colour reconstructed from the visible part); shade outline traced in polar DP and symmetrised; warm amber lip at the brim kept.",
+   "suggested_use": "cabin pendant; tuck the rose under a festoon/linen ceiling; glow_center = inside of the brim for a light cone",
+   "src_box": [
+    2089,
+    36,
+    2779,
+    1457
+   ],
+   "rose": {
+    "cx": 302.7,
+    "cy": 93.1,
+    "rx": 148.9,
+    "ry": 89.1
+   },
+   "cord_top": [
+    299.4,
+    146
+   ],
+   "shade_axis_x": 344.5,
+   "cap_top_y": 983,
+   "brim": {
+    "y": 1393.9,
+    "half_width": 333.0
+   },
+   "glow_center": [
+    344.5,
+    1393.9
+   ],
+   "source": "assets/gen/cabin_interior.png"
+  },
+  {
+   "path": "assets/cut/cabin_table_top.png",
+   "size": [
+    1725,
+    927
+   ],
+   "description": "round marble table top (slab with its front edge) with two red-wine glasses (bowls + stems; glass keeps its own velvet tones inside the glass outline), candle in a glass, two plates, napkins and cutlery; no pedestal.",
+   "suggested_use": "cabin interior foreground / taste & smell zone; glasses rim tops listed for placement",
+   "src_box": [
+    1723,
+    2228,
+    3448,
+    3155
+   ],
+   "top_ellipse": {
+    "cx": 855.1,
+    "cy": 546.6,
+    "rx": 847.3,
+    "ry": 302.2
+   },
+   "slab_thickness": 79.0,
+   "glasses": [
+    {
+     "axis_x": 557.4,
+     "rim_top_y": 52.0
+    },
+    {
+     "axis_x": 1080.3,
+     "rim_top_y": 3.7
+    }
+   ],
+   "candle_flame": [
+    861,
+    347
+   ],
+   "source": "assets/gen/cabin_interior.png"
+  },
+  {
+   "path": "assets/cut/curtain_tieback_A.png",
+   "size": [
+    556,
+    887
+   ],
+   "description": "lower-level left curtain: pinch-pleat header, swag gathered by a tie-back, tail to the floor (tail cut straight just above a chair back). GrabCut from a hand outline, sides re-fitted as robust polynomials (no pleat-shadow notches or wall bits), header = curved rod line, 3 px projection band where the contrast allows.",
+   "suggested_use": "sheer white tied-back curtain for the void / party-hall layers; screen or normal blend at 70-100 %",
+   "src_box": [
+    915,
+    3406,
+    1471,
+    4293
+   ],
+   "header_line": [
+    [
+     17.0,
+     6.8
+    ],
+    [
+     547.0,
+     58.2
+    ]
+   ],
+   "bottom_cut_y": 882,
+   "source": "assets/gen/void_lookup_A.png"
+  },
+  {
+   "path": "assets/cut/curtain_tieback_B.png",
+   "size": [
+    599,
+    775
+   ],
+   "description": "lower-level right curtain: pinch-pleat header, swag and tie-back; tail cut straight where a table top occludes it. GrabCut from a hand outline, sides re-fitted as robust polynomials (no pleat-shadow notches or wall bits), header = curved rod line, 3 px projection band where the contrast allows.",
+   "suggested_use": "sheer white tied-back curtain for the void / party-hall layers; screen or normal blend at 70-100 %",
+   "src_box": [
+    2632,
+    3433,
+    3231,
+    4208
+   ],
+   "header_line": [
+    [
+     8.0,
+     27.3
+    ],
+    [
+     593.0,
+     45.4
+    ]
+   ],
+   "bottom_cut_y": 770,
+   "source": "assets/gen/void_lookup_A.png"
+  },
+  {
+   "path": "assets/cut/espresso_cc0.png",
+   "size": [
+    410,
+    374
+   ],
+   "description": "espresso cup on saucer with spoon (skimage.data.coffee(), CC0). Source is only 400x600 px: use small (<= ~350 px wide on the A3 canvas).",
+   "suggested_use": "coffee / smell annotation, bar side of collage 01",
+   "src_box": [
+    75,
+    12,
+    485,
+    386
+   ],
+   "cup_rim_ellipse": [
+    212.4,
+    105.6,
+    118.7,
+    99.4
+   ],
+   "saucer_ellipse": [
+    205.0,
+    218.8,
+    199.8,
+    150.0
+   ],
+   "source": "skimage.data.coffee() (CC0)",
+   "license": "CC0 (scikit-image sample data)"
+  },
+  {
+   "path": "assets/cut/tree_B.png",
+   "size": [
+    2287,
+    3782
+   ],
+   "description": "whole tree in the void (trunk + canopy) from void_lookup_B. Canopy over the skylight: clean difference key against the sky/glazing plate. Canopy over rails, curtains and walls: hue-based leaf classification + dark branch pixels inside the leaf envelope, morphological cleanup, 2 px projection band. Trunk: fitted polygon (robust edge polynomials). HONEST NOTE: the lower canopy (below the skylight) has occasional small background bits between leaves (warm wall/ceiling patches) and a few pale lit twigs are dropped; fine at collage scale, inspect before using > 60 %.",
+   "suggested_use": "hero tree of collage 01; trunk_base is where the trunk leaves the bottom edge",
+   "src_box": [
+    668,
+    794,
+    2955,
+    4576
+   ],
+   "trunk_base": [
+    1058.5,
+    3781
+   ],
+   "trunk_polygon_top_y": 1706,
+   "source": "assets/gen/void_lookup_B.png"
+  },
+  {
+   "path": "assets/cut/tree_B_canopy_sky.png",
+   "size": [
+    1792,
+    913
+   ],
+   "description": "only the canopy region over the glazed skylight (cut by the skylight outline, anti-aliased) - the cleanest leaf edges of the set.",
+   "suggested_use": "luminous green-gold canopy layer over the skylight / light plane",
+   "src_box": [
+    939,
+    794,
+    2731,
+    1707
+   ],
+   "offset_in_tree_B": [
+    271,
+    0
+   ],
+   "source": "assets/gen/void_lookup_B.png"
+  }
+ ]
+}
