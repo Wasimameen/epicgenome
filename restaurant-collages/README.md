@@ -20,10 +20,14 @@ After the client's feedback ("like this vibe but not AI … needs to have the ma
 - **The material fragments** are close-up renders of the same materials. Every material is procedural (shader nodes, or stone height and colour maps synthesised in numpy), made for this project.
 - **Fonts:** Nothing You Could Do (handwriting) and Cormorant Garamond, both SIL OFL.
 
+The notes name her design (ceiling draping, glass brick, the void and olive tree, the private cabins, fluted oak curve walls). Each sense is labelled (*sound*, *smell + taste*, *colour*); texture is carried by the material fragments.
+
 Both sheets still answer the brief:
 - **2.5D depth:** fragments in front of and behind the view, each with its own shadow.
 - **The senses:** sound, smell, taste, texture and colour, in the handwritten notes.
-- **Colour intensity where spaces overlap:** the "50 Overlap intensity" group of fills, plus a warm glow on the chosen area.
+- **Colour intensity where spaces overlap:** the "50 Overlap intensity" group of fills warms wherever a fragment overlaps the view.
+  - Sheet 1: a terracotta glow on the table in the void, where it meets the street.
+  - Sheet 2: the cabins, lifted forward as a cut piece and warmed.
 
 ### Deliverables (`output/v2/`)
 
@@ -34,6 +38,7 @@ Both sheets still answer the brief:
 | `restaurant-collages-01-02-side-by-side_A3.jpg` | Both sheets side by side on one A3 landscape page, as in the client's reference |
 | `…_preview.jpg`, `…_layers.txt` | 2000 px preview; full layer tree |
 | `fonts-to-install.zip` | Nothing You Could Do and Cormorant Garamond, with licences |
+| `process-3d-model-of-the-design.jpg` | A clay axonometric of the 3D model behind both views, roof lifted off, as evidence that they are renders of her design and not generated images |
 
 ### Editing the v2 PSDs
 - **Groups, back to front:**
@@ -47,6 +52,9 @@ Both sheets still answer the brief:
   - `90 Title and key line`
   - a hidden `!! READ ME`
 - **Each fragment** is the full material image under a tear mask. Paint the mask to re-tear it. The shadow and the white paper-core rim are separate layers.
+- **Grain and tone:**
+  - `45 - Print grain` (soft light) makes the render and swatches read as prints on one stock.
+  - `Tone - main view` (saturation) calms the render; hide it for the raw render.
 - **Notes and titles** are live type. Show the hidden `EDIT - …` layer to retype, then hide the raster twin. Install the fonts first.
 
 ### Rebuilding v2
@@ -56,6 +64,7 @@ python3 textures.py                       # split-face stone maps -> build/v2/te
 python3 render.py --view 1 --res 2700 3600 --samples 56 --out ../../../build/v2/render/view1.png
 python3 render.py --view 2 --res 2700 3600 --samples 56 --out ../../../build/v2/render/view2.png
 python3 swatches.py                       # 13 material swatches -> build/v2/swatch/
+python3 process.py                        # clay axonometric of the model
 cd ../../..
 python3 src/v2/compose.py --sheet all --final && python3 src/v2/compose.py --combined
 ```
