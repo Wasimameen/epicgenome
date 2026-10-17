@@ -79,13 +79,13 @@ NOTE_STYLE = {
     'note':  {'size': 78, 'color': INK, 'tracking': 30, 'leading': 1.02, 'opacity': 1.0},
     'sense': {'size': 60, 'color': INK_SOFT, 'tracking': 40, 'leading': 1.05, 'opacity': 1.0},
 }
-ARROW = {'width': 3.4, 'head': 32.0, 'opacity': 0.92, 'gap': 22.0}
+ARROW = {'width': 2.8, 'head': 26.0, 'opacity': 0.92, 'gap': 22.0, 'halo': 3.0, 'halo_opacity': 0.45}
 
 # torn edge: 1-D fractal displacement along each torn side, (sigma px, amplitude px) per octave
 TEAR = ((85.0, 12.0), (24.0, 5.0), (6.5, 2.0), (1.8, 0.8))
 RIM_W = (2.0, 6.0)                        # paper-core rim width range, px
-SHADOW_DEFAULT = (10, 12, 22, 0.28)       # (dx, dy, blur sigma, opacity) - per fragment overridable
-SHADOW_BEHIND = (8, 10, 18, 0.24)
+SHADOW_DEFAULT = (4, 6, 12, 0.20)         # (dx, dy, blur sigma, opacity) - per fragment overridable
+SHADOW_BEHIND = (3, 4, 9, 0.14)
 
 # --------------------------------------------------------------------------------------------- #
 # files
@@ -123,7 +123,7 @@ PLACEHOLDER_SWATCH = {
     'olive_leaves':     ('greenery', dict(sat=0.55, gain=0.9)),
     'fluted_oak':       ('oak_fluted', dict(sat=0.8)),
 }
-TEST_RENDER = {1: 'v1_e.png', 2: 'v2_d.png'}   # preview stand-ins: low-res renders of the final cameras
+TEST_RENDER = {1: 'v1_g.png', 2: 'v2_f.png'}   # preview stand-ins: low-res renders of the final cameras
 SWATCH_SIZE = (1600, 2000)                # (w, h) of a real swatch; placeholders are fitted to it
 
 
@@ -608,7 +608,7 @@ def _bezier(p0, p1, p2, p3, n):
 
 
 def arrow_rgba(p0, p3, bend=0.25, seed=0, width=ARROW['width'], head=ARROW['head'], c1=None, c2=None,
-               color=INK, opacity=ARROW['opacity'], ss=3):
+               color=INK, opacity=ARROW['opacity'], ss=3, halo=ARROW['halo']):
     """Thin, slightly wobbly cubic curve p0 -> p3 with an open 'V' arrowhead at p3.
     The stroke tapers in from the pen-down point; drawn at ss x and box-downsampled (anti-aliased).
     Returns (rgba, (x, y))."""
@@ -643,7 +643,7 @@ def arrow_rgba(p0, p3, bend=0.25, seed=0, width=ARROW['width'], head=ARROW['head
         barb = tip + d * ln * s_ + side * (0.07 * ln) * (s_ ** 2)     # a hint of curl
         strokes.append((barb, width * np.linspace(0.92, 0.62, len(barb))))
     allp = np.concatenate([s_[0] for s_ in strokes])
-    m = width + 4
+    m = width + 4 + 2 * halo
     bx0, by0 = int(math.floor(allp[:, 0].min() - m)), int(math.floor(allp[:, 1].min() - m))
     bx1, by1 = int(math.ceil(allp[:, 0].max() + m)), int(math.ceil(allp[:, 1].max() + m))
     cov = np.zeros(((by1 - by0) * ss, (bx1 - bx0) * ss), np.float32)
@@ -652,7 +652,17 @@ def arrow_rgba(p0, p3, bend=0.25, seed=0, width=ARROW['width'], head=ARROW['head
                                  box=(0, 0, cov.shape[1], cov.shape[0]))
         np.maximum(cov, c, out=cov)
     cov = cv2.resize(cov, (bx1 - bx0, by1 - by0), interpolation=cv2.INTER_AREA)
-    return colour_layer(np.clip(cov, 0, 1) * opacity, color), (bx0, by0)
+    ink = np.clip(cov, 0, 1) * opacity
+    if halo:
+        # soft cream under-stroke so the hairline still reads where it crosses dark parts of the view
+        hal = cv2.dilate(np.clip(cov, 0, 1), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(2 * halo) | 1,) * 2))
+        hal = cv2.GaussianBlur(hal, (0, 0), halo * 0.5) * ARROW['halo_opacity']
+        a = ink + hal * (1 - ink)
+        ci = np.array(psdkit.hex_rgb(color), np.float32) / 255
+        ch = np.array(psdkit.hex_rgb(RIM), np.float32) / 255
+        rgb = (ink[..., None] * ci + (hal * (1 - ink))[..., None] * ch) / np.maximum(a, 1e-6)[..., None]
+        return np.dstack([rgb, a]).astype(np.float32), (bx0, by0)
+    return colour_layer(ink, color), (bx0, by0)
 
 
 # --------------------------------------------------------------------------------------------- #
@@ -749,7 +759,7 @@ class Composer:
         r = np.sqrt(((xx - PW / 2) / (PW * 0.58)) ** 2 + ((yy - PH * 0.48) / (PH * 0.58)) ** 2)
         vig = smoothstep(0.55, 1.35, r) ** 1.4
         del xx, yy, r
-        g.add(Fill('Paper - vignette', '#9C8668', mask=C.canvas_mask('v', vig), blend='multiply', opacity=0.16,
+        g.add(Fill('Paper - vignette', '#9C8668', mask=C.canvas_mask('v', vig), blend='multiply', opacity=0.07,
                    locked=True))
         return g
 
@@ -820,8 +830,8 @@ class Composer:
             ph = ' PLACEHOLDER' if self.src.used[f['swatch']]['placeholder'] else ''
             label = f.get('name') or f"Frag {i + 1:02d} - {f['swatch'].replace('_', ' ')} ({kind}){ph}"
             shadow = f.get('shadow', SHADOW_BEHIND if z == 'behind' else SHADOW_DEFAULT)
-            self.piece(g, label, img, crop_px, quad, edges, f['seed'], rim=f.get('rim', True),
-                       tear=f.get('tear', 1.0), shadow=shadow, tone=f.get('tone'), acc=z)
+            self.piece(g, label, img, crop_px, quad, edges, f['seed'], rim=f.get('rim', False),
+                       tear=f.get('tear', 0.5), shadow=shadow, tone=f.get('tone'), acc=z)
         return g
 
     def echoes(self):
@@ -843,6 +853,23 @@ class Composer:
         return g
 
     # ------------------------------------------------------------------ intensity
+    def grain(self):
+        """Print grain over everything that is 'photo' (view, fragments, echoes), so the render and
+        the swatches read as prints on one stock, not pristine pixels."""
+        content = functools.reduce(np.maximum, [self.acc[k] for k in ('view', 'front', 'behind', 'echo')])
+        ys, xs = np.nonzero(content > 0.01)
+        if not len(ys):
+            return
+        y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+        rng = np.random.default_rng(100 + self.sheet)
+        n = rng.standard_normal((y1 - y0, x1 - x0)).astype(np.float32)
+        n = cv2.GaussianBlur(n, (0, 0), 0.7)
+        n = 0.5 + n / (n.std() + 1e-6) * (10 / 255)
+        g = self.B.group('45 - Print grain', label='gray')
+        self.B.px(g, 'Print grain (soft light)', np.dstack([n, n, n, content[y0:y1, x0:x1]]), int(x0), int(y0),
+                  blend='soft light', opacity=0.5)
+        return g
+
     def intensity(self):
         spec = self.lay.get('intensity') or {}
         g = self.B.group('50 - Overlap intensity (colour where spaces overlap)', label='yellow')
@@ -969,6 +996,7 @@ class Composer:
         self.view()
         self.echoes()
         self.fragments('front')
+        self.grain()
         self.intensity()
         self.notes()
         self.title()

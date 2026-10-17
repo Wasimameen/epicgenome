@@ -155,14 +155,16 @@ def sheer_fabric():
 
 
 def linen_drape():
+    """Stacked festoon swags (her draped ceiling, reference 1): every row overlaps the next, so
+    the whole frame is soft linen."""
     base(world=(0.5, 0.42, 0.35), strength=0.25)
-    fe = G.festoon('festoon', -2.0, 2.0, 0.0, 0.6, drop=0.55, scallop=0.95, sag=0.32, seed=7, facing=-1)
-    _ = fe
-    G.box('ceiling', (5, 2, 0.05), (0, 0.8, 0.65), 'plaster')
-    G.area_light('up', (0.3, -0.9, -0.9), (2.0, 0.5), 120, color=(1.0, 0.72, 0.45), rot=(math.radians(-40), 0, 0))
-    G.area_light('behind', (0, 0.5, 0.45), (4.0, 0.3), 120, color=(1.0, 0.78, 0.55), rot=(math.radians(-150), 0, 0))
-    sun(150, 35, 1.2)
-    persp_cam(110, (0.15, -3.0, -0.7), (0.0, 0, 0.2))
+    for k, (z, y) in enumerate(((1.15, 0.0), (0.62, 0.22), (0.09, 0.44), (-0.44, 0.66), (-0.97, 0.88))):
+        G.festoon(f'festoon{k}', -2.2, 2.2, y, z, drop=0.5, scallop=0.95, sag=0.3, seed=7 + k, facing=-1)
+    G.box('wall', (6, 0.05, 6), (0, 1.6, 0), 'plaster')
+    G.area_light('front', (0.6, -1.6, -0.6), (2.5, 1.0), 70, color=(1.0, 0.8, 0.58), rot=(math.radians(70), 0, math.radians(20)))
+    G.area_light('top', (0, -0.5, 2.2), (3.0, 1.0), 60, color=(1.0, 0.75, 0.5), rot=(math.radians(20), 0, 0))
+    sun(150, 30, 1.0)
+    persp_cam(70, (0.1, -3.0, 0.05), (0.0, 0.3, 0.05))
 
 
 def brass():
