@@ -265,7 +265,7 @@ def cabins_plate(force=False):
     cut = np.zeros((Hs, Ws), np.float32)
     for s in geo['shells']:
         amod = C.load(f'assets/cut/geo/cabins_row/shell_{s["id"]}_geo.png', 'L')
-        amod = cv2.dilate(amod, np.ones((1, 23), np.uint8))       # neighbouring shells meet (no paper slivers)
+        amod = cv2.dilate(amod, np.ones((1, 31), np.uint8))       # neighbouring shells meet (no paper slivers)
         # flat 2.4 m top: at eye level the cylinder top reads as a straight edge (+4 px sag at the front)
         u = np.clip((xx[0] - s['top_arc']['xc']) / s['top_arc']['hw'], -1, 1)
         ytop = YCUT + 4.0 * np.sqrt(1 - u * u)
@@ -280,7 +280,9 @@ def cabins_plate(force=False):
 
 
 # --------------------------------------------------------------------------- valance
-UNITS = {'A': (993.5, 1669.5), 'B': (1669.5, 2332.5), 'C': (2332.5, 3001.5), 'D': (4764.5, 5404.5)}
+UNITS = {'A': (993.5, 1669.5), 'B': (1669.5, 2332.5), 'C': (2332.5, 3001.5), 'D': (4764.5, 5404.5),
+         'E': (3001.5, 3687.0), 'F': (5404.5, 5989.5)}
+MIRROR_CLONES = ((3600, 3705, 3344.0), (5850, 6010, 5697.0))   # (x0, x1, swag centre): E's jabot, F's tail
 CORDS = ((1582.5, 1571.0), (4754.0, 4761.0))   # pendant cord x at source rows 300 and 1050
 V_Y0, V_Y1 = 262, 1130          # source rows kept (heading top 280 .. lowest hem ~1118)
 
@@ -318,10 +320,26 @@ def _valance_source():
         wall = C.blur(cv2.dilate(wall, np.ones((3, 3), np.uint8)).astype(np.float32), 1.0)
         fm[ya:yb, xa:xb] *= 1 - wall
     fm = C.blur(cv2.erode(fm, np.ones((3, 3), np.uint8)), 1.2)
+    # two more whole swags (E, F): the swag beside the jabot and the swag beside the right side tail
+    # are completed by mirror-cloning their clean half across the swag centre (RGB AND fabric mask,
+    # full height, 12 px linear feather), which removes the jabot, its ring hook and the tail cascade
+    src, srm = fv.copy(), fm.copy()
+    for x0, x1, c in MIRROR_CLONES:
+        xs = np.arange(x0 - 12, x1 + 1)
+        w = np.clip((xs - (x0 - 12)) / 12.0, 0, 1)
+        xm = np.round(2 * c - xs).astype(int)
+        fv[:, xs] = src[:, xm] * w[None, :, None] + src[:, xs] * (1 - w[None, :, None])
+        fm[:, xs] = srm[:, xm] * w[None, :] + srm[:, xs] * (1 - w[None, :])
     return fv, fm
 
 
-def valance_frieze(width_src, order='ABCDabcdABCDabcd', ov=14, force=False, seed=11):
+# every source swag at most once among the visible slots 2-15, straight / mirrored copies >= 6 apart
+# (only C and E return, at slots 14 / 15: slot 2 is half behind the glass-brick screen, slot 15 is
+# ~130 px of the right bleed)
+FRIEZE_ORDER = 'ABCEaFdBceAfDbCE'
+
+
+def valance_frieze(width_src, order=FRIEZE_ORDER, ov=14, force=False, seed=11):
     """Frieze at source scale: -> (rgb, mask, gathers_x).  Upper-case = as photographed,
     lower-case = mirrored.  Joins cross-fade over 2*ov px inside a gathered column."""
     key = f'{order}_{int(width_src)}_{ov}_v{seed}'

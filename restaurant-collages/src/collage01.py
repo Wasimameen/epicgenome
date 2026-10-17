@@ -33,7 +33,9 @@ from lib import outside as O  # noqa: E402
 from lib import sensory as S  # noqa: E402
 from lib import typeset as T  # noqa: E402
 from lib.collage_common import (Builder, INK, PAL, W, H, MARGIN, LABEL, HERO, PHRASE, card_edge,  # noqa: E402
-                                local, colour_rgba, cut_info, aa_line)
+                                local, colour_rgba, cut_info, aa_line, TagBox)
+from psdkit import Group  # noqa: E402
+import collage02_prep as PREP  # noqa: E402  (the shared festoon frieze, cached in build/c01 for this sheet)
 
 SLUG = 'restaurant-collage-01-from-the-void-looking-out'
 TITLE = 'Restaurant - Atmosphere collage 01 - From the void, looking out'
@@ -43,6 +45,18 @@ PREVIEW = C.P('build', 'preview', 'main')
 LINEN = PAL['linen']
 GREEN_GOLD = '#B9D46A'          # between honey and canopy: the colour of the chosen area
 STEEL_DARK = '#30343B'          # anodised steel of the entrance frame
+BLUE_HOUR = '#82AEE0'           # the last blue light (Lab hue ~266): beam + its cast on the trunk
+SKY_BLUE = '#3A4D86'            # blue hour in the skylight ('Sky · blue hour (colour)')
+
+SOURCES = """- Client drawings, RESTAURANT.pdf: section B-B (the stair), elevation 01 (the bar: sign, leaf logo,
+  stools, espresso machine) and the ground-floor plan (key plan); linework taken from the vector PDF,
+  client annotations removed.
+- Photographs generated for this project with FLUX (via ElevenLabs): the void looking up (void, tree,
+  branch, near leaves), the festoon valance (valance, bar pendants), the glass-block wall (bar back
+  wall), the cabin interior (fluted-oak texture).
+- Espresso cup: scikit-image sample image 'coffee' (CC0).
+- Made for this file: the street at blue hour, glass-block refraction, rain, terrazzo, brushed steel,
+  linen, paper, and the sound / smell / light graphics."""
 
 # --------------------------------------------------------------------------- #
 # layout (canvas px, A3 landscape 4961 x 3508 @ 300 ppi)
@@ -103,24 +117,28 @@ BAR_X0, BAR_X1 = MARGIN, 1600                # the void overlaps the bar decisiv
 BULK_Y0 = round(el(0, 17.5)[1])              # top of the fluted bulkhead (sign band)
 BULK_Y1 = round(el(0, 828)[1])               # bulkhead soffit = top of the glass-brick wall
 CTR_Y = round(el(0, 1561)[1])                # counter top
-CTR_X0, CTR_X1 = MARGIN - 6, 1185            # counter >= 300 px clear of the void; carries the machine
+CTR_X0, CTR_X1 = MARGIN - 6, 1260            # counter ~350 px clear of the void; carries the machine + 4 stools
+STOOLS = (355, 763, 1171, 1617)              # stool axes in elevation 01 (drawing px)
 PEND_X = (282, 546, 810, 1074)               # four dome pendants (elevation 01), clear of the void
 PEND_S = 0.34
 
-# festoon valance overhead (festoon_valance.png, real fabric mask)
+# festoon valance overhead: the shared frieze of whole swags (collage02_prep.valance_frieze, never the
+# jabot or the twisted swag), its own order + seed so it is not sheet 02's sequence
 VAL_S = 0.9
-VAL_SX0, VAL_SY0 = 454, 449                  # source px at canvas (0, 0)
+VAL_SY0 = 449                                # festoon_valance.png source row at canvas y = 0
+VAL_ORDER, VAL_SEED = 'CADBcadbC', 23        # 9 whole swags (lower case = mirrored)
+VAL_GATHER = 4                               # this gather sits on the disc axis (the hem rises there)
 
 # the tree pit: a low terrazzo kerb (the plan's ~1.6 m ring), the floor turned up
 PL_CX, PL_CY = TRUNK_X, 3170                 # centre of the kerb's top ellipse
 PL_RX, PL_RY = 470, 150
 PL_RIM = 40                                  # kerb width (plan)
-PL_FACE = 70                                 # visible height of the kerb face (lowest point 3390)
+PL_FACE = 45                                 # visible height of the kerb face (lowest point 3365): a light foot
 PL_SOIL_DROP = 14
 SOIL_TOP = PL_CY + PL_SOIL_DROP - 24         # where the soil meets the front of the trunk
 
 # floor plane (visible cut) and its perspective quad (texture warp)
-FLOOR_POLY = [(1300, FLOOR_Y), (3060, FLOOR_Y), (3020, H + 60), (1780, H + 60), (1290, 3100)]   # clear of the subline
+FLOOR_POLY = [(1300, FLOOR_Y), (3060, FLOOR_Y), (3020, H + 60), (1870, H + 60), (1290, 3100)]   # feather clear of the subline
 LEGEND_X = 3100                              # shared legend block: keep art clear of x >= 3100, y >= 2980
 FLOOR_FEATHER = 70                           # the floor's sides dissolve into the paper
 FLOOR_WARP = [(1290, FLOOR_Y - 20), (3300, FLOOR_Y - 20), (3960, H + 40), (520, H + 40)]
@@ -136,8 +154,10 @@ TWIG = dict(box=(1640, 1180, 2287, 1610), base=(1652, 1556), scale=1.3, angle=30
 
 NEAR_MAX_Y = 700                 # near leaves stay above the tag row
 
-# viewer + sightlines
-VIEWER = (TRUNK_X + 560, PL_CY + 120)        # on the terrazzo beside the kerb
+# viewer + sightlines: on the terrazzo in front of the kerb, so the up-line clears the facade corner and the
+# out-line passes well above the legend
+VIEWER = (TRUNK_X + 420, PL_CY + 230)
+OUT_END = (3776.5 + 260, 2000)               # (DOOR_X0 + 260): the out-arrow lands in the door leaf
 
 
 # --------------------------------------------------------------------------- #
@@ -281,25 +301,49 @@ def terrazzo_mosaic():
     return cached_png('terrazzo_floor_mosaic_v1.png', make)
 
 
-def defringe_mask(rgb):
-    """Violet chromatic-aberration fringes (hue 245-310 deg, saturated, next to strong edges)."""
+def defringe_mask(rgb, magenta_ok=None):
+    """Violet chromatic-aberration fringes (hue 245-310 deg, saturated, next to strong edges).
+    magenta_ok: optional bool mask where 1 px magenta CA (hue 310-350) counts too — only away from the
+    tree, whose red seed clusters live at those hues."""
     hsv = cv2.cvtColor(np.ascontiguousarray(rgb[..., :3]), cv2.COLOR_RGB2HSV)
     h, s = hsv[..., 0], hsv[..., 1]
-    vio = ((h >= 245) & (h <= 310) & (s > 0.10)).astype(np.float32)
+    vio = (h >= 245) & (h <= 310) & (s > 0.10)
+    if magenta_ok is not None:
+        vio |= (h > 310) & (h <= 350) & (s > 0.10) & magenta_ok
     L = C.blur(C.lum(rgb), 0.8)
     g = np.hypot(cv2.Sobel(L, cv2.CV_32F, 1, 0, ksize=3), cv2.Sobel(L, cv2.CV_32F, 0, 1, ksize=3))
     edge = cv2.dilate((g > 0.25).astype(np.uint8), np.ones((5, 5), np.uint8)).astype(np.float32)
-    return C.blur(vio * edge, 0.7)
+    return C.blur(vio.astype(np.float32) * edge, 0.7)
 
 
-def inpaint_fringes(rgb, thresh=0.2):
-    """Violet chromatic-aberration fringes healed by inpainting (TELEA, radius 2) instead of a mere
-    desaturation (which leaves dark navy outlines).  Returns (healed rgb, alpha of the healed pixels)."""
-    m = (defringe_mask(rgb) > thresh).astype(np.uint8)
-    m = cv2.dilate(m, np.ones((3, 3), np.uint8))
+def inpaint_fringes(rgb, thresh=0.2, magenta_ok=None):
+    """Violet chromatic-aberration fringes healed by a 1 px inpaint (TELEA, radius 1, no dilate).  Bright
+    sky gaps (lum >= 0.80) never count as fringe, so leaf-shaped gaps and thin twigs keep their edges and the
+    lilac sky is not dragged into the leaves.  Returns (healed rgb, alpha of the healed pixels)."""
+    raw = defringe_mask(rgb, magenta_ok) > thresh
+    m = (raw & (C.lum(rgb) < 0.80)).astype(np.uint8)
     u8 = np.clip(rgb[..., :3] * 255 + 0.5, 0, 255).astype(np.uint8)
-    healed = cv2.inpaint(np.ascontiguousarray(u8), m, 2, cv2.INPAINT_TELEA).astype(np.float32) / 255
+    healed = cv2.inpaint(np.ascontiguousarray(u8), m, 1, cv2.INPAINT_TELEA).astype(np.float32) / 255
     return healed, np.clip(C.blur(m.astype(np.float32), 0.7) * 1.3, 0, 1)
+
+
+def recolour_leaf_fringes(rgb, a, thresh=0.2):
+    """Violet fringe pixels ON the tree (cut-out alpha a > 0.3) keep their luminance (their shape) and take
+    the chroma of clean leaf / bark pixels nearby (normalised convolution, sigma 2, falling back to 6).
+    Nothing is inpainted, so twigs and leaf-shaped gaps survive.  Returns (recoloured rgb, bool mask)."""
+    raw = defringe_mask(rgb) > thresh
+    ell3 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    src = ((a > 0.6) & ~cv2.dilate(raw.astype(np.uint8), ell3).astype(bool)).astype(np.float32)
+
+    def nconv(s):
+        bw = C.blur(src, s)
+        return C.blur(rgb * src[..., None], s) / np.maximum(bw, 1e-6)[..., None], bw
+    c1, w1 = nconv(2.0)
+    c2, w2 = nconv(6.0)
+    col = np.where((w1 > 0.05)[..., None], c1, np.where((w2 > 0.005)[..., None], c2, rgb))
+    del c1, c2, w1, w2, src
+    rec = np.clip(col * (C.lum(rgb) / np.maximum(C.lum(col), 1e-3))[..., None], 0, 1)
+    return rec.astype(np.float32), raw & (a > 0.3)
 
 
 def select_leaves(a, outline, box, base_zone=None):
@@ -336,69 +380,16 @@ def drop_small(al, min_area, thresh=0.08):
 # pieces
 # --------------------------------------------------------------------------- #
 
-def valance_parts():
-    """festoon_valance photo crop (+ spare), its real fabric mask with the jabot tail and side
-    tails taken out, and two clone-retouch patches that remove the pendant cords."""
-    sx0, sy0, sx1, sy1 = 300, 280, 6150, 1420
-    v = C.load('assets/gen/festoon_valance.png', 'RGB')[sy0:sy1, sx0:sx1].copy()
-    m = C.load('assets/cut/geo/festoon_valance/valance_fabric.png', 'L')[sy0:sy1, sx0:sx1].copy()
-    geo = json.load(open(C.P('assets', 'cut', 'geo', 'festoon_valance', 'geometry.json')))
-    xs = np.arange(sx0, sx1, dtype=np.float32)
-    ys = np.arange(sy0, sy1, dtype=np.float32)
-    # side tails out (they hang to the floor) — keep the swag span only
-    m *= (smoothstep(424, 436, xs) * (1 - smoothstep(5984, 5996, xs)))[None, :]
-    hem = np.array(geo['hem_every_16px'])
-    left_tail = (1 - smoothstep(500, 540, xs))[None, :]
-    m *= 1 - left_tail * smoothstep(1090, 1110, ys)[:, None]
-    # right side tail: no stub hanging below the swags — cut along the last swag's own hem, rising to
-    # a gathered cusp at the end (like the jabot)
-    sel = (hem[:, 0] >= 5640) & (hem[:, 0] <= 5990)
-    fit = np.polyfit(hem[sel, 0], hem[sel, 1], 2)                  # a smooth last belly (no tail point)
-    hx = np.polyval(fit, xs) - 3
-    m *= 1 - smoothstep(5680, 5710, xs)[None, :] * np.clip(ys[:, None] - hx[None, :] + 0.5, 0, 1)
-    # jabot tail: cut along a gather cusp drawn into the neighbouring hems
-    xl, xc_, xr = 3560.0, 3706.0, 3905.0
-    yl = float(np.interp(xl, *np.array(geo['hem_every_16px']).T))
-    yr = float(np.interp(xr, *np.array(geo['hem_every_16px']).T))
-    yc = 712.0
-    ycut = np.full_like(xs, 1e9)
-    left = (xs >= xl) & (xs <= xc_)
-    right = (xs > xc_) & (xs <= xr)
-    ycut[left] = yc + (yl - yc) * ((xc_ - xs[left]) / (xc_ - xl)) ** 0.62
-    ycut[right] = yc + (yr - yc) * ((xs[right] - xc_) / (xr - xc_)) ** 0.62
-    cut = np.clip(ycut[None, :] - ys[:, None] + 0.5, 0, 1)
-    m *= cut
-    # the fabric mask leaves a slit where each cord crosses the cloth: close it from both sides
-    for cd in geo['pendant_cords']:
-        for yi in range(m.shape[0]):
-            xc = int(round(cd['a'] + cd['b'] * (yi + sy0))) - sx0
-            m[yi, xc - 13:xc + 14] = min(m[yi, xc - 16], m[yi, xc + 16])
-    # cord retouch (heal): low frequencies interpolated across the strip, texture borrowed
-    # from 34 px to the side; returned as separate patches for 'Retouch ·' layers
-    hp = v - cv2.GaussianBlur(v, (0, 0), 2.0)
-    patches = []
-    for cd in geo['pendant_cords']:
-        yy = np.arange(sy0, min(sy1, 1240))
-        xc = cd['a'] + cd['b'] * yy
-        half, feather, rows = 10, 5, yy - sy0
-        xmin = int(np.floor(xc.min())) - half - feather - 2 - sx0
-        xmax = int(np.ceil(xc.max())) + half + feather + 3 - sx0
-        pw = xmax - xmin
-        patch = np.zeros((len(yy), pw, 4), np.float32)
-        Lc = np.stack([v[rows, np.round(xc - half - feather - k).astype(int) - sx0] for k in range(1, 4)]).mean(0)
-        Rc = np.stack([v[rows, np.round(xc + half + feather + k).astype(int) - sx0] for k in range(1, 4)]).mean(0)
-        for j in range(pw):
-            xj = xmin + j + sx0
-            dx = xj - xc
-            t = np.clip((dx + half + feather) / (2 * (half + feather)), 0, 1)[:, None]
-            base = Lc * (1 - t) + Rc * t
-            src = np.clip(np.round(xj + 34).astype(int) - sx0, 0, v.shape[1] - 1)
-            tex = hp[rows, src]
-            a = 1 - smoothstep(half, half + feather, np.abs(dx))
-            patch[:, j, :3] = np.clip(base + tex, 0, 1)
-            patch[:, j, 3] = a
-        patches.append((patch, xmin + sx0, sy0))
-    return v, m, (sx0, sy0), patches
+def valance_frieze():
+    """The festoon frieze of whole swags A-D (collage02_prep.valance_frieze: joins in the gathered columns,
+    cords retouched, swags gain-matched, never the jabot or the twisted swag) in this sheet's own order and
+    seed.  Cached in build/c01.  Returns (rgb, mask, gathers_x) at source scale."""
+    old = PREP.CACHE
+    PREP.CACHE = CACHE
+    try:
+        return PREP.valance_frieze(5600, order=VAL_ORDER, seed=VAL_SEED)
+    finally:
+        PREP.CACHE = old
 
 
 def planter_parts():
@@ -474,18 +465,21 @@ def planter_parts():
     edge_y = edge_y + 5.0 * C.blur(rng.standard_normal((1, w)).astype(np.float32), 2.5)[0] \
         + 1.6 * C.blur(rng.standard_normal((1, w)).astype(np.float32), 0.8)[0]
     lip = soil * np.clip(yy - edge_y[None, :] + 0.5, 0, 1) * (1 - smoothstep(170, 200, np.abs(xx - tx)))
-    # a few loose crumbs heaped against the bark, just above the soil line
+    # a few loose crumbs of different sizes scattered down the mound (not a row of beads), each its own tone
     crumbs = np.zeros((h, w), np.float32)
-    for _ in range(46):
-        cx_ = tx + rng.uniform(-70, 70)
-        cy_ = np.interp(cx_, xs_, edge_y) - rng.uniform(-1, 9)
-        r_ = rng.uniform(2.0, 5.5)
-        crumbs = np.maximum(crumbs, np.clip(r_ + 0.5 - np.hypot(xx - cx_, (yy - cy_) * 1.25), 0, 1))
+    ctone = np.zeros((h, w), np.float32)
+    for _ in range(18):
+        cx_ = tx + rng.uniform(-80, 80)
+        cy_ = np.interp(cx_, xs_, edge_y) + rng.uniform(-2, 24)
+        r_ = rng.uniform(1.2, 3.5)
+        c_ = np.clip(r_ + 0.5 - np.hypot(xx - cx_, (yy - cy_) * 1.25), 0, 1)
+        ctone = np.where(c_ > crumbs, rng.uniform(-0.25, 0.25), ctone)
+        crumbs = np.maximum(crumbs, c_)
     lip = np.maximum(lip, crumbs * soil)
     crest = np.clip(1 - (yy - edge_y[None, :]) / 8.0, 0, 1) * (yy >= edge_y[None, :] - 0.5)
-    tone = 1 + 0.16 * crest + 0.10 * crumbs * C.blur(rng.standard_normal((h, w)).astype(np.float32), 1.0)
+    tone = 1 + 0.16 * crest + crumbs * ctone
     lip_rgba = np.dstack([np.clip(back[..., :3] * tone[..., None], 0, 1), lip])
-    return back, lip_rgba, (x0, y0)
+    return back, lip_rgba, (x0, y0), soil
 
 
 def trunk_retouch(vbs, ta, tpos, y_top=2440, keep_knots=((2575, -1), (2897, 1), (3175, -1))):
@@ -597,6 +591,11 @@ def root_flare(healed, a, X0, Y0, flare=26.0, height=140):
         out[k, :, :3] *= (0.72 + 0.28 * smoothstep(0, 14, edge))[:, None]
         out[k, :, 3] = cov
     out[..., :3] = bark_grade(out[..., :3], np.ones((h, w), np.float32))
+    # numeric twin of the clipped 'Shade · trunk base darkens into the soil' (multiply #2E241C, 55 %, rising
+    # over the last 84 px above the soil): the flanks sit outside the cut-out, so they would miss it
+    ys = np.arange(yt, yb, dtype=np.float32)
+    wsh = 0.55 * smoothstep(0, 90, ys - (SOIL_TOP - 84)) ** 1.5 * (ys >= SOIL_TOP - 84)
+    out[..., :3] *= (1 - wsh[:, None, None] * (1 - rgb01('#2E241C')))
     return out, X0, yt
 
 
@@ -654,7 +653,7 @@ def leaf_piece(box, scale, angle, flip=False, blur=0.0, anchor=(0.0, 0.0), outli
         al = cv2.GaussianBlur(al, (0, 0), blur)
     rgb = np.where(al[..., None] > 1e-4, rgb / np.maximum(al[..., None], 1e-4), 0)
     if blur:
-        al = smoothstep(0.15, 0.55, al)                 # opaque cores, soft rims: near, not see-through
+        al = smoothstep(0.35, 0.60, al)                 # opaque cores, soft rims; leaflets stay apart (pinnate)
     # opaque, edge-extended RGB (leaf colour bleeds outwards) so the layer mask alone cuts the piece
     pm_b = cv2.GaussianBlur(rgb * al[..., None], (0, 0), 24)
     al_b = cv2.GaussianBlur(al, (0, 0), 24)[..., None]
@@ -819,7 +818,7 @@ def build():
             opacity=0.55, clip=True)
     del pl
     shade = smoothstep(BULK_Y0, BULK_Y1, yy_canvas()) * box_alpha(BAR_X0, BULK_Y0, BAR_X1, BULK_Y1)
-    B.fill(g, 'Shade · bulkhead, darker at the soffit', '#6B4A2E', shade, blend='multiply', opacity=0.35,
+    B.fill(g, 'Shade · bulkhead to soffit (brown)', '#6B4A2E', shade, blend='multiply', opacity=0.35,
            clip=True)
     del shade
     inset = np.clip(cv2.dilate(panel, np.ones((5, 5), np.uint8)) - panel, 0, 1)
@@ -866,7 +865,6 @@ def build():
         B.cutout(g, f'Bar · dome pendant {i + 1} (photo cut-out)', nm, PEND_S, x_, y_, margin=30, alpha_fn=trim)
         b = info['bulb']
         pend_bulbs.append((x_ + b['cx'] * PEND_S, y_ + b['cy'] * PEND_S))
-    chip(B, g, 'GLASS BRICK PROPOSED\nIN PLACE OF\nDECORATIVE BRICK', BAR_X0 + 24, 2300, 'glass brick proposal')
     # counter: fluted oak front + brushed steel top (top face, edge, specular line)
     cw_ = CTR_X1 - CTR_X0
     ch_ = FLOOR_Y - CTR_Y
@@ -875,8 +873,9 @@ def build():
             mask_alpha=box_alpha(CTR_X0, CTR_Y + 12, CTR_X1, FLOOR_Y), margin=20)
     del front
     shade = smoothstep(CTR_Y, FLOOR_Y + 60, yy_canvas()) * box_alpha(CTR_X0, CTR_Y, CTR_X1, FLOOR_Y)
-    B.fill(g, 'Shade · counter front, under the top', '#4A3020', shade, blend='multiply', opacity=0.30, clip=True)
-    B.fill(g, 'Grade · lift the oak', LINEN, None, blend='screen', opacity=0.22, clip=True)
+    B.fill(g, 'Shade · counter under the top (dark oak)', '#4A3020', shade, blend='multiply', opacity=0.30,
+           clip=True)
+    B.fill(g, 'Grade · lift the oak (linen)', LINEN, None, blend='screen', opacity=0.22, clip=True)
     del shade
     B.shadow(g, 'Shadow · counter top overhang', np.ones((12, cw_), np.float32), CTR_X0, CTR_Y + 12, depth=8,
              sigma=7, opacity=0.5)
@@ -888,11 +887,11 @@ def build():
     B.photo(g, 'Bar · brushed steel counter top', steel, CTR_X0 - 30, CTR_Y - top_h - 10,
             mask_alpha=np.clip(tq + eq, 0, 1), margin=10)
     del steel
-    B.fill(g, 'Shade · steel edge in shade', '#5E6670', eq, blend='multiply', opacity=0.45, clip=True)
-    B.fill(g, 'Shade · far edge of the top recedes', '#5E6670',
+    B.fill(g, 'Shade · steel edge (steel grey)', '#5E6670', eq, blend='multiply', opacity=0.45, clip=True)
+    B.fill(g, 'Shade · top far edge (steel grey)', '#5E6670',
            (1 - smoothstep(CTR_Y - top_h, CTR_Y - 4, yy_canvas())) * tq, blend='multiply', opacity=0.30, clip=True)
     spec = box_alpha(CTR_X0 - 8, CTR_Y - 1, CTR_X1 + 10, CTR_Y + 1.6)
-    B.fill(g, 'Light · specular line on the steel arris', '#FFFFFF', spec, blend='screen', opacity=0.85)
+    B.fill(g, 'Light · steel arris specular (white)', '#FFFFFF', spec, blend='screen', opacity=0.85)
     del tq, eq, spec
     # the espresso machine and the stools: silhouettes traced from elevation 01
     ev_a = C.load('assets/lines/elev01_bar.png')[..., 3]
@@ -901,12 +900,22 @@ def build():
         sb = (ev_a[y0_:y1_, x0_:x1_] > 0.3).astype(np.uint8)
         sil = ndimage.binary_fill_holes(cv2.morphologyEx(sb, cv2.MORPH_CLOSE, np.ones((close, close), np.uint8)))
         return C.resize(C.blur(sil.astype(np.float32), 0.6), EL_K)
+    # the espresso machine: a solid brushed-steel body on the elevation's silhouette (the source of SOUND 02),
+    # lit along its top edge; the elevation linework stays on top in group 90
     mach = silhouette(1286, 1400, 1614, 1558, close=7)
     mx0, my0 = el(1286, 1400)
-    B.fill_local(g, 'Bar · espresso machine (elev. 01)', INK, mach, mx0, my0, opacity=0.55)
+    mh_, mw_ = mach.shape
+    B.shadow(g, 'Shadow · espresso machine on the wall', mach, mx0, my0, depth=8, sigma=7, opacity=0.40)
+    B.fill_local(g, 'Bar · espresso machine (elev. 01)', '#3A3D42', mach, mx0, my0)
+    mst = C.texture_fill(C.load('assets/mat/steel_brushed.png', 'RGB'), mh_ + 8, mw_ + 8, scale=0.5)
+    B.px(g, 'Bar · machine, brushed steel (overlay)', mst, mx0 - 4, my0 - 4, blend='overlay', opacity=0.6,
+         clip=True)
+    del mst
+    top_edge = np.clip(mach - np.pad(mach, ((2, 0), (0, 0)))[:mh_], 0, 1)
+    B.px(g, 'Light · machine top edge (linen)', colour_rgba(top_edge, LINEN), mx0, my0, opacity=0.85)
     hiss_at = el(1600, 1440)
     sil = silhouette(763 - 110, 1640, 763 + 110, 2060)
-    for k, scx in enumerate((355, 763, 1171)):
+    for k, scx in enumerate(STOOLS):
         ox_, oy_ = el(scx - 110, 1640)
         foot = np.zeros((40, sil.shape[1] + 60), np.float32)
         cv2.ellipse(foot, (foot.shape[1] // 2, 20), (int(sil.shape[1] * 0.42), 9), 0, 0, 360, 1.0, -1, cv2.LINE_AA)
@@ -959,12 +968,15 @@ def build():
     del dap
     # the tree pit (back): far inner wall, soil, kerb — the trunk stands in front of this
     g = B.group('45 · Tree pit — terrazzo kerb & soil', label='green')
-    back, lip, (plx, ply) = planter_parts()
+    back, lip, (plx, ply), soil_m = planter_parts()
     sh = np.zeros((back.shape[0], back.shape[1]), np.float32)
     cv2.ellipse(sh, (int(PL_CX - plx), int(PL_CY - ply + PL_FACE - 6)), (int(PL_RX + 8), int(PL_RY + 6)), 0, 0,
                 360, 1.0, -1, cv2.LINE_AA)
     B.shadow(g, 'Shadow · kerb on the terrazzo', sh, plx, ply, depth=10, sigma=10, opacity=0.45)
     B.px(g, 'Tree pit · terrazzo kerb & damp soil', back, plx, ply)
+    # the soil reads as damp loam, not a black hole (squint test: no dark 'goblet foot')
+    B.fill_local(g, 'Grade · damp soil lift (brown)', '#8A6A4A', soil_m, plx, ply, blend='screen', opacity=0.30,
+                 clip=True)
 
     # ============================================================ 50 the void
     g = B.group('50 · The void — looking up', label='green', opened=True)
@@ -978,15 +990,29 @@ def build():
     # violet chromatic-aberration fringes healed by inpainting (the photo and the tree share pixels)
     by0, by1 = max(0, cly - 210 - VB_OY), min(vbs.shape[0], cly + cl.shape[0] + 210 - VB_OY)
     bx0, bx1 = max(0, clx - 210 - VB_OX), min(vbs.shape[1], clx + cl.shape[1] + 210 - VB_OX)
-    healed, ha = inpaint_fringes(vbs[by0:by1, bx0:bx1])
-    B.px(g, 'Retouch · fringes healed (photo)', np.dstack([healed, ha]), VB_OX + bx0, VB_OY + by0, clip=True)
-    glz = C.resize(C.load('assets/cut/geo/void_lookup_B/skylight_glazing.png', 'L'), VB_S)
-    # --- the tree, registered on its own photograph
-    gt = B.group('55 · Tree — rising through the void', label='green', parent=g, opened=True)
+    # the tree's alpha on the heal crop: leaf-side fringes are recoloured, photo-side ones get a 1 px heal;
+    # magenta CA lines count only well away from the tree (its red seed clusters share those hues)
     ta = C.resize(C.load('assets/cut/tree_B.png')[..., 3], VB_S)
     tx_, ty_ = vb(TREE_BOX[0], TREE_BOX[1])
     tpos = (int(round(tx_)), int(round(ty_)))
     hh_, ww_ = ta.shape
+    crop = vbs[by0:by1, bx0:bx1]
+    ta_c = np.zeros(crop.shape[:2], np.float32)
+    tbx0, tby0 = tpos[0] - VB_OX - bx0, tpos[1] - VB_OY - by0
+    cy0_, cx0_ = max(0, tby0), max(0, tbx0)
+    cy1_, cx1_ = min(crop.shape[0], tby0 + hh_), min(crop.shape[1], tbx0 + ww_)
+    ta_c[cy0_:cy1_, cx0_:cx1_] = ta[cy0_ - tby0:cy1_ - tby0, cx0_ - tbx0:cx1_ - tbx0]
+    far = cv2.dilate((ta_c > 0.05).astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (13, 13))) == 0
+    healed, ha = inpaint_fringes(crop, magenta_ok=far)
+    del far
+    B.px(g, 'Retouch · fringes healed (photo)', np.dstack([healed, ha]), VB_OX + bx0, VB_OY + by0, clip=True)
+    rec, leafm = recolour_leaf_fringes(crop, ta_c)
+    leaf_rgb = np.where(leafm[..., None], rec, healed)
+    leaf_a = np.maximum(np.clip(C.blur(leafm.astype(np.float32), 0.7) * 1.3, 0, 1), ha)
+    del rec, leafm, healed, ha, ta_c, crop
+    glz = C.resize(C.load('assets/cut/geo/void_lookup_B/skylight_glazing.png', 'L'), VB_S)
+    # --- the tree, registered on its own photograph
+    gt = B.group('55 · Tree — rising through the void', label='green', parent=g, opened=True)
     tav = np.zeros((H, W), np.float32)
     tav[tpos[1]:tpos[1] + hh_, tpos[0]:tpos[0] + ww_] = ta[:H - tpos[1], :W - tpos[0]]
     outside_disc = 1 - circle[tpos[1]:tpos[1] + hh_, tpos[0]:tpos[0] + ww_]
@@ -1009,13 +1035,12 @@ def build():
     flare, fx_, fy_ = root_flare(healed_trunk, trunk_a, kx, ky)
     B.px(gt, 'Tree · root flare at the soil (bark)', flare, fx_, fy_)
     B.cutout(gt, 'Tree · cut-out (registered on its photo)', 'tree_B.png', VB_S, tx_, ty_, margin=TREE_MARGIN)
-    # the cut-out carries the same pixels as the photo: same healed fringes, then the trunk retouch
-    tbx0, tby0 = tpos[0] - VB_OX - bx0, tpos[1] - VB_OY - by0
-    hsub = healed[max(0, tby0):tby0 + hh_, max(0, tbx0):tbx0 + ww_]
-    asub = ha[max(0, tby0):tby0 + hh_, max(0, tbx0):tbx0 + ww_]
-    B.px(gt, 'Retouch · leaf fringes healed', np.dstack([hsub, asub]), VB_OX + bx0 + max(0, tbx0),
-         VB_OY + by0 + max(0, tby0), clip=True)
-    del healed, ha, hsub, asub
+    # the cut-out carries the same pixels as the photo: the same 1 px heal + its leaf fringes recoloured
+    hsub = leaf_rgb[cy0_:cy1_, cx0_:cx1_]
+    asub = leaf_a[cy0_:cy1_, cx0_:cx1_]
+    B.px(gt, 'Retouch · leaf fringes recoloured', np.dstack([hsub, asub]), VB_OX + bx0 + cx0_,
+         VB_OY + by0 + cy0_, clip=True)
+    del leaf_rgb, leaf_a, hsub, asub
     B.px(gt, 'Retouch · lower trunk bark rebuilt', patch, kx, ky, clip=True)
     del patch, healed_trunk, trunk_a
     trunk_band = box_alpha(TRUNK_X - 85, 2380, TRUNK_X + 85, 3320) * smoothstep(2450, 2700, yy_canvas())
@@ -1058,25 +1083,22 @@ def build():
     cv2.ellipse(cs, (int(TRUNK_X - plx + 4), int(SOIL_TOP - ply - 2)), (70, 9), 0, 0, 360, 1.0, -1, cv2.LINE_AA)
     B.shadow(g, 'Shadow · trunk contact on the soil', cs, plx, ply, depth=2, sigma=5, opacity=0.35)
     B.px(g, 'Tree pit · soil swallowing the trunk', lip, plx, ply)
-    del back, lip
+    B.fill(g, 'Grade · damp soil lift (brown, lip)', '#8A6A4A', None, blend='screen', opacity=0.30, clip=True)
+    del back, lip, soil_m
 
     # ============================================================ 70 ceiling: festoon valance
     g = B.group('70 · Overhead — the festoon valance', label='orange')
-    v, m, (vsx, vsy), patches = valance_parts()
-    vx, vy = (vsx - VAL_SX0) * VAL_S, (vsy - VAL_SY0) * VAL_S
-    vs = C.resize(v, VAL_S)
-    ms = C.resize(m, VAL_S)
-    del v, m
+    fr, fm, gxs = valance_frieze()
+    vx = int(round(VOID_C[0] - gxs[VAL_GATHER] * VAL_S))       # a gather (the hem's high point) on the disc axis
+    vy = int(round((PREP.V_Y0 - VAL_SY0) * VAL_S))             # the heading stays just off the sheet
+    vs, ms = C.resize(fr, VAL_S), C.resize(fm, VAL_S)
+    del fr, fm
     B.shadow(g, 'Shadow · valance hem on the page', ms, vx, vy, depth=26, opacity=0.36)
     B.photo(g, 'Valance · swags (photo, fabric mask)', vs, vx, vy, mask_alpha=ms, mask_xy=(vx, vy),
             keep_offcanvas=True)
-    for k, (patch, px0, py0) in enumerate(patches):
-        ps = C.resize(patch, VAL_S)
-        B.px(g, f'Retouch · pendant cord {k + 1} removed (heal)', ps, (px0 - VAL_SX0) * VAL_S,
-             (py0 - VAL_SY0) * VAL_S, clip=True)
-    B.fill(g, 'Grade · desaturate', '#8C8C8C', None, blend='saturation', opacity=0.42, clip=True)
+    B.fill(g, 'Grade · desaturate (grey)', '#8C8C8C', None, blend='saturation', opacity=0.42, clip=True)
     B.fill(g, 'Grade · to palette linen (colour)', LINEN, None, blend='color', opacity=0.45, clip=True)
-    B.fill(g, 'Grade · lift', LINEN, None, blend='screen', opacity=0.16, clip=True)
+    B.fill(g, 'Grade · lift (linen, screen)', LINEN, None, blend='screen', opacity=0.16, clip=True)
     del vs, ms
 
     # ============================================================ 75 near leaves
@@ -1084,22 +1106,32 @@ def build():
     for side, box_, ang, flip, anc, target in (
             ('top left', (0, 1100, 720, 1700), -38.0, True, (720, 1400), (-260, -90)),
             ('top right', (1700, 1100, 2287, 1640), 38.0, True, (1700, 1370), (W + 240, -90))):
-        rgb_, al_, q = leaf_piece(box_, 1.5, ang, flip, blur=7.0, anchor=anc, tame_red=True)
+        rgb_, al_, q = leaf_piece(box_, 1.5, ang, flip, blur=3.5, anchor=anc, tame_red=True)
         px0, py0 = int(round(target[0] - q[0])), int(round(target[1] - q[1]))
         al_ = al_ * np.clip((NEAR_MAX_Y - (np.arange(al_.shape[0])[:, None] + py0)) / 120.0, 0, 1)
-        al_ = drop_small(al_, 4000)
+        al_ = drop_small(al_, 4000, thresh=0.004)                  # no faint orphan specks / rings
+        al_ *= cv2.dilate((al_ > 0.08).astype(np.uint8), np.ones((9, 9), np.uint8))
         B.shadow(g, f'Shadow · near leaves ({side})', al_, px0, py0, depth=70, sigma=45, opacity=0.20)
         B.photo(g, f'Near · leaves overhead ({side})', rgb_, px0, py0, mask_alpha=al_, mask_xy=(px0, py0),
                 keep_offcanvas=True)
-        B.fill(g, f'Grade · backlit, in shade ({side})', '#3E4A30', None, blend='multiply', opacity=0.62, clip=True)
+        B.fill(g, f'Grade · leaf green, in shade ({side[4:]})', PAL['leaf'], None, blend='multiply', opacity=0.40,
+               clip=True)
         del rgb_, al_
 
     # ============================================================ 80 light & colour intensity
     g = B.group('80 · Light & colour intensity', label='yellow', opened=True)
-    B.gen(g, 'Light · last blue light down the void',
-          S.light_beam(apex=(skx + 20, sky_y - 60), angle=-90, length=SOIL_TOP - sky_y + 80, spread=3.5, aperture=560,
-                       color=PAL['glass'], intensity=0.65, core=0.3, rays=0.25, dust=170, dust_color='#F4F7F2',
-                       seed=21), blend='screen', opacity=0.75)
+    # the last blue light: a real blue-hour blue, held back over the leaf mass (a mask, not baked) so the crown
+    # keeps its contrast; it lights the air, the trunk and the floor below
+    b_apex, b_len, b_ap, b_spread = (skx + 20, sky_y - 60), SOIL_TOP - sky_y + 80, 560, 3.5
+    beam, (bmx, bmy) = S.light_beam(apex=b_apex, angle=-90, length=b_len, spread=b_spread, aperture=b_ap,
+                                    color=BLUE_HOUR, intensity=0.55, core=0.3, rays=0.25, dust=170,
+                                    dust_color='#F4F7F2', seed=21)
+    hb_, wb_ = beam.shape[:2]
+    yb_ = np.arange(bmy, bmy + hb_, dtype=np.float32)[:, None]
+    leafmass = tree_m[bmy:bmy + hb_, bmx:bmx + wb_] * (1 - smoothstep(1950, 2300, yb_))
+    B.photo(g, 'Light · last blue light down the void', beam, bmx, bmy, mask_alpha=1 - 0.6 * leafmass,
+            mask_xy=(bmx, bmy), blend='screen', opacity=0.6)
+    del beam, leafmass
     for i, (bx, by) in enumerate(pend_bulbs):
         B.gen(g, f'Light · pendant {i + 1} glow (amber)', S.glow(at=(bx, by + 4), radius=330, color=PAL['amber'],
                                                                  intensity=0.8, hot_color='#FFE9C4', ratio=0.85),
@@ -1126,9 +1158,21 @@ def build():
             blend='screen', opacity=0.40)
     del cg, sky_vis
     # where the void overlaps the street and the bar, colour intensifies (soft-edged lenses)
-    B.fill(g, 'Intensity · void x street (colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.40)
-    B.fill(g, 'Intensity · void x street (light)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.45)
+    B.fill(g, 'Intensity · void x street (violet, colour)', '#6C4BC8', lens_fac, blend='color', opacity=0.40)
+    B.fill(g, 'Intensity · void x street (violet, soft)', '#7A5BC4', lens_fac, blend='soft light', opacity=0.45)
     B.fill(g, 'Intensity · void x bar (honey)', PAL['honey'], lens_bar, blend='overlay', opacity=0.60)
+    # the blue light reaches the trunk, the air and the floor below the crown (not the green-gold core)
+    yv = np.arange(bmy, bmy + hb_, dtype=np.float32)[:, None]
+    xv = np.arange(bmx, bmx + wb_, dtype=np.float32)[None, :]
+    hw_ = b_ap / 2 + (yv - b_apex[1]) * np.tan(np.radians(b_spread))
+    foot = smoothstep(1.0, 0.45, np.abs(xv - b_apex[0]) / hw_) * smoothstep(1700, 1950, yv) \
+        * (1 - smoothstep(SOIL_TOP - 20, SOIL_TOP + 40, yv))
+    tb = np.zeros((H, W), np.float32)
+    tb[bmy:bmy + hb_, bmx:bmx + wb_] = foot
+    tb *= 1 - core
+    B.fill(g, 'Light · blue hour on the trunk', BLUE_HOUR, tb, blend='soft light', opacity=0.45)
+    zones['blue column (trunk, 1900-2600)'] = (tb > 0.5) & (yy > 1900) & (yy < 2600)
+    del tb, foot, yv, xv, hw_
     zones['lens street'] = (circle * fac_rect > 0.5) & (lens_fac > 0.5)
     zones['lens bar'] = (circle * bar_plane > 0.5) & (lens_bar > 0.5)
     zones['void ring outside lenses'] = (circle > 0.5) & (fac_rect < 0.5) & (bar_plane < 0.5) & (sky_m < 0.5) \
@@ -1142,20 +1186,21 @@ def build():
 
     # ============================================================ 85 senses
     g = B.group('85 · Senses — sound & smell', label='red', opened=True)
-    # SOUND 01: voices rise and echo in the void — three calm rings centred on the skylight
-    RINGS = ((300, 3.2, 0.90), (510, 2.8, 0.75), (730, 2.4, 0.60))
+    # SOUND 01: voices rise and echo in the void — rings centred on the skylight in the pair's sound vocabulary:
+    # 'live' = solid 2.6-3.0 px, linen on the dark sky; the outermost ring softens ('absorbed', dashed 24/14)
+    RINGS = ((300, 3.0, 0.92, None), (510, 2.8, 0.85, None), (730, 2.2, 0.80, (24.0, 14.0)))
     ro_x, ro_y = int(skx) - 760, int(sky_y) - 760
     rings = np.zeros((1520, 1520, 4), np.float32)
-    for k, (r, wd, al) in enumerate(RINGS):
-        rg, (rx0, ry0) = S.sound_rings(at=(skx, sky_y), r_max=r, r_min=r, n=1, width=wd, color=PAL['honey'],
-                                       alpha=al, decay=1.0, wobble=0.0, seed=k)
+    for k, (r, wd, al, dsh) in enumerate(RINGS):
+        rg, (rx0, ry0) = S.sound_rings(at=(skx, sky_y), r_max=r, r_min=r, n=1, width=wd, color=LINEN,
+                                       alpha=al, decay=1.0, wobble=0.0, dash=dsh, seed=k)
         hh_, ww_ = rg.shape[:2]
         sub = rings[ry0 - ro_y:ry0 - ro_y + hh_, rx0 - ro_x:rx0 - ro_x + ww_]
         a_ = rg[..., 3:4]
         sub[..., :3] = rg[..., :3] * a_ + sub[..., :3] * (1 - a_)
         sub[..., 3:4] = a_ + sub[..., 3:4] * (1 - a_)
     B.photo(g, 'Sound · voices rise up the void', rings, ro_x, ro_y,
-            mask_alpha=disc(VOID_C[0], VOID_C[1], VOID_R - 8, feather=6), blend='multiply', opacity=0.85)
+            mask_alpha=disc(VOID_C[0], VOID_C[1], VOID_R - 8, feather=6), opacity=0.95)
     del rings
     # where the SOUND 01 leader lands: the visible point of the r=510 ring (open sky) nearest the tag
     vis = C.blur(sky_m * (1 - tree_m) * disc(VOID_C[0], VOID_C[1], VOID_R - 60), 16)
@@ -1169,14 +1214,16 @@ def build():
                 best = (d_, px_, py_)
     ring_pt = (best[1], best[2]) if best else (skx + 510 * 0.87, sky_y - 255)
     del vis
-    # SOUND 02: espresso hiss from the machine, fading arcs towards the void
-    B.gen(g, 'Sound · espresso hiss, fading arcs', S.sound_rings(at=hiss_at, r_max=300, r_min=60, n=4,
-                                                                 arc=(-30, 75), width=3.0, color=INK,
-                                                                 alpha=0.9, decay=0.78, thin=0.92, spacing=1.15,
-                                                                 end_fade=18, seed=7), blend='multiply')
+    # SOUND 02: espresso hiss from the machine ('live': solid ink 3.0-2.6 px on the light bar), fading arcs that
+    # stay behind the void (the bar is behind it): kept inside r_max and masked off the disc
+    hs, (hsx, hsy) = S.sound_rings(at=hiss_at, r_max=245, r_min=60, n=4, arc=(-30, 75), width=3.0, color=INK,
+                                   alpha=0.9, decay=0.78, thin=0.95, spacing=1.15, end_fade=18, seed=7)
+    nod = 1 - disc(VOID_C[0], VOID_C[1], VOID_R + 30, feather=8)[hsy:hsy + hs.shape[0], hsx:hsx + hs.shape[1]]
+    B.photo(g, 'Sound · espresso hiss, fading arcs', hs, hsx, hsy, mask_alpha=nod, mask_xy=(hsx, hsy))
+    del hs, nod
     # rain outside: short slanted dashes in the clear glazing, behind the steel frame and handle
     rd = rain_dashes(gw, gh, 520, 9)
-    B.photo(g, 'Sound · rain, slanted dashes', colour_rgba(rd, PAL['glass']), gx0, gy0,
+    B.photo(g, 'Rain · falling outside (slanted dashes)', colour_rgba(rd, PAL['glass']), gx0, gy0,
             mask_alpha=glazing * (1 - door_solid), blend='screen', opacity=0.85)
     del rd, door_solid
     # SMELL
@@ -1205,13 +1252,13 @@ def build():
     secs = C.resize(LW.thicken(sec, 0.95 / kb), kb)
     del sec
     bx0_, by0_ = TRUNK_X - 3168.1 * kb, FLOOR_Y - 4226.5 * kb
-    st_box = (bx0_ + 4040 * kb, by0_ + 1880 * kb, bx0_ + 6060 * kb, by0_ + 4250 * kb)
+    st_box = (bx0_ + 4040 * kb, by0_ + 1960 * kb, bx0_ + 6060 * kb, by0_ + 4250 * kb)   # no specks at the top cut
     keep = box_alpha(*st_box) * np.clip(box_alpha(FAC_X0 + 6, FAC_Y0 + 6, DOOR_X0 - 16, FLOOR_Y - 2)
                                          - disc(VOID_C[0], VOID_C[1], VOID_R + 24), 0, 1)
     keep = C.blur(keep, 4) * keep
     B.photo(g, 'Drawing · stair to the gallery (B-B)', secs, bx0_, by0_, mask_alpha=keep, blend='multiply',
             opacity=0.55, locked=True)
-    stair_mid = (bx0_ + 5300 * kb, by0_ + 2700 * kb)
+    stair_mid = (bx0_ + 5666 * kb, by0_ + 2311 * kb)          # on the upper flight's handrail
     del secs, keep
     # (b) elevation 01: the leaf logo beside the sign, the counter front and the stools (ghost)
     ev = C.load('assets/lines/elev01_bar.png')
@@ -1222,7 +1269,7 @@ def build():
     keep = box_alpha(*el(540, 395), *el(735, 560)) * nodisc
     B.photo(g, 'Drawing · elev. 01 leaf logo (ghost)', evs, ex0, ey0, mask_alpha=keep, blend='multiply',
             opacity=0.55, locked=True)
-    keep = np.clip(box_alpha(BAR_X0 - 4, CTR_Y + 20, 1060, FLOOR_Y + 4)
+    keep = np.clip(box_alpha(BAR_X0 - 4, CTR_Y + 20, CTR_X1 - 20, FLOOR_Y + 4)
                    + box_alpha(*el(1280, 1395), *el(1620, 1560)), 0, 1) * nodisc
     B.photo(g, 'Drawing · elev. 01 stools & machine', evs, ex0, ey0, mask_alpha=keep,
             blend='multiply', opacity=0.45, locked=True)
@@ -1250,8 +1297,8 @@ def build():
     B.px(g, 'Hairline · street & bar planes behind', colour_rgba(a, LINEN), x, y, opacity=0.7)
     del hl
     vx_, vy_ = VIEWER
-    out_end = (DOOR_X0 + 300, 2140)
-    up_dir = np.array([skx + 140 - vx_, sky_y + 120 - vy_], np.float64)
+    out_end = OUT_END
+    up_dir = np.array([skx + 60 - vx_, sky_y + 120 - vy_], np.float64)
     up_dir /= np.linalg.norm(up_dir)
     up_chip_bottom = sky_y - 64                                  # the chip sits inside the inner ring
     up_end = (vx_ + up_dir[0] * (up_chip_bottom + 12 - vy_) / up_dir[1], up_chip_bottom + 12)
@@ -1332,7 +1379,12 @@ def build():
     chip(B, g, 'LOOKING OUT  ·  TO THE STREET', DOOR_X0 + 54, 2450, 'looking out')
     cw_, ch_ = chip_size('LOOKING UP\nTO THE SKY')
     chip(B, g, 'LOOKING UP\nTO THE SKY', skx - cw_ / 2, up_chip_bottom - ch_, 'looking up')
-    B.readme(TITLE)
+    B.readme(TITLE, sources=(
+        '- Client: section A-A, section B-B (stair), elevation 01 (bar) and the ground-floor plan (RESTAURANT.pdf).\n'
+        '- Photographs generated for this project with FLUX (via ElevenLabs): void and tree, festoon valance,\n'
+        '  glass-brick wall, bar pendants - AI-generated, no third-party photos.\n'
+        '- Espresso cup: scikit-image sample image coffee (CC0).\n'
+        '- Street at dusk, refracted glass block, terrazzo, paper, sound and smell graphics: made for this file.'))
     B.zones = zones
     return B
 

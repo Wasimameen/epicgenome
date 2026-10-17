@@ -26,7 +26,7 @@ from lib import compose as C
 from lib import sensory as S
 from lib import typeset as T
 from lib.collage_common import (Builder, INK, PAL, W, H, MARGIN, LABEL, card_edge, local, colour_rgba,
-                                aa_line)
+                                aa_line, terrazzo_mosaic)
 import collage02_prep as PREP
 
 LINEN = PAL['linen']
@@ -45,8 +45,8 @@ SCREEN = (0, 0, 640, 2860)      # glass-brick screen, nearest plane, bleeds off 
 INSET_C = (4316, 2045)          # 'inside cabin 04' lens (rim on the 4793 right margin)
 INSET_R = 470
 CI_S = 0.315                    # cabin_interior.png -> canvas scale inside the lens
-CI_FOCUS = (2450, 1640)         # cabin_interior.png point at the lens centre
-DROP = 118                      # pendants hang ~0.18 m into the booths (elevation 02), not above them
+CI_FOCUS = (2450, 1820)         # cabin_interior.png point at the lens centre
+DROP = 155                      # pendants hang ~0.18 m into the booths (elevation 02), not above them
 
 
 def cr(x, y):
@@ -148,11 +148,10 @@ def build():
         return xn + (vp[0] - xn) * t
     xl_n, xr_n = -4600, W + 4600
     quad = [(on_ray(xl_n), far_y), (on_ray(xr_n), far_y), (xr_n, near_y), (xl_n, near_y)]
-    tz = C.load('assets/mat/terrazzo_cream.png', 'RGB')
-    tile = np.concatenate([np.concatenate([tz, tz[:, ::-1]], 1), np.concatenate([tz[::-1], tz[::-1, ::-1]], 1)], 0)
-    del tz
-    warped, wx0, wy0 = C.warp_quad(C.resize(tile, 0.62), quad)
-    del tile
+    plate = terrazzo_mosaic(C.P('build', 'c02', 'terrazzo_floor_plate_v1.png'), Wm=7000, Hm=1600,
+                            tile_scale=0.16, n=420, seed=31)          # ~2.5:1 near-edge foreshortening
+    warped, wx0, wy0 = C.warp_quad(plate[..., :3], quad)
+    del plate
     fy = np.arange(warped.shape[0], dtype=np.float32) + wy0
     fade = np.clip((2990 - fy) / 260.0, 0, 1) * np.clip((fy - far_y + 6) / 30.0, 0, 1)
     fa = warped[..., 3] * fade[:, None]
@@ -207,8 +206,8 @@ def build():
     steps = [[(LINEN, 'screen', 0.20)],
              [(PAL['amber'], 'soft light', 0.45)],
              [(PAL['terracotta'], 'soft light', 0.70), ('#FF4A12', 'saturation', 0.22)],
-             [(PAL['oxblood'], 'soft light', 0.45), (PAL['ember'], 'soft light', 0.45),
-              ('#FF3A10', 'saturation', 0.42)]]
+             [(PAL['oxblood'], 'soft light', 0.90), (PAL['oxblood'], 'hue', 0.70)]]
+    words = [['linen'], ['amber'], ['terracotta', 'vermilion'], ['oxblood', 'oxblood hue']]
     opening_m = []
     Hs, Ws = cut_cr.shape
     for i, (a, fills) in enumerate(zip(arches, steps)):
@@ -224,7 +223,7 @@ def build():
         full = C.blur(full, 6)
         opening_m.append(full)
         for j, (col, mode, op) in enumerate(fills):
-            B.fill(g, f'Intensity - cabin {i + 1}' + ('' if j == 0 else f' ({mode})'), col, full, blend=mode,
+            B.fill(g, f'Intensity - cabin {i + 1} {words[i][j]} ({mode})', col, full, blend=mode,
                    opacity=op, clip=True)
     del am
     yy_ = np.arange(H, dtype=np.float32)[:, None]
@@ -252,7 +251,7 @@ def build():
     cpx, cpy = 640, 2795 - 761 * cpl_s
     _, (cx_, cy_, cw_, ch_) = B.cutout(g, 'Diners - couple at a table', 'fig_couple_table.png', cpl_s,
                                        cpx, cpy, alpha_fn=lambda a: C.blur(a, 2.0), flat_color='#2E2622',
-                                       opacity=0.80)
+                                       opacity=1.0)
     # client's sheer drape as a linen veil: over the shells and the diners, not over the booths
     veil = C.load('assets/mat/client_drape_sheer.png')
     vw, vh = 2050, 1320
@@ -267,7 +266,13 @@ def build():
         am = C.arch_mask(*(cr(a['left_x'] + 10, 0)[0] - vx_, cr(a['right_x'] - 10, 0)[0] - vx_),
                          cr(0, a['spring_y'])[1] - vy_, cr(0, a['bottom_y'])[1] - vy_, h=vh, w=vw)
         openings = np.maximum(openings, am)
-    vm = vm * (1 - 0.85 * C.blur(openings, 18))
+    ca = C.resize(C.blur(C.load('assets/cut/fig_couple_table.png')[..., 3], 2.0), cpl_s)
+    ca_v = np.zeros((vh, vw), np.float32)
+    ox_, oy_ = int(round(cpx)) - vx_, int(round(cpy)) - vy_
+    hc, wc = min(ca.shape[0], vh - oy_), min(ca.shape[1], vw - ox_)
+    ca_v[oy_:oy_ + hc, ox_:ox_ + wc] = ca[:hc, :wc]
+    vm = vm * (1 - 0.85 * C.blur(openings, 18) * (1 - C.blur(ca_v, 6)))   # veil spares the booths, not the couple
+    del ca, ca_v
     B.photo(g, 'Sheer - client drape as a veil (client)', veil, vx_, vy_, mask_alpha=vm,
             mask_xy=(vx_, vy_), opacity=0.40)
     del veil
@@ -296,7 +301,7 @@ def build():
     hh_, ww_ = cut_s.shape
     cab_m[CR_Y:CR_Y + hh_, CR_X:CR_X + ww_] = cut_s[:H - CR_Y, :W - CR_X]
     del cut_s
-    B.fill(g, 'Intensity - ember, approach meets cabin 04', PAL['ember'], C.blur(cone * cab_m, 4),
+    B.fill(g, 'Intensity - oxblood, approach to cabin 04', PAL['oxblood'], C.blur(cone * cab_m, 4),
            blend='soft light', opacity=0.5)
     B.fill(g, 'Zoom - cone onto the paper', PAL['ember'], C.blur(cone * (1 - cab_m), 2), blend='multiply',
            opacity=0.10)
@@ -359,7 +364,7 @@ def build():
            blend='soft light', opacity=0.40)
 
     # ================================================================ 70 senses
-    g = B.group('70 - Senses - sound, smell, taste', label='red', opened=True)
+    g = B.group('70 - Senses - sound & smell', label='red', opened=True)
     a2 = arches[1]
     # SOUND 01: conversation travels from the couple's table into cabin 02, thinning as it enters
     src_s = (cx_ + 0.52 * cw_, cy_ + 0.30 * ch_)
@@ -368,19 +373,13 @@ def build():
     dist = math.hypot(tgt[0] - src_s[0], tgt[1] - src_s[1])
     arcs_kw = dict(at=src_s, r_max=dist + 40, r_min=150, n=7, ratio=1.0, angle=ang, arc=(-26, 26), alpha=1.0,
                    decay=0.82, spacing=1.0, end_fade=12, seed=5)
-    halo, (hx_, hy_) = S.sound_rings(width=15.0, thin=0.86, color=PAL['ember'], **arcs_kw)
-    halo[..., 3] = C.blur(halo[..., 3], 4.0)
-    B.px(g, 'Sound - conversation halo (ember)', halo, hx_, hy_, blend='multiply', opacity=0.7)
     B.gen(g, 'Sound - conversation drifting into cabin 02',
-          S.sound_rings(width=7.0, thin=0.84, color='#FFF6E8', **arcs_kw), opacity=1.0)
+          S.sound_rings(width=3.0, thin=0.92, color=LINEN, **arcs_kw), opacity=1.0)
     # SOUND 03: cutlery and laughter at the couple's table (just above their glasses)
     tbl = (cx_ + 0.50 * cw_, cy_ + 0.44 * ch_)
     r3kw = dict(at=tbl, r_max=330, r_min=90, n=4, ratio=0.28, alpha=1.0, decay=0.74, spacing=1.15,
                 wobble=0.015, breaks=3, break_len=(20.0, 50.0), seed=9)      # ripples across the table top
-    h3, (h3x, h3y) = S.sound_rings(width=7.0, color=PAL['ember'], **r3kw)
-    h3[..., 3] = C.blur(h3[..., 3], 3.0)
-    B.px(g, 'Sound - table chatter halo (ember)', h3, h3x, h3y, blend='multiply', opacity=0.6)
-    B.gen(g, 'Sound - cutlery, laughter at the table', S.sound_rings(width=2.4, color='#FFF6E8', **r3kw),
+    B.gen(g, 'Sound - cutlery, laughter at the table', S.sound_rings(width=2.6, color=LINEN, **r3kw),
           opacity=0.95)
     # SOUND 02: the linen ceiling swallows the echo (rings dissolving into the fabric)
     B.gen(g, 'Sound - echo dissolving into the linen',
@@ -408,17 +407,18 @@ def build():
 
     # ================================================================ 98 type
     gt = B.group('98 - Type - title & annotations', opened=True)
-    B.title_block(gt, 'RESTAURANT  ·  ATMOSPHERE STUDY  ·  02 / 02', ['Towards the cabins'],
+    B.title_block(gt, 'RESTAURANT  ·  ATMOSPHERE STUDY  ·  02 / 02', ['Towards the cabins,', 'from a distance'],
                   'GROUND FLOOR  ·  ACROSS THE DINING ROOM TO THE FOUR CABINS')
     # tags
     hb = B.tag(gt, 'SOUND · 01', 'conversation dims\nas it enters the cabins', 1720, 2600, hero=True)
-    B.leader(gt, 'Leader - sound 01 to the arcs', [(hb[0] + 120, hb[1]), (1880, 2300)], dot_at_end=True,
+    B.leader(hb.group, 'Leader - sound 01 to the arcs', [(hb[0] + 120, hb[1]), (1880, 2330)], dot_at_end=True,
              width=2.0)
     B.tag(gt, 'SOUND · 02', 'linen swallows the echo', 2700, 300)
     lb = B.tag(gt, 'LIGHT', 'a low pendant over every table', 2780, 1450)
     r3 = cr(*shades[2]['rim'])
-    B.leader(gt, 'Leader - light to pendant 3', [(lb[0], (lb[1] + lb[3]) / 2),
-                                                  (r3[0] + shades[2]['half_width'] * CR_S + 12, r3[1] - 14)],
+    r3 = (r3[0], r3[1] + DROP)                                       # the shade as hung (dropped)
+    hw3 = shades[2]['half_width'] * CR_S
+    B.leader(lb.group, 'Leader - light to pendant 3', [(lb[0] + 28, lb[3]), (r3[0] + 0.8 * hw3, r3[1] - 34)],
              dot_at_end=True, width=2.0)
     box = B.tag(gt, 'COLOUR', 'intensity deepens inward —\nlinen → amber → terracotta → oxblood', 3330, 300)
     bw_, bh_ = box[2] - box[0], 22
@@ -429,9 +429,9 @@ def build():
     f_ = (t_ - i0)[:, None]
     grad = np.ones((bh_, bw_, 4), np.float32)
     grad[..., :3] = (cols[i0] * (1 - f_) + cols[i0 + 1] * f_)[None, :, :]
-    B.px(gt, 'Colour - intensity scale, cabin 01 to 04', grad, box[0], box[3])
+    B.px(box.group, 'Colour - intensity scale, cabin 01 to 04', grad, box[0], box[3])
     sb = B.tag(gt, 'SOUND · 03', 'cutlery, low laughter,\na chair drawn back', 168, 1880)
-    B.leader(gt, 'Leader - sound 03 to the table', [(sb[2], (sb[1] + sb[3]) / 2), (tbl[0] - 10, tbl[1] + 6)],
+    B.leader(sb.group, 'Leader - sound 03 to the table', [(sb[2], (sb[1] + sb[3]) / 2), (tbl[0] - 10, tbl[1] + 6)],
              dot_at_end=True, width=2.0)
     B.card(gt, 'Inside cabin 04', [('SMELL', 'beeswax candle · warm sourdough · rosemary'),
                                    ('TASTE', 'red wine, olive oil, sea salt'),
@@ -442,26 +442,29 @@ def build():
            tracking=120, color=PAL['terracotta'], name='TXT - lens label cabin 04')
     # cabin numbers on the partition tops
     for i, s_ in enumerate(shades):
-        x_, y_ = cr(*s_['rim'])
-        B.text(gt, f'0{i + 1}', 'mono', LABEL, x_ - s_['half_width'] * CR_S - 22, y_ + 2, anchor='origin',
+        x_, _ = cr(*s_['rim'])
+        y_ = YCUT_C - 46                                            # one baseline above the partition tops
+        B.text(gt, f'0{i + 1}', 'mono', LABEL, x_ - s_['half_width'] * CR_S - 22, y_, anchor='origin',
                tracking=80, color=INK, name=f'TXT - cabin number 0{i + 1}', align='right')
     # partition height
-    j1 = cr(geo['shells'][1]['left_x'] + 4, 0)[0] - 44
+    j1 = cr(arches[1]['right_x'], 0)[0] + 60                        # free oak between cabins 02 and 03
     dim = np.zeros((H, W), np.float32)
     y_a, y_b = YCUT_C + 2, cr(0, 2453)[1]
     aa_line(dim, [(j1, y_a), (j1, y_b)], width=1.8)
     for yv in (y_a, y_b):
         aa_line(dim, [(j1 - 14, yv + 14), (j1 + 14, yv - 14)], width=1.8)
     B.fill(gt, 'Dim - partition height 2400', LINEN, dim, opacity=0.9)
-    B.text(gt, '2400 · OPEN ABOVE', 'mono', 24, j1 + 16, (y_a + y_b) / 2, tracking=100, color=LINEN, angle=90,
-           anchor='origin', live=False, name='TXT - dim 2400 open above')
+    B.text(gt, '2400 · OPEN ABOVE', 'mono', LABEL, j1 + 18, (y_a + y_b) / 2, tracking=100, color=LINEN, angle=90,
+           anchor='origin', align='center', name='TXT - dim 2400 open above')
     # pointer to sheet 01
-    pm, _ = B.text(gt, 'THE VOID (01)', 'mono', LABEL, W - MARGIN, 2640, anchor='origin', tracking=120,
-                   color=PAL['terracotta'], align='right', name='TXT - pointer to sheet 01')
-    B.gen(gt, 'Pointer - east to the void', S.arrow([(W - MARGIN + 24, 2631), (W - 8, 2631)], width=2.0,
-                                                   color=PAL['terracotta'], head='open', head_len=20))
+    B.text(gt, 'TO THE VOID (01)  →', 'mono', LABEL, W - MARGIN, 2600, anchor='origin', tracking=110,
+           color=PAL['terracotta'], align='right', name='TXT - pointer to the void (01)')
 
-    B.readme('Atmosphere collage 02 - Towards the cabins')
+    B.readme('Atmosphere collage 02 - Towards the cabins', sources=(
+        '- Client: elevation 02 and the ground-floor plan (RESTAURANT.pdf), and the drape reference photo (sheer veil).\n'
+        '- Photographs generated for this project with FLUX (via ElevenLabs): cabins row, cabin interior, festoon\n'
+        '  valance, draped ceiling, glass-brick wall, diner silhouettes - AI-generated, no third-party photos.\n'
+        '- Terrazzo, paper, sound and smell graphics: made for this file.'))
     return B
 
 
