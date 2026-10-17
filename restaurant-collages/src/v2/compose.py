@@ -123,6 +123,7 @@ PLACEHOLDER_SWATCH = {
     'olive_leaves':     ('greenery', dict(sat=0.55, gain=0.9)),
     'fluted_oak':       ('oak_fluted', dict(sat=0.8)),
 }
+TEST_RENDER = {1: 'v1_e.png', 2: 'v2_d.png'}   # preview stand-ins: low-res renders of the final cameras
 SWATCH_SIZE = (1600, 2000)                # (w, h) of a real swatch; placeholders are fitted to it
 
 
@@ -226,6 +227,12 @@ class Sources:
             else:
                 if self.final:
                     raise MissingInputs([rel(p)])
+                test = os.path.join(ROOT, 'build', 'v2', 'test', TEST_RENDER[self.sheet])
+                if os.path.exists(test):            # low-res test render of the same camera
+                    img = load_rgb(test)
+                    self._render = cv2.resize(img, (2700, 3600), interpolation=cv2.INTER_CUBIC)
+                    self.used['render'] = {'path': rel(test), 'placeholder': True}
+                    return self._render
                 src, (x0, y0, x1, y1) = PLACEHOLDER_RENDER[self.sheet]
                 img = load_rgb(src)[y0:y1, x0:x1]
                 s = min(1.0, 2700 / img.shape[1], 3600 / img.shape[0])
@@ -244,6 +251,11 @@ class Sources:
                     raise MissingInputs([rel(p)])
                 if name not in PLACEHOLDER_SWATCH:
                     raise KeyError(f'unknown swatch {name!r}; known: {", ".join(SWATCHES)}')
+                test = os.path.join(ROOT, 'build', 'v2', 'test', 'swatch', f'{name}.png')
+                if os.path.exists(test):            # low-res test render of the same swatch
+                    self._sw[name] = cv2.resize(load_rgb(test), SWATCH_SIZE, interpolation=cv2.INTER_CUBIC)
+                    self.used[name] = {'path': rel(test), 'placeholder': True}
+                    return self._sw[name]
                 mat, adj = PLACEHOLDER_SWATCH[name]
                 adj = dict(adj)
                 img = load_rgb(os.path.join('assets', 'mat', mat + '.png'), bg=adj.pop('bg', '#EEE8DD'))

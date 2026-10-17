@@ -2,6 +2,69 @@
 
 Two layered Photoshop atmosphere collages of the client's restaurant design (RESTAURANT.pdf, four A1 sheets).
 
+## Version 2 (current): material collages, no AI imagery
+
+After the client's feedback ("like this vibe but not AI … needs to have the materials on it like a collage of the space"), both sheets were rebuilt in the style of her reference: a perspective view of the space with torn and cut material fragments laid over and behind it, handwritten notes with arrows, and a serif title on cream paper.
+
+| | Sheet (A3 portrait) | Brief |
+|---|---|---|
+| **1** | *Looking from within*: chosen area to outside views | Standing in the double-height void under the olive tree, looking out past the festoon drapes, glass blocks and split-face stone piers to the sunlit street. |
+| **2** | *Looking towards*: chosen area from a distance | From the void, across the dining room under the layered swag ceiling, past the glass-block screen, to the four fluted-oak private cabins. |
+
+**How the images were made.** No AI-generated images and no stock photographs are used.
+- **The views** are 3D renders of the client's own design. The design was modelled from her plans, sections and elevations in Blender 5.2 (Cycles):
+  - the circular void with the stainless rail and rooflight, and a procedurally grown olive tree;
+  - the ceiling draping (catenary swags, festoon valances, a festoon ring);
+  - glass-block walls, curved fluted-oak cabins with velvet sofas, marble tables and dome pendants;
+  - split-face stone piers, a travertine floor and painted white brick.
+- **The material fragments** are close-up renders of the same materials. Every material is procedural (shader nodes, or stone height and colour maps synthesised in numpy), made for this project.
+- **Fonts:** Nothing You Could Do (handwriting) and Cormorant Garamond, both SIL OFL.
+
+Both sheets still answer the brief:
+- **2.5D depth:** fragments in front of and behind the view, each with its own shadow.
+- **The senses:** sound, smell, taste, texture and colour, in the handwritten notes.
+- **Colour intensity where spaces overlap:** the "50 Overlap intensity" group of fills, plus a warm glow on the chosen area.
+
+### Deliverables (`output/v2/`)
+
+| file | what |
+|---|---|
+| `restaurant-collage-01-looking-from-within.psd`, `restaurant-collage-02-looking-towards.psd` | **Layered masters.** A3 portrait, 3508 × 4961 px at 300 ppi, sRGB with embedded ICC. Not in git (over GitHub's 100 MB limit); delivered separately. |
+| `….jpg` | Flattened, quality 95, 4:4:4, ICC, 300 ppi |
+| `restaurant-collages-01-02-side-by-side_A3.jpg` | Both sheets side by side on one A3 landscape page, as in the client's reference |
+| `…_preview.jpg`, `…_layers.txt` | 2000 px preview; full layer tree |
+| `fonts-to-install.zip` | Nothing You Could Do and Cormorant Garamond, with licences |
+
+### Editing the v2 PSDs
+- **Groups, back to front:**
+  - `00 Paper`
+  - `10 Fragments behind`
+  - `20 Main view`
+  - `30 Echo patches`
+  - `40 Fragments in front`
+  - `50 Overlap intensity`
+  - `60 Notes`
+  - `90 Title and key line`
+  - a hidden `!! READ ME`
+- **Each fragment** is the full material image under a tear mask. Paint the mask to re-tear it. The shadow and the white paper-core rim are separate layers.
+- **Notes and titles** are live type. Show the hidden `EDIT - …` layer to retype, then hide the raster twin. Install the fonts first.
+
+### Rebuilding v2
+```bash
+cd src/v2/scene
+python3 textures.py                       # split-face stone maps -> build/v2/tex/
+python3 render.py --view 1 --res 2700 3600 --samples 56 --out ../../../build/v2/render/view1.png
+python3 render.py --view 2 --res 2700 3600 --samples 56 --out ../../../build/v2/render/view2.png
+python3 swatches.py                       # 13 material swatches -> build/v2/swatch/
+cd ../../..
+python3 src/v2/compose.py --sheet all --final && python3 src/v2/compose.py --combined
+```
+`pip install bpy==5.2.2` provides Blender as a Python module. Page layout data lives in `src/v2/layout.py`.
+
+---
+
+## Version 1 (superseded)
+
 | | Sheet | Brief |
 |---|---|---|
 | **01** | *From the void, looking out* | Looking from within the chosen area (the double-height void with the tree) out to the views: the sky through the skylight, and the blue-hour street beyond the glazed glass-block entrance. |
@@ -11,7 +74,7 @@ Both sheets show **sound, smell, taste, texture and colour** in image and words,
 - 01: the void ∩ facade lens, the void ∩ bar lens and the green-gold core.
 - 02: cabin 01 → 04 deepening linen → amber → terracotta → oxblood, and the oxblood zone where the approach meets cabin 04.
 
-## Deliverables (`output/`)
+### Deliverables (`output/`)
 
 | file | what |
 |---|---|
@@ -22,7 +85,7 @@ Both sheets show **sound, smell, taste, texture and colour** in image and words,
 | `restaurant-collage-0N-…_preview.jpg` | 2000 px web preview |
 | `restaurant-collage-0N-…_layers.txt` | The full layer tree (top of the Layers panel first) and the build stamp |
 
-## Editing the PSDs
+### Editing the PSDs
 
 - **Groups** are numbered from the back (`00 - Paper`) to the front (`98 - Type`).
   - Colour labels: grey = paper, violet = client drawings and key plan, blue = outside and far planes, orange = interior photo planes, green = the chosen area, yellow = light and colour intensity, red = senses.
@@ -40,7 +103,7 @@ Both sheets show **sound, smell, taste, texture and colour** in image and words,
 - **Fonts** (free, SIL Open Font License): install them from `fonts-to-install.zip` before editing type. The live type uses CormorantGaramond-Italic, IBMPlexMono-Regular, IBMPlexMono-Light and IBMPlexMono-Medium; the zip also carries the other weights.
 - **Locked layers.** The paper, the client drawings and the key plan are locked (position and pixels) to prevent accidental edits. Unlock them in the Layers panel.
 
-## Sources and licensing
+### Sources and licensing
 
 - **Client material:** RESTAURANT.pdf (plans, sections, elevations; linework extracted from the vector PDF, annotations removed) and the client's drape photograph (used as the sheer-linen veil and a material swatch).
 - **Photographs generated for this project** with FLUX (via ElevenLabs): cabins row, cabin interior, festoon valance, two draped-ceiling views, two void views, glass-block wall and diner silhouettes. No third-party photographs or stock imagery are used.
@@ -50,7 +113,7 @@ Both sheets show **sound, smell, taste, texture and colour** in image and words,
 - **Fonts:** Cormorant Garamond and IBM Plex Mono (SIL OFL 1.1). The licences are in `assets/fonts/`.
 - **Colour profile:** sRGB IEC61966-2.1 v2 profile from the ocrmypdf project ("no copyright, use freely").
 
-## Rebuilding
+### Rebuilding
 
 ```bash
 cd src

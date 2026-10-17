@@ -65,67 +65,67 @@ SHEET1 = {
     'title': {'text': '1.  LOOKING FROM WITHIN', 'x': 230, 'y': 200, 'size': 96, 'tracking': 140},
     'subtitle': {'text': 'chosen area to outside views', 'dx': 'auto', 'dy': 72, 'size': 40, 'tracking': 300},
 
+    # render -> page: page_x ~ 284 + rx * 1.097, page_y ~ 520 + ry * 1.097 (frame below)
+    # key content: olive trunk px 284-480 / py 2500-2890, canopy px 284-1580 / py 520-2890,
+    # festoon py 1650-2150, windows py 2350-3530 (glass-block panel px 1120-1520, sheer in the
+    # middle bay px 2060-2330, street tree px 2650-3190), table + lamp py 3530-4470 (lamp px ~1600)
     'view': {
         'outline': [
-            (470, 690, 3080, 4330, ''),            # the body of the image
-            (820, 560, 2420, 760, ''),             # raised step, top middle
-            (2990, 1240, 3210, 3880, 'R'),         # right step, torn
-            (330, 1460, 520, 2880, ''),            # left step
-            (1030, 4240, 2560, 4480, 'B'),         # bottom step, torn
-            (2560, 4240, 3080, 4400, 'B'),
+            (490, 640, 3160, 4300, ''),            # body
+            (920, 520, 2500, 700, ''),             # raised step, top
+            (360, 1250, 540, 3350, 'L'),           # left step, torn (keeps the olive trunk)
+            (3100, 1150, 3290, 3900, 'R'),         # right step, torn
+            (1040, 4240, 2660, 4470, 'B'),         # bottom step, torn
         ],
-        'focus': (0.5, 0.42), 'zoom': 1.0,
+        'frame': (360, 520, 3290, 4470),
+        'focus': (0.5, 0.5), 'zoom': 1.0,
         'seed': 11, 'rim': True, 'shadow': (12, 16, 30, 0.30),
     },
 
     'fragments': [
         # swatch             crop (u0, v0, u1, v1)       target (x, y, w, h)       rot   edge    z        seed
         # ---- behind the view
-        ('dark_timber',      (0.10, 0.12, 0.80, 0.42),  (1170, 400, 780, 400),     -0.7, 'cut',  'behind', 101),
-        ('linen_drape',      (0.18, 0.05, 0.72, 0.62),  (2540, 430, 690, 860),      1.1, 'LB',   'behind', 102),
-        ('dark_timber',      (0.30, 0.25, 0.52, 0.80),  (90, 1020, 300, 760),       0.6, 'cut',  'behind', 103),
-        ('velvet',           (0.20, 0.30, 0.60, 0.52),  (2080, 4290, 520, 320),    -1.6, 'cut',  'behind', 104),
-        ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (2700, 4200, 330, 470),     1.4, 'cut',  'behind', 105),
+        ('dark_timber',      (0.10, 0.12, 0.80, 0.42),  (1180, 380, 760, 300),     -0.7, 'cut',  'behind', 101),
+        ('linen_drape',      (0.10, 0.10, 0.80, 0.62),  (2560, 380, 720, 820),      1.1, 'LB',   'behind', 102),
+        ('velvet',           (0.20, 0.30, 0.60, 0.52),  (2080, 4330, 520, 320),    -1.6, 'cut',  'behind', 104),
+        ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (2600, 4260, 300, 440),     1.4, 'cut',  'behind', 105),
+        ('fluted_oak',       (0.20, 0.10, 0.60, 0.90),  (3250, 3050, 220, 820),    -0.6, 'cut',  'behind', 106),
         # ---- in front of the view
-        ('split_face_stone', (0.05, 0.05, 0.45, 0.70),  (560, 560, 600, 1060),      0.6, 'torn', 'front',  201),
-        ('travertine',       (0.45, 0.10, 0.80, 0.45),  (1080, 650, 420, 560),     -1.4, 'RB',   'front',  202),
-        ('travertine',       (0.08, 0.20, 0.38, 0.95),  (160, 1150, 470, 1460),    -0.5, 'torn', 'front',  203),
-        ('olive_leaves',     (0.30, 0.30, 0.70, 0.70),  (330, 2420, 520, 600),      1.8, 'torn', 'front',  204),
-        ('split_face_stone', (0.05, 0.55, 0.95, 0.95),  (60, 3640, 1100, 700),     -0.8, 'torn', 'front',  205),
-        ('glass_block',      (0.10, 0.20, 0.55, 0.70),  (1100, 3830, 620, 700),     0.9, 'cut',  'front',  206),
-        ('brass',            (0.20, 0.20, 0.60, 0.55),  (1740, 3990, 560, 490),    -0.5, 'cut',  'front',  207),
-        ('sheer_fabric',     (0.40, 0.05, 0.80, 0.80),  (2650, 640, 600, 1220),    -0.7, 'TB',   'front',  208),
-        ('glass_block',      (0.55, 0.10, 0.85, 0.80),  (2970, 1580, 400, 1120),    0.4, 'cut',  'front',  209),
-        ('travertine',       (0.55, 0.05, 0.85, 0.70),  (3080, 2720, 380, 1240),   -1.3, 'torn', 'front',  210),
-        ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2330, 4170, 430, 540),     1.1, 'torn', 'front',  211),
+        ('olive_leaves',     (0.15, 0.20, 0.85, 0.80),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
+        ('concrete',         (0.20, 0.10, 0.60, 0.45),  (880, 420, 360, 300),      -1.2, 'torn', 'front',  202),
+        ('split_face_stone', (0.05, 0.05, 0.50, 0.70),  (40, 1300, 450, 820),       0.6, 'torn', 'front',  203),
+        ('travertine',       (0.08, 0.20, 0.45, 0.95),  (50, 3330, 400, 700),      -0.5, 'torn', 'front',  204),
+        ('split_face_stone', (0.05, 0.55, 0.95, 0.95),  (60, 3990, 980, 600),      -0.8, 'torn', 'front',  205),
+        ('glass_block',      (0.05, 0.15, 0.60, 0.75),  (1090, 4090, 560, 600),     0.9, 'cut',  'front',  206),
+        ('brass',            (0.20, 0.20, 0.60, 0.55),  (1720, 4200, 520, 460),    -0.5, 'cut',  'front',  207),
+        ('sheer_fabric',     (0.30, 0.05, 0.75, 0.80),  (2980, 820, 470, 1080),    -0.7, 'TB',   'front',  208),
+        ('glass_block',      (0.50, 0.10, 0.85, 0.80),  (3150, 2200, 330, 860),     0.4, 'cut',  'front',  209),
+        ('travertine',       (0.55, 0.05, 0.85, 0.70),  (3130, 3260, 350, 880),    -1.3, 'torn', 'front',  210),
+        ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2340, 4230, 420, 500),     1.1, 'torn', 'front',  211),
     ],
 
-    'echoes': [
-        # src_box on the page          scale  (dx, dy)    rot   edge    seed
-        ((2470, 2380, 2990, 2960),     1.08,  (150, 40),  -1.2, 'torn', 301),
-        ((860, 3140, 1360, 3620),      1.12,  (-120, 150), 1.0, 'LTB',  302),
-    ],
+    'echoes': [],
 
     'notes': [
         # text                    (x, y) baseline   rot    arrow tip       bend   opts
-        ('texture\n+ shadow',     (110, 820),        2.5,  (330, 1240),    0.30, {'from': 'below'}),
-        ('filtered light',        (2000, 470),      -1.5,  (2160, 1060),  -0.25, {'from': 'below'}),
-        ('soft fabric',           (2950, 340),       2.0,  (2930, 760),    0.35, {'from': 'below'}),
-        ('glass\nblocks',         (3260, 1350),     -3.0,  (3180, 1640),   0.35, {'from': 'below'}),
-        ('olive tree',            (50, 3200),        2.0,  (560, 2960),   -0.35, {'from': 'right'}),
-        ('split face stone',      (330, 4570),       0.5,  (230, 4330),    0.40, {'from': 'left'}),
-        ('warm + intimate',       (1400, 4680),     -1.0,  (1880, 4430),  -0.30, {'from': 'above_right'}),
-        ('concrete',              (2830, 4800),      1.5,  (2690, 4660),   0.25, {'from': 'left'}),
+        ('olive\ntree',           (40, 1120),        2.0,  (820, 1500),   -0.30, {'from': 'right', 'size': 76}),
+        ('texture\n+ shadow',     (30, 2230),        2.5,  (1050, 2700),   0.25, {'from': 'right', 'size': 74}),
+        ('filtered light',        (2040, 470),      -1.5,  (1820, 1000),   0.25, {'from': 'below'}),
+        ('soft fabric',           (2980, 330),       2.0,  (3180, 860),    0.35, {'from': 'below'}),
+        ('glass\nblocks',         (3215, 1990),     -3.0,  (3290, 2310),  -0.35, {'from': 'below', 'size': 76}),
+        ('split face stone',      (330, 4720),       0.5,  (230, 4480),    0.40, {'from': 'left'}),
+        ('warm + intimate',       (1330, 4800),     -1.0,  (1900, 4560),  -0.30, {'from': 'above_right'}),
+        ('concrete',              (2830, 4820),      1.5,  (2700, 4660),   0.25, {'from': 'left'}),
         # sensory notes (softer, no arrow)
-        ('leaves rustle\nabove',  (60, 3330),        2.0,  None,           0.0,  {'style': 'sense'}),
-        ('fresh bread + olive oil', (1400, 4780),   -1.0,  None,           0.0,  {'style': 'sense'}),
-        ('street hum,\nmuffled',  (3110, 4200),     -2.0,  None,           0.0,  {'style': 'sense'}),
+        ('leaves\nrustle\nabove', (40, 2520),        2.0,  None,           0.0,  {'style': 'sense'}),
+        ('fresh bread + olive oil', (1350, 4890),   -1.0,  None,           0.0,  {'style': 'sense'}),
+        ('street hum,\nmuffled',  (3060, 4330),     -2.0,  None,           0.0,  {'style': 'sense'}),
     ],
 
     'intensity': {
         'overlap': {'color': '#C27A3E', 'blend': 'soft light', 'opacity': 0.42, 'feather': 60},
         'glows': [
-            ((1700, 2500), 1250, '#B8643A', 'soft light', 0.32),   # the chosen area
+            ((1300, 3000), 1300, '#B8643A', 'soft light', 0.30),   # the chosen area: tree + table
         ],
     },
 
@@ -133,7 +133,7 @@ SHEET1 = {
         ('restaurant  —  atmosphere collage 1 of 2', (230, 4868), 'left'),
         ('sound · smell · taste · texture · colour', (3278, 4868), 'right'),
     ],
-    'sources': 'Main view: build/v2/render/view1.png. Material swatches: build/v2/swatch/*.png.',
+    'sources': 'Main view: build/v2/render/view1.png (Blender render of the client design). Material swatches: build/v2/swatch/*.png.',
 }
 
 
@@ -144,59 +144,63 @@ SHEET2 = {
     'title': {'text': '2.  LOOKING TOWARDS', 'x': 230, 'y': 200, 'size': 96, 'tracking': 140},
     'subtitle': {'text': 'chosen area from a distance', 'dx': 'auto', 'dy': 72, 'size': 40, 'tracking': 300},
 
+    # render -> page: page_x ~ 344 + rx * 1.097, page_y ~ 520 + ry * 1.097 (frame below)
+    # key content: void rail py 520-1150; swag ceiling py 1110-2490; cabins px 1000-2190 /
+    # py 2560-3250; glass-block screen px 2150-2910 / py 2380-3730; olive trunk px 2880-3300;
+    # chairs px 344-1600 / py 3090-3680; our table px 720-2140 / py 3760-4470
     'view': {
         'outline': [
-            (520, 760, 3020, 4300, ''),
-            (900, 640, 2560, 800, ''),
-            (380, 1300, 560, 3400, 'L'),
-            (2960, 1500, 3160, 3900, ''),
-            (760, 4220, 2400, 4440, 'B'),
+            (500, 660, 3140, 4300, ''),            # body
+            (820, 520, 2420, 700, ''),             # raised step, top
+            (360, 1300, 540, 3500, 'L'),           # left step, torn
+            (3080, 1500, 3290, 3900, ''),          # right step
+            (880, 4240, 2500, 4470, 'B'),          # bottom step, torn
         ],
+        'frame': (360, 520, 3290, 4470),
         'focus': (0.5, 0.5), 'zoom': 1.0,
         'seed': 12, 'rim': True, 'shadow': (12, 16, 30, 0.30),
     },
 
     'fragments': [
         # ---- behind
-        ('dark_timber',      (0.20, 0.05, 0.60, 0.40),  (250, 470, 430, 560),       0.8, 'cut',  'behind', 401),
-        ('linen_drape',      (0.05, 0.05, 0.95, 0.45),  (1000, 470, 1500, 420),    -0.6, 'B',    'behind', 402),
-        ('dark_timber',      (0.55, 0.10, 0.85, 0.95),  (330, 1720, 330, 1560),     0.3, 'cut',  'behind', 403),
-        ('velvet',           (0.10, 0.20, 0.55, 0.50),  (1420, 4250, 560, 400),    -1.2, 'cut',  'behind', 404),
-        ('fluted_oak',       (0.20, 0.10, 0.50, 0.90),  (2760, 820, 360, 1300),     0.6, 'cut',  'behind', 405),
+        ('linen_drape',      (0.05, 0.05, 0.95, 0.45),  (980, 380, 1400, 380),     -0.6, 'B',    'behind', 401),
+        ('dark_timber',      (0.20, 0.05, 0.60, 0.40),  (2380, 600, 300, 520),      0.8, 'cut',  'behind', 402),
+        ('dark_timber',      (0.55, 0.10, 0.85, 0.95),  (70, 1700, 300, 1250),      0.3, 'cut',  'behind', 403),
+        ('velvet',           (0.10, 0.20, 0.55, 0.50),  (1440, 4300, 560, 380),    -1.2, 'cut',  'behind', 404),
         # ---- in front
-        ('sheer_fabric',     (0.10, 0.30, 0.45, 0.70),  (230, 960, 420, 720),      -0.8, 'torn', 'front',  501),
-        ('concrete',         (0.05, 0.05, 0.75, 0.55),  (2480, 290, 920, 760),      1.3, 'torn', 'front',  502),
-        ('white_brick',      (0.30, 0.05, 0.75, 0.95),  (3120, 1150, 360, 1800),   -0.5, 'L',    'front',  503),
-        ('travertine',       (0.15, 0.15, 0.55, 0.85),  (190, 2380, 460, 1150),    -1.0, 'torn', 'front',  504),
-        ('glass_block',      (0.20, 0.05, 0.55, 0.95),  (2600, 1700, 420, 1650),    0.3, 'cut',  'front',  505),
-        ('breccia_marble',   (0.10, 0.20, 0.70, 0.95),  (2860, 3330, 600, 1280),   -1.1, 'torn', 'front',  506),
-        ('split_face_stone', (0.05, 0.30, 0.80, 0.70),  (400, 3880, 900, 560),      0.7, 'torn', 'front',  507),
-        ('brass',            (0.10, 0.30, 0.55, 0.65),  (2340, 4230, 480, 420),     0.9, 'cut',  'front',  508),
-        ('dark_timber',      (0.05, 0.05, 0.30, 0.90),  (1990, 4170, 290, 470),    -1.8, 'cut',  'front',  509),
+        ('sheer_fabric',     (0.10, 0.20, 0.50, 0.80),  (40, 640, 430, 760),       -0.8, 'torn', 'front',  501),
+        ('concrete',         (0.05, 0.05, 0.75, 0.55),  (2500, 290, 900, 640),      1.3, 'torn', 'front',  502),
+        ('white_brick',      (0.30, 0.05, 0.75, 0.95),  (3140, 1140, 340, 1180),   -0.5, 'L',    'front',  503),
+        ('glass_block',      (0.20, 0.10, 0.60, 0.80),  (3170, 2720, 300, 620),     0.6, 'cut',  'front',  510),
+        ('travertine',       (0.15, 0.15, 0.55, 0.85),  (50, 2330, 420, 1000),     -1.0, 'torn', 'front',  504),
+        ('breccia_marble',   (0.10, 0.20, 0.70, 0.95),  (2900, 3560, 560, 1080),   -1.1, 'torn', 'front',  505),
+        ('split_face_stone', (0.05, 0.30, 0.80, 0.70),  (50, 3980, 700, 520),       0.7, 'torn', 'front',  506),
+        ('fluted_oak',       (0.10, 0.10, 0.60, 0.70),  (1090, 4150, 380, 430),    -0.9, 'cut',  'front',  507),
+        ('brass',            (0.10, 0.30, 0.55, 0.65),  (2350, 4230, 460, 420),     0.9, 'cut',  'front',  508),
+        ('dark_timber',      (0.05, 0.05, 0.30, 0.90),  (2000, 4170, 280, 470),    -1.8, 'cut',  'front',  509),
     ],
 
-    'echoes': [
-        ((1500, 900, 2300, 1350),      1.06,  (40, -150),  0.8, 'TLR',  601),
-        ((600, 2900, 1100, 3500),      1.10,  (-140, 60), -1.0, 'torn', 602),
-    ],
+    'echoes': [],
 
     'notes': [
-        ('layered ceiling elements', (1330, 455),   -1.0,  (1560, 1000),   0.25, {'from': 'below'}),
-        ('concrete',              (2280, 230),       1.5,  (2700, 520),   -0.35, {'from': 'right'}),
-        ('warm\nlighting',        (40, 1880),        2.5,  (760, 2400),   -0.35, {'from': 'below_right'}),
-        ('white\nbrick\nwall',    (3300, 3100),     -2.5,  (3330, 2930),   0.35, {'from': 'above', 'gap': 14}),
-        ('movement through space', (300, 4640),      1.0,  (720, 4380),    0.30, {'from': 'above'}),
-        ('tactile materials',     (1430, 4720),     -0.8,  (1700, 4560),  -0.25, {'from': 'above_right'}),
-        ('unique stone',          (2640, 4780),      1.2,  (3020, 4560),   0.30, {'from': 'right'}),
+        ('layered ceiling elements', (1230, 455),   -1.0,  (1500, 1550),   0.25, {'from': 'below'}),
+        ('concrete',              (2240, 230),       1.5,  (2620, 480),   -0.35, {'from': 'right'}),
+        ('warm\nlighting',        (40, 1560),        2.5,  (1180, 2760),  -0.30, {'from': 'right', 'size': 76}),
+        ('white\nbrick\nwall',    (3290, 2420),     -2.5,  (3330, 2300),   0.35, {'from': 'above', 'gap': 14,
+                                                                                    'size': 72}),
+        ('glass\nblocks',         (3265, 3440),     -2.0,  (3320, 3330),  -0.35, {'from': 'above', 'gap': 14, 'size': 70}),
+        ('movement through space', (200, 4690),      1.0,  (880, 3820),   -0.30, {'from': 'above'}),
+        ('tactile materials',     (1430, 4740),     -0.8,  (1720, 4560),  -0.25, {'from': 'above_right'}),
+        ('unique stone',          (2640, 4790),      1.2,  (3020, 4600),   0.30, {'from': 'right'}),
         # sensory
-        ('low murmur,\nsoft acoustics', (40, 3660),  1.5,  None,           0.0,  {'style': 'sense'}),
-        ('red wine + candle wax', (1430, 4815),     -0.8,  None,           0.0,  {'style': 'sense'}),
+        ('low murmur, soft acoustics', (200, 4810),  1.0,  None,           0.0,  {'style': 'sense'}),
+        ('red wine + candle wax', (1430, 4840),     -0.8,  None,           0.0,  {'style': 'sense'}),
     ],
 
     'intensity': {
         'overlap': {'color': '#C27A3E', 'blend': 'soft light', 'opacity': 0.42, 'feather': 60},
         'glows': [
-            ((1800, 2900), 1150, '#B8643A', 'soft light', 0.32),
+            ((1600, 2900), 1050, '#B8643A', 'soft light', 0.32),   # the chosen area: the cabins
         ],
     },
 
@@ -204,7 +208,7 @@ SHEET2 = {
         ('restaurant  —  atmosphere collage 2 of 2', (230, 4868), 'left'),
         ('sound · smell · taste · texture · colour', (3278, 4868), 'right'),
     ],
-    'sources': 'Main view: build/v2/render/view2.png. Material swatches: build/v2/swatch/*.png.',
+    'sources': 'Main view: build/v2/render/view2.png (Blender render of the client design). Material swatches: build/v2/swatch/*.png.',
 }
 
 SHEETS = {1: SHEET1, 2: SHEET2}
