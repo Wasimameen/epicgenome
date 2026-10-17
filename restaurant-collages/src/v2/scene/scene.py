@@ -101,8 +101,9 @@ def facade():
     nx = int((2.8 - 0.6) / 0.202)
     nz = int((GF - 0.42) / 0.202)
     G.glass_block_panel('gb_facade', (X, 0.6, 0.0), nx, nz, axis='y', coll=c)
-    G.area_light('gb_facade_sun', (X + 0.7, 1.7, 2.3), (2.4, 4.6), 700, color=(1.0, 0.7, 0.42),
-                 rot=(0, math.radians(90), 0), coll=c)            # emits towards -x, through the blocks
+    # warm glow behind the glass blocks only: local x -> vertical (4.3 m), local y -> along y (2.0 m)
+    G.area_light('gb_facade_sun', (X + 0.7, 1.7, 2.3), (4.2, 1.7), 650, color=(1.0, 0.7, 0.42),
+                 rot=(0, math.radians(90), 0), coll=c, camera=True)   # emits towards -x, through the blocks
     # sheer curtains, partly drawn
     G.curtain('sheer0', -7.0, -5.6, X - 0.25, 0.02, GF - 0.45, axis='y', seed=1, coll=c)
     G.curtain('sheer1', -2.7, -1.6, X - 0.25, 0.02, GF - 0.45, axis='y', seed=2, coll=c)
@@ -141,7 +142,7 @@ def street():
     y = -26.0
     k = 0
     FX = 31.0                                                   # facade line opposite
-    kinds = ['brick_red', 'plaster_out', 'stone_rough', 'brick_red', 'plaster_out', 'stone_rough']
+    kinds = ['brick_red', 'plaster_out', 'stone_out', 'brick_red', 'plaster_out', 'stone_out']
     while y < 26:
         w = float(rng.choice([6.0, 7.2, 8.4]))
         floors = int(rng.choice([2, 3, 3]))
@@ -149,7 +150,7 @@ def street():
         h = floors * fh + 0.9
         mat = kinds[k % len(kinds)]
         G.box(f'bldg{k}', (6, w - 0.06, h), (FX + 3.0, y + w / 2, h / 2), mat, coll=c)
-        trim = 'stone_rough' if mat != 'stone_rough' else 'plaster_out'
+        trim = 'stone_out' if mat != 'stone_out' else 'plaster_out'
         # upper windows with surrounds and sills
         nwin = max(2, int(w / 2.1))
         for fl in range(1, floors):
@@ -271,7 +272,7 @@ def cabins():
     G.glass_block_panel('gb_screen', (6.9, 1.4, 0.0), 11, 12, axis='y', coll=c)
     G.box('gb_screen_cap', (0.12, 2.24, 0.06), (6.9, 1.4 + 1.12, 2.46), 'brass', coll=c)
     G.area_light('gb_screen_glow', (6.35, 2.5, 1.2), (2.0, 2.2), 90, color=(1.0, 0.66, 0.38),
-                 rot=(0, math.radians(-90), 0), coll=c)
+                 rot=(0, math.radians(-90), 0), coll=c, camera=True)
 
 
 def dining():
@@ -324,7 +325,7 @@ def lights(view):
     sc = bpy.context.scene
     # sun: low golden sun from the east (behind the facade)
     sd = bpy.data.lights.new('sun', 'SUN')
-    sd.energy = 3.0
+    sd.energy = 2.5
     sd.angle = math.radians(0.8)
     sd.color = (1.0, 0.66, 0.38)
     so = bpy.data.objects.new('sun', sd)

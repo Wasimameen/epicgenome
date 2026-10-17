@@ -694,7 +694,9 @@ def candle(name, loc, coll=None, h=0.07):
 
 
 def area_light(name, loc, size, energy, color=(1.0, 0.75, 0.5), rot=(0, 0, 0), coll=None, shape='RECTANGLE',
-               spread=180.0):
+               spread=180.0, camera=False):
+    """size = (local x, local y). Hidden from camera rays unless camera=True (e.g. a glow meant to
+    be seen through glass blocks)."""
     ld = bpy.data.lights.new(name, 'AREA')
     ld.shape = shape
     ld.size = size[0]
@@ -705,6 +707,7 @@ def area_light(name, loc, size, energy, color=(1.0, 0.75, 0.5), rot=(0, 0, 0), c
     lo = bpy.data.objects.new(name, ld)
     lo.location = loc
     lo.rotation_euler = rot
+    lo.visible_camera = camera
     link(lo, coll)
     return lo
 

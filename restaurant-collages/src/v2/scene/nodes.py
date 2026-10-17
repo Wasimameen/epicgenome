@@ -607,16 +607,24 @@ def _leaf_street(name):
 
 
 def _bark(name):
+    """Olive bark: grey-brown, deeply fissured along the stem (ridged noise stretched along z),
+    paler weathered ridges, a little lichen."""
     m, g, out = new_material(name)
     co = g.coord('Object')
-    st = g.vmath('MULTIPLY', co, (3.0, 3.0, 0.6))
-    fiss = g.noise(st, scale=9.0, detail=8, rough=0.7, dist=0.6)
-    cell = g.voronoi(st, scale=14.0, feature='DISTANCE_TO_EDGE')
-    h = g.math('ADD', g.o(fiss, 'Fac'), g.math('MULTIPLY', g.maprange(g.o(cell, 'Distance'), 0, 0.08), 0.5))
-    c, _ = g.ramp(h, [(0.3, (0.05, 0.045, 0.035)), (0.6, (0.13, 0.115, 0.09)), (0.95, (0.24, 0.22, 0.18))])
-    lich = g.noise(co, scale=4.0, detail=4)
-    c = g.mix(g.maprange(g.o(lich, 'Fac'), 0.62, 0.7, 0.0, 0.35), c, (0.46, 0.47, 0.38))
-    g.l(g.principled(base=c, rough=0.9, normal=g.bump(h, 0.6, 0.012), spec=0.25), out.inputs['Surface'])
+    st = g.vmath('MULTIPLY', co, (7.0, 7.0, 1.6))
+    warp = g.noise(co, scale=3.0, detail=3)
+    st = g.vmath('ADD', st, g.vmath('MULTIPLY', g.o(warp, 'Color'), (0.6, 0.6, 0.6)))
+    ridges = g.n('TexNoise', {'noise_dimensions': '3D', 'noise_type': 'RIDGED_MULTIFRACTAL'},
+                 Scale=2.2, Detail=7.0, Roughness=0.6, Lacunarity=2.2, Offset=0.9, Gain=1.6)
+    g.l(st, ridges.inputs['Vector'])
+    r = g.maprange(g.o(ridges, 'Fac'), 0.2, 1.4, 0.0, 1.0)
+    fine = g.noise(g.vmath('MULTIPLY', co, (40, 40, 12)), scale=1.0, detail=4)
+    h = g.math('ADD', g.math('MULTIPLY', r, 0.85), g.math('MULTIPLY', g.o(fine, 'Fac'), 0.15))
+    c, _ = g.ramp(h, [(0.15, (0.045, 0.04, 0.032)), (0.45, (0.15, 0.135, 0.11)), (0.8, (0.30, 0.28, 0.24)),
+                      (1.0, (0.40, 0.38, 0.33))])
+    lich = g.noise(co, scale=5.0, detail=5)
+    c = g.mix(g.maprange(g.o(lich, 'Fac'), 0.6, 0.68, 0.0, 0.3), c, (0.42, 0.44, 0.36))
+    g.l(g.principled(base=c, rough=0.92, normal=g.bump(h, 0.85, 0.02), spec=0.25), out.inputs['Surface'])
     return m
 
 
@@ -707,7 +715,11 @@ def _brick_red(name):
 
 
 def _render_plaster_out(name):
-    return _plaster(name, (0.66, 0.52, 0.36))
+    return _plaster(name, (0.52, 0.39, 0.25))      # ochre render: stays below clipping in full sun
+
+
+def _stone_out(name):
+    return _plaster(name, (0.52, 0.46, 0.38))      # pale stone facades / trims opposite (sunlit)
 
 
 def _asphalt(name):
@@ -823,7 +835,7 @@ def _flame(name):
 
 BUILDERS = {
     'travertine': _travertine, 'split_face': _split_face, 'concrete': _concrete,
-    'plaster': _plaster, 'plaster_out': _render_plaster_out, 'oak': _oak, 'walnut': _walnut,
+    'plaster': _plaster, 'plaster_out': _render_plaster_out, 'stone_out': _stone_out, 'oak': _oak, 'walnut': _walnut,
     'white_brick': _white_brick, 'breccia': _breccia, 'marble_white': _marble_white,
     'velvet': _velvet, 'velvet_olive': _velvet_olive, 'leather': _leather, 'brass': _brass,
     'steel': _steel, 'black_metal': _black_metal, 'bronze_frame': _bronze_frame,
