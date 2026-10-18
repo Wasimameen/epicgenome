@@ -99,7 +99,7 @@ SHEET1 = {
         ('olive_leaves',     (0.22, 0.42, 0.59, 0.77),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
         ('concrete',         (0.20, 0.10, 0.60, 0.45),  (880, 420, 360, 300),      -1.2, 'torn', 'front',  202, {'tear': 1.0, 'tone': CONCRETE}),
         ('split_face_stone', (0.05, 0.05, 0.30, 0.40),  (40, 1300, 450, 820),       0.6, 'torn', 'front',  203),
-        ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (60, 3000, 480, 1050),     -0.5, 'torn', 'front',  204, {'tone': DARK}),
+        ('wood_floor',       (0.20, 0.10, 0.60, 0.90),  (60, 3000, 480, 1050),     -0.5, 'torn', 'front',  204),
         ('split_face_stone', (0.05, 0.55, 0.95, 0.95),  (60, 3990, 980, 600),      -0.8, 'torn', 'front',  205),
         ('glass_block',      (0.05, 0.15, 0.60, 0.75),  (980, 3900, 560, 700),      0.9, 'cut',  'front',  206),
         ('brass',            (0.50, 0.20, 0.90, 0.55),  (1480, 4200, 500, 420),    -0.5, 'cut',  'front',  207),
@@ -135,10 +135,10 @@ SHEET1 = {
     ],
 
     'intensity': {
-        'overlap': {'color': '#B07A50', 'blend': 'soft light', 'opacity': 0.25, 'feather': 60},
+        'overlap': {'color': '#A89A88', 'blend': 'soft light', 'opacity': 0.25, 'feather': 60},
         'glows': [
-            ((1750, 3700), 750, '#A9502F', 'color', 0.40),          # our table in the void
-            ((2300, 2900), 850, '#D98A3D', 'soft light', 0.30),     # where the void meets the street
+            ((1750, 3700), 750, '#8C7F70', 'soft light', 0.25),          # our table in the void
+            ((2300, 2900), 850, '#CFC3B2', 'soft light', 0.30),     # where the void meets the street
         ],
     },
 
@@ -174,7 +174,7 @@ SHEET2 = {
         # ---- behind
         ('linen_drape',      (0.05, 0.30, 0.95, 0.55),  (980, 380, 1400, 380),     -0.6, 'B',    'behind', 401),
         ('dark_timber',      (0.20, 0.05, 0.60, 0.40),  (2380, 600, 300, 520),      0.8, 'cut',  'behind', 402, {'tone': DARK}),
-        ('dark_timber',      (0.55, 0.10, 0.85, 0.95),  (70, 2150, 300, 700),       0.3, 'cut',  'behind', 403, {'tone': DARK}),
+        ('wood_floor',       (0.30, 0.10, 0.70, 0.90),  (70, 2150, 300, 700),       0.3, 'cut',  'behind', 403),
         # ---- in front
         ('linen_drape',      (0.45, 0.20, 0.95, 0.90),  (40, 640, 430, 760),       -0.8, 'torn', 'front',  501),
         ('concrete',         (0.05, 0.05, 0.75, 0.55),  (2780, 330, 600, 470),      1.3, 'torn', 'front',  502, {'tear': 1.0, 'tone': CONCRETE}),
@@ -208,10 +208,10 @@ SHEET2 = {
     ],
 
     'intensity': {
-        'overlap': {'color': '#B07A50', 'blend': 'soft light', 'opacity': 0.25, 'feather': 60},
+        'overlap': {'color': '#A89A88', 'blend': 'soft light', 'opacity': 0.25, 'feather': 60},
         'glows': [
-            ((1700, 2950), 650, '#A9502F', 'color', 0.35),          # dining room x the cabins
-            ((1700, 2900), 900, '#D98A3D', 'soft light', 0.25),
+            ((1700, 2950), 650, '#8C7F70', 'soft light', 0.25),          # dining room x the cabins
+            ((1700, 2900), 900, '#CFC3B2', 'soft light', 0.25),
         ],
     },
 

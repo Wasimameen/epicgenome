@@ -98,7 +98,7 @@ FINAL_BUILD = os.path.join(V2_BUILD, 'final')
 OUT_DIR = os.path.join(ROOT, 'output', 'v2')
 ICC_PATH = os.path.join(SRC, 'sRGB.icc')
 
-SWATCHES = ('split_face_stone', 'travertine', 'concrete', 'dark_timber', 'white_brick', 'breccia_marble',
+SWATCHES = ('split_face_stone', 'travertine', 'wood_floor', 'concrete', 'dark_timber', 'white_brick', 'breccia_marble',
             'glass_block', 'sheer_fabric', 'linen_drape', 'brass', 'velvet', 'olive_leaves', 'fluted_oak')
 SLUGS = {1: 'restaurant-collage-01-looking-from-within', 2: 'restaurant-collage-02-looking-towards'}
 TITLES = {1: 'Restaurant - Atmosphere collage 01 - Looking from within',
