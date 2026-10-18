@@ -1,0 +1,120 @@
+Restaurant - Atmosphere collage 02 - Looking towards
+3508 x 4961 px @ 300 ppi (A3 portrait), sRGB, 8-bit RGB
+114 layers/groups - top of the Layers panel first
+build stamp: sources+inputs 8198dc0d21795e63 - git cc875ff + 1 uncommitted source files
+inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/fluted_oak.png 67f80825ec4e, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/travertine.png f5e378372b75, build/v2/swatch/velvet.png 037359cc9894, build/v2/swatch/white_brick.png f0bc786e1e9b
+
+▾ !! READ ME - how this file is built   [hidden]
+  · READ ME - notes (hide group to view)
+▾ 90 - Title and key line
+  T EDIT - key line 2   [live type, hidden]
+  · TXT - key line 2
+  T EDIT - key line 1   [live type, hidden]
+  · TXT - key line 1
+  T EDIT - subtitle chosen area from a distance   [live type, hidden]
+  · TXT - subtitle chosen area from a distance
+  T EDIT - title 2. LOOKING TOWARDS   [live type, hidden]
+  · TXT - title 2. LOOKING TOWARDS
+▾ 60 - Notes (handwritten)
+  ▾ Sense - taste: red wine - smell: candle wax
+    T EDIT - taste: red wine - smell: candle wax   [live type, hidden]
+    · TXT - taste: red wine - smell: candle wax
+  ▾ Sense - colour: linen, amber, terracotta
+    T EDIT - colour: linen, amber, terracotta   [live type, hidden]
+    · TXT - colour: linen, amber, terracotta
+  ▾ Sense - sound: murmur sinks into the linen
+    T EDIT - sound: murmur sinks into the linen   [live type, hidden]
+    · TXT - sound: murmur sinks into the linen
+  ▾ Note - fluted oak curve wall
+    · Arrow - fluted oak curve wall
+    T EDIT - fluted oak curve wall   [live type, hidden]
+    · TXT - fluted oak curve wall
+  ▾ Note - tactile: velvet, oak, brass
+    · Arrow - tactile: velvet, oak, brass
+    T EDIT - tactile: velvet, oak, brass   [live type, hidden]
+    · TXT - tactile: velvet, oak, brass
+  ▾ Note - a path from the void to the cabins
+    · Arrow - a path from the void to the cabins
+    T EDIT - a path from the void to the cabins   [live type, hidden]
+    · TXT - a path from the void to the cabins
+  ▾ Note - glass brick screen
+    · Arrow - glass brick screen
+    T EDIT - glass brick screen   [live type, hidden]
+    · TXT - glass brick screen
+  ▾ Note - white brick wall
+    · Arrow - white brick wall
+    T EDIT - white brick wall   [live type, hidden]
+    · TXT - white brick wall
+  ▾ Note - private cabins
+    · Arrow - private cabins
+    T EDIT - private cabins   [live type, hidden]
+    · TXT - private cabins
+  ▾ Note - concrete
+    · Arrow - concrete
+    T EDIT - concrete   [live type, hidden]
+    · TXT - concrete
+  ▾ Note - layered ceiling: linen swags
+    · Arrow - layered ceiling: linen swags
+    T EDIT - layered ceiling: linen swags   [live type, hidden]
+    · TXT - layered ceiling: linen swags
+▾ 50 - Overlap intensity (colour where spaces overlap)
+  ■ Intensity - chosen area glow 2   [soft light, 25%, mask]
+  ■ Intensity - chosen area glow 1   [color, 35%, mask]
+  ■ Intensity - fragments over the view   [soft light, 25%, mask]
+▾ 45 - Print grain
+  · Print grain (soft light)   [soft light, 50%]
+▾ 40 - Fragments in front
+  ▾ Frag 12 - brass (cut)
+    · Image - Frag 12 - brass (cut)   [mask]
+    · Shadow - Frag 12 - brass (cut)   [multiply, 20%]
+  ▾ Frag 11 - dark timber (cut)
+    ■ Tone - Frag 11 - dark timber (cut)   [multiply, 55%, clipped]
+    · Image - Frag 11 - dark timber (cut)   [mask]
+    · Shadow - Frag 11 - dark timber (cut)   [multiply, 20%]
+  ▾ Frag 10 - velvet (cut)
+    ■ Tone - Frag 10 - velvet (cut)   [saturation, 32%, clipped]
+    · Image - Frag 10 - velvet (cut)   [mask]
+    · Shadow - Frag 10 - velvet (cut)   [multiply, 20%]
+  ▾ Frag 09 - split face stone (torn)
+    · Image - Frag 09 - split face stone (torn)   [mask]
+    · Shadow - Frag 09 - split face stone (torn)   [multiply, 20%]
+  ▾ Frag 08 - fluted oak (torn)
+    · Image - Frag 08 - fluted oak (torn)   [mask]
+    · Shadow - Frag 08 - fluted oak (torn)   [multiply, 20%]
+  ▾ Frag 07 - travertine (torn)
+    · Image - Frag 07 - travertine (torn)   [mask]
+    · Shadow - Frag 07 - travertine (torn)   [multiply, 20%]
+  ▾ Frag 06 - white brick (torn L)
+    · Image - Frag 06 - white brick (torn L)   [mask]
+    · Shadow - Frag 06 - white brick (torn L)   [multiply, 20%]
+  ▾ Frag 05 - concrete (torn)
+    · Image - Frag 05 - concrete (torn)   [mask]
+    · Shadow - Frag 05 - concrete (torn)   [multiply, 20%]
+  ▾ Frag 04 - linen drape (torn)
+    · Image - Frag 04 - linen drape (torn)   [mask]
+    · Shadow - Frag 04 - linen drape (torn)   [multiply, 20%]
+▾ 30 - Echo patches (cut from the view)
+  ▾ Echo 01 - view patch x1.06
+    · Image - Echo 01 - view patch x1.06   [mask]
+    · Shadow - Echo 01 - view patch x1.06   [multiply, 18%]
+▾ 20 - Main view
+  ▾ Main view
+    ■ Tone - main view   [saturation, 35%, clipped]
+    · Main view - render   [mask]
+    · Shadow - main view   [multiply, 20%]
+▾ 10 - Fragments behind
+  ▾ Frag 03 - dark timber (cut)
+    ■ Tone - Frag 03 - dark timber (cut)   [multiply, 55%, clipped]
+    · Image - Frag 03 - dark timber (cut)   [mask]
+    · Shadow - Frag 03 - dark timber (cut)   [multiply, 14%]
+  ▾ Frag 02 - dark timber (cut)
+    ■ Tone - Frag 02 - dark timber (cut)   [multiply, 55%, clipped]
+    · Image - Frag 02 - dark timber (cut)   [mask]
+    · Shadow - Frag 02 - dark timber (cut)   [multiply, 14%]
+  ▾ Frag 01 - linen drape (torn B)
+    · Image - Frag 01 - linen drape (torn B)   [mask]
+    · Shadow - Frag 01 - linen drape (torn B)   [multiply, 14%]
+▾ 00 - Paper
+  ■ Paper - vignette   [multiply, 7%, mask, locked]
+  · Paper - fibre and mottle   [multiply, locked]
+  ■ Paper - cream #F6F0E4 (double-click to recolour)   [locked]
