@@ -95,7 +95,7 @@ SHEET1 = {
         ('dark_timber',      (0.10, 0.12, 0.80, 0.42),  (1180, 380, 760, 300),     -0.7, 'cut',  'behind', 101, {'tone': DARK}),
         ('sheer_fabric',     (0.15, 0.10, 0.85, 0.60),  (2560, 380, 720, 820),      1.1, 'LB',   'behind', 102),
         # ---- in front of the view
-        ('olive_leaves',     (0.18, 0.24, 0.92, 0.60),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
+        ('olive_leaves',     (0.22, 0.30, 0.88, 0.58),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
         ('concrete',         (0.20, 0.10, 0.60, 0.45),  (880, 420, 360, 300),      -1.2, 'torn', 'front',  202, {'tear': 1.0, 'tone': CONCRETE}),
         ('split_face_stone', (0.05, 0.05, 0.30, 0.40),  (40, 1300, 450, 820),       0.6, 'torn', 'front',  203),
         ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (60, 3000, 480, 1050),     -0.5, 'torn', 'front',  204, {'tone': DARK}),
@@ -106,8 +106,8 @@ SHEET1 = {
         ('linen_drape',      (0.10, 0.05, 0.60, 0.95),  (2980, 820, 470, 1080),    -0.7, 'TB',   'front',  208),
         ('glass_block',      (0.50, 0.10, 0.85, 0.80),  (3150, 2200, 330, 860),     0.4, 'cut',  'front',  209),
         ('sheer_fabric',     (0.30, 0.10, 0.70, 0.90),  (3130, 3260, 350, 880),    -1.3, 'torn', 'front',  210),
-        ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2250, 4080, 460, 560),     2.0, 'torn', 'front',  211, {'tear': 1.0, 'tone': CONCRETE}),
-        ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (2620, 4000, 300, 620),     1.4, 'cut',  'front',  105, {'tone': DARK}),
+        ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2330, 4260, 440, 480),     2.0, 'torn', 'front',  211, {'tear': 1.0, 'tone': CONCRETE}),
+        ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (2700, 4170, 280, 520),     1.4, 'cut',  'front',  105, {'tone': DARK}),
     ],
 
     'echoes': [
@@ -124,7 +124,7 @@ SHEET1 = {
         ('glass\nbrick',          (3215, 1990),     -3.0,  (3290, 2310),  -0.35, {'from': 'below', 'size': 76}),
         ('split face stone',      (330, 4720),       0.5,  (230, 4480),    0.40, {'from': 'left'}),
         ('warm + intimate',       (1330, 4790),     -1.0,  (1700, 4560),  -0.30, {'from': 'above_right'}),
-        ('concrete',              (2830, 4820),      1.5,  (2620, 4560),   0.25, {'from': 'left'}),
+        ('concrete',              (2830, 4830),      1.5,  (2640, 4680),   0.25, {'from': 'left'}),
         # the senses (softer, no arrow)
         ('sound:\nvoices\nrise up\nthe void', (40, 2460), 2.0, None,     0.0,  {'style': 'sense', 'size': 54}),
         ('colour:\nhoney,\nlinen,\nolive', (40, 2760), 1.5, None,          0.0,  {'style': 'sense', 'size': 54}),
