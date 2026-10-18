@@ -112,6 +112,7 @@ SHEET1 = {
 
     'echoes': [
         # src_box on the page          scale  (dx, dy)    rot   edge    seed
+        ((1130, 2400, 2640, 3330),     1.0,   (0, 0),      0.0, 'torn', 301, {**LIFT, 'rim': True, 'shadow': (6, 9, 14, 0.26)}),   # the view out: glass brick, glazing, street - a registered torn print
     ],
 
     'notes': [
