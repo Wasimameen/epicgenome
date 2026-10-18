@@ -18,7 +18,7 @@ import nodes  # noqa: E402
 import scene as S  # noqa: E402
 
 FPS = 12                       # rendered rate; interpolated to 24 fps afterwards
-RES = (960, 540)
+RES = (1920, 1080)
 SAMPLES = 12
 OUT = os.path.join(nodes.ROOT, 'build', 'v2', 'video', 'frames')
 
