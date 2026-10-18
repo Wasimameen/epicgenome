@@ -212,8 +212,8 @@ def drapes():
     """Ceiling draping (sections A-A, B-B; elevations 02, 04)."""
     c = coll('drapes')
     # east zone, between void and facade: swag rows parallel to the facade (along y)
-    for i, xb in enumerate((12.75, 13.65, 14.55, 15.45)):
-        sw = G.swag(f'swagE{i}', Y0 + 0.2, Y1 - 0.2, xb, xb + 0.9, GF - 0.02, sag=0.58, seed=10 + i, coll=c,
+    for i, xb in enumerate((12.9, 13.75, 14.6, 15.45)):         # first batten 15 cm behind the festoon
+        sw = G.swag(f'swagE{i}', Y0 + 0.2, Y1 - 0.2, xb, xb + 0.85, GF - 0.02, sag=0.58, seed=10 + i, coll=c,
                      fold_amp=0.05)
         # swag() spans along its first axis; rotate it so the span runs along y
         _rotate_xy_swap(sw)

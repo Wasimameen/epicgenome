@@ -68,6 +68,7 @@ EDGE = {'rim': False, 'tear': 0.5, 'shadow': (5, 7, 14, 0.20)}
 LIFT = {'rim': False, 'tear': 0.4, 'shadow': (4, 6, 10, 0.18)}
 CONCRETE = {'color': '#857A6C', 'blend': 'color', 'opacity': 0.75}   # one warm grey over the swatch's mottle
 WHITEN = {'color': '#FFFFFF', 'blend': 'screen', 'opacity': 0.35}     # lime-washed brick reads white
+SHEER = {'color': '#C8A47E', 'blend': 'multiply', 'opacity': 0.30}    # honey, as the backlit sheers read in the render
 
 SHEET1 = {
     'title': {'text': '1.  LOOKING FROM WITHIN', 'x': 230, 'y': 200, 'size': 96, 'tracking': 140},
@@ -93,9 +94,9 @@ SHEET1 = {
         # swatch             crop (u0, v0, u1, v1)       target (x, y, w, h)       rot   edge    z        seed
         # ---- behind the view
         ('dark_timber',      (0.10, 0.12, 0.80, 0.42),  (1180, 380, 760, 300),     -0.7, 'cut',  'behind', 101, {'tone': DARK}),
-        ('sheer_fabric',     (0.15, 0.10, 0.85, 0.60),  (2560, 380, 720, 820),      1.1, 'LB',   'behind', 102),
+        ('sheer_fabric',     (0.15, 0.10, 0.85, 0.60),  (2560, 380, 720, 820),      1.1, 'LB',   'behind', 102, {'tone': {**SHEER, 'opacity': 0.25}}),
         # ---- in front of the view
-        ('olive_leaves',     (0.22, 0.30, 0.88, 0.58),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
+        ('olive_leaves',     (0.22, 0.42, 0.59, 0.77),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
         ('concrete',         (0.20, 0.10, 0.60, 0.45),  (880, 420, 360, 300),      -1.2, 'torn', 'front',  202, {'tear': 1.0, 'tone': CONCRETE}),
         ('split_face_stone', (0.05, 0.05, 0.30, 0.40),  (40, 1300, 450, 820),       0.6, 'torn', 'front',  203),
         ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (60, 3000, 480, 1050),     -0.5, 'torn', 'front',  204, {'tone': DARK}),
@@ -105,7 +106,7 @@ SHEET1 = {
         ('velvet',           (0.20, 0.30, 0.60, 0.52),  (1940, 4320, 380, 300),    -1.6, 'cut',  'front',  104, {'tone': CALM}),
         ('linen_drape',      (0.10, 0.05, 0.60, 0.95),  (2980, 820, 470, 1080),    -0.7, 'TB',   'front',  208),
         ('glass_block',      (0.50, 0.10, 0.85, 0.80),  (3150, 2200, 330, 860),     0.4, 'cut',  'front',  209),
-        ('sheer_fabric',     (0.30, 0.10, 0.70, 0.90),  (3130, 3260, 350, 880),    -1.3, 'torn', 'front',  210),
+        ('sheer_fabric',     (0.02, 0.10, 0.38, 0.90),  (3130, 3260, 350, 880),    -1.3, 'torn', 'front',  210, {'tone': SHEER}),
         ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2330, 4260, 440, 480),     2.0, 'torn', 'front',  211, {'tear': 1.0, 'tone': CONCRETE}),
         ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (2700, 4170, 280, 520),     1.4, 'cut',  'front',  105, {'tone': DARK}),
     ],
@@ -118,17 +119,18 @@ SHEET1 = {
     'notes': [
         # text                    (x, y) baseline   rot    arrow tip       bend   opts
         ('olive\ntree',           (40, 1120),        2.0,  (640, 1250),   -0.25, {'from': 'right', 'size': 76}),
-        ('texture\n+ shadow',     (30, 2230),        2.5,  (250, 2090),    0.35, {'from': 'above', 'size': 74}),
-        ('filtered light,\nleaf shadows', (1990, 400), -1.5, (1800, 1000), 0.25, {'from': 'below', 'size': 70}),
+        ('texture\n+ shadow',     (40, 2230),        2.5,  (250, 2090),    0.35, {'from': 'above', 'size': 64}),
+        ('filtered light,\nleaf shadows', (1990, 400), -1.5, (1892, 674), 0.20, {'from': 'below_left', 'size': 70}),
         ('ceiling draping,\nsoft linen', (2880, 320),  2.0,  (3150, 860),    0.35, {'from': 'below', 'size': 72}),
-        ('glass\nbrick',          (3215, 1990),     -3.0,  (3290, 2310),  -0.35, {'from': 'below', 'size': 76}),
+        ('glass\nbrick',          (3350, 1990),     -3.0,  (3290, 2310),  -0.35, {'from': 'below', 'size': 66}),
+        ('view out to the street', (581, 3537),     -0.5,  (1781, 3147),  -0.20, {'from': 'above_right', 'size': 66}),
         ('split face stone',      (330, 4720),       0.5,  (230, 4480),    0.40, {'from': 'left'}),
-        ('warm + intimate',       (1330, 4790),     -1.0,  (1700, 4560),  -0.30, {'from': 'above_right'}),
+        ('warm + intimate',       (1330, 4740),     -1.0,  (1700, 4510),  -0.30, {'from': 'above_right'}),
         ('concrete',              (2830, 4830),      1.5,  (2640, 4680),   0.25, {'from': 'left'}),
         # the senses (softer, no arrow)
         ('sound:\nvoices\nrise up\nthe void', (40, 2460), 2.0, None,     0.0,  {'style': 'sense', 'size': 54}),
         ('colour:\nhoney,\nlinen,\nolive', (40, 2760), 1.5, None,          0.0,  {'style': 'sense', 'size': 54}),
-        ('smell + taste: warm bread, olive oil', (1060, 4920), -1.0, None,  0.0,  {'style': 'sense'}),
+        ('smell + taste: warm bread, olive oil', (1060, 4850), -1.0, None,  0.0,  {'style': 'sense', 'size': 54}),
         ('sound:\nstreet hum,\nmuffled', (3120, 4420), -2.0, None,       0.0,  {'style': 'sense', 'size': 56}),
     ],
 
