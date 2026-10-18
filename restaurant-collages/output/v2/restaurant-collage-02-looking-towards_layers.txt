@@ -1,8 +1,8 @@
 Restaurant - Atmosphere collage 02 - Looking towards
 3508 x 4961 px @ 300 ppi (A3 portrait), sRGB, 8-bit RGB
-114 layers/groups - top of the Layers panel first
-build stamp: sources+inputs 8198dc0d21795e63 - git cc875ff + 1 uncommitted source files
-inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/fluted_oak.png 67f80825ec4e, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/travertine.png f5e378372b75, build/v2/swatch/velvet.png 037359cc9894, build/v2/swatch/white_brick.png f0bc786e1e9b
+117 layers/groups - top of the Layers panel first
+build stamp: sources+inputs 2852323960f7b654 - git dc76436 + 1 uncommitted source files
+inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/fluted_oak.png 67f80825ec4e, build/v2/swatch/glass_block.png bee815e623c0, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png 037359cc9894, build/v2/swatch/white_brick.png f0bc786e1e9b
 
 ▾ !! READ ME - how this file is built   [hidden]
   · READ ME - notes (hide group to view)
@@ -16,9 +16,9 @@ inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3
   T EDIT - title 2. LOOKING TOWARDS   [live type, hidden]
   · TXT - title 2. LOOKING TOWARDS
 ▾ 60 - Notes (handwritten)
-  ▾ Sense - taste: red wine - smell: candle wax
-    T EDIT - taste: red wine - smell: candle wax   [live type, hidden]
-    · TXT - taste: red wine - smell: candle wax
+  ▾ Sense - taste: red wine smell: candle wax
+    T EDIT - taste: red wine smell: candle wax   [live type, hidden]
+    · TXT - taste: red wine smell: candle wax
   ▾ Sense - colour: linen, amber, terracotta
     T EDIT - colour: linen, amber, terracotta   [live type, hidden]
     · TXT - colour: linen, amber, terracotta
@@ -81,22 +81,25 @@ inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3
   ▾ Frag 08 - fluted oak (torn)
     · Image - Frag 08 - fluted oak (torn)   [mask]
     · Shadow - Frag 08 - fluted oak (torn)   [multiply, 20%]
-  ▾ Frag 07 - travertine (torn)
-    · Image - Frag 07 - travertine (torn)   [mask]
-    · Shadow - Frag 07 - travertine (torn)   [multiply, 20%]
+  ▾ Frag 07 - glass block (cut)
+    · Image - Frag 07 - glass block (cut)   [mask]
+    · Shadow - Frag 07 - glass block (cut)   [multiply, 20%]
   ▾ Frag 06 - white brick (torn L)
+    ■ Tone - Frag 06 - white brick (torn L)   [screen, 35%, clipped]
     · Image - Frag 06 - white brick (torn L)   [mask]
     · Shadow - Frag 06 - white brick (torn L)   [multiply, 20%]
   ▾ Frag 05 - concrete (torn)
+    ■ Tone - Frag 05 - concrete (torn)   [color, 75%, clipped]
     · Image - Frag 05 - concrete (torn)   [mask]
     · Shadow - Frag 05 - concrete (torn)   [multiply, 20%]
   ▾ Frag 04 - linen drape (torn)
     · Image - Frag 04 - linen drape (torn)   [mask]
     · Shadow - Frag 04 - linen drape (torn)   [multiply, 20%]
 ▾ 30 - Echo patches (cut from the view)
-  ▾ Echo 01 - view patch x1.06
-    · Image - Echo 01 - view patch x1.06   [mask]
-    · Shadow - Echo 01 - view patch x1.06   [multiply, 18%]
+  ▾ Echo 01 - view patch x1.00
+    · Rim - Echo 01 - view patch x1.00
+    · Image - Echo 01 - view patch x1.00   [mask]
+    · Shadow - Echo 01 - view patch x1.00   [multiply, 26%]
 ▾ 20 - Main view
   ▾ Main view
     ■ Tone - main view   [saturation, 35%, clipped]

@@ -66,6 +66,8 @@ CALM = {'color': '#8C8C8C', 'blend': 'saturation', 'opacity': 0.32}    # tame CG
 VIEW_TONE = {'color': '#8C8C8C', 'blend': 'saturation', 'opacity': 0.35}
 EDGE = {'rim': False, 'tear': 0.5, 'shadow': (5, 7, 14, 0.20)}
 LIFT = {'rim': False, 'tear': 0.4, 'shadow': (4, 6, 10, 0.18)}
+CONCRETE = {'color': '#857A6C', 'blend': 'color', 'opacity': 0.75}   # one warm grey over the swatch's mottle
+WHITEN = {'color': '#FFFFFF', 'blend': 'screen', 'opacity': 0.35}     # lime-washed brick reads white
 
 SHEET1 = {
     'title': {'text': '1.  LOOKING FROM WITHIN', 'x': 230, 'y': 200, 'size': 96, 'tracking': 140},
@@ -94,17 +96,17 @@ SHEET1 = {
         ('sheer_fabric',     (0.15, 0.10, 0.85, 0.60),  (2560, 380, 720, 820),      1.1, 'LB',   'behind', 102),
         # ---- in front of the view
         ('olive_leaves',     (0.18, 0.24, 0.92, 0.60),  (60, 470, 470, 560),        1.5, 'torn', 'front',  201),
-        ('concrete',         (0.20, 0.10, 0.60, 0.45),  (880, 420, 360, 300),      -1.2, 'torn', 'front',  202, {'tear': 1.0}),
+        ('concrete',         (0.20, 0.10, 0.60, 0.45),  (880, 420, 360, 300),      -1.2, 'torn', 'front',  202, {'tear': 1.0, 'tone': CONCRETE}),
         ('split_face_stone', (0.05, 0.05, 0.30, 0.40),  (40, 1300, 450, 820),       0.6, 'torn', 'front',  203),
         ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (60, 3000, 480, 1050),     -0.5, 'torn', 'front',  204, {'tone': DARK}),
         ('split_face_stone', (0.05, 0.55, 0.95, 0.95),  (60, 3990, 980, 600),      -0.8, 'torn', 'front',  205),
         ('glass_block',      (0.05, 0.15, 0.60, 0.75),  (980, 3900, 560, 700),      0.9, 'cut',  'front',  206),
-        ('brass',            (0.20, 0.20, 0.60, 0.55),  (1480, 4200, 500, 420),    -0.5, 'cut',  'front',  207),
+        ('brass',            (0.50, 0.20, 0.90, 0.55),  (1480, 4200, 500, 420),    -0.5, 'cut',  'front',  207),
         ('velvet',           (0.20, 0.30, 0.60, 0.52),  (1940, 4320, 380, 300),    -1.6, 'cut',  'front',  104, {'tone': CALM}),
         ('linen_drape',      (0.10, 0.05, 0.60, 0.95),  (2980, 820, 470, 1080),    -0.7, 'TB',   'front',  208),
         ('glass_block',      (0.50, 0.10, 0.85, 0.80),  (3150, 2200, 330, 860),     0.4, 'cut',  'front',  209),
-        ('travertine',       (0.55, 0.05, 0.85, 0.70),  (3130, 3260, 350, 880),    -1.3, 'torn', 'front',  210),
-        ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2250, 4080, 460, 560),     2.0, 'torn', 'front',  211, {'tear': 1.0}),
+        ('sheer_fabric',     (0.30, 0.10, 0.70, 0.90),  (3130, 3260, 350, 880),    -1.3, 'torn', 'front',  210),
+        ('concrete',         (0.20, 0.10, 0.55, 0.55),  (2250, 4080, 460, 560),     2.0, 'torn', 'front',  211, {'tear': 1.0, 'tone': CONCRETE}),
         ('dark_timber',      (0.55, 0.30, 0.80, 0.70),  (2620, 4000, 300, 620),     1.4, 'cut',  'front',  105, {'tone': DARK}),
     ],
 
@@ -172,34 +174,34 @@ SHEET2 = {
         ('dark_timber',      (0.55, 0.10, 0.85, 0.95),  (70, 2150, 300, 700),       0.3, 'cut',  'behind', 403, {'tone': DARK}),
         # ---- in front
         ('linen_drape',      (0.45, 0.20, 0.95, 0.90),  (40, 640, 430, 760),       -0.8, 'torn', 'front',  501),
-        ('concrete',         (0.05, 0.05, 0.75, 0.55),  (2780, 330, 600, 470),      1.3, 'torn', 'front',  502, {'tear': 1.0}),
-        ('white_brick',      (0.30, 0.05, 0.75, 0.95),  (3000, 1140, 340, 1060),   -1.5, 'L',    'front',  503),
-        ('travertine',       (0.15, 0.15, 0.55, 0.85),  (60, 2900, 430, 1100),     -1.0, 'torn', 'front',  504),
+        ('concrete',         (0.05, 0.05, 0.75, 0.55),  (2780, 330, 600, 470),      1.3, 'torn', 'front',  502, {'tear': 1.0, 'tone': CONCRETE}),
+        ('white_brick',      (0.30, 0.05, 0.75, 0.95),  (3000, 1140, 340, 1060),   -1.5, 'L',    'front',  503, {'tone': WHITEN}),
+        ('glass_block',      (0.00, 0.05, 0.50, 0.95),  (60, 2900, 470, 1100),     -1.0, 'cut',  'front',  504),
         ('fluted_oak',       (0.10, 0.05, 0.60, 0.95),  (2900, 3560, 560, 1080),   -1.1, 'torn', 'front',  505),
         ('split_face_stone', (0.05, 0.30, 0.80, 0.70),  (50, 3980, 700, 520),       0.7, 'torn', 'front',  506),
         ('velvet',           (0.10, 0.20, 0.55, 0.50),  (980, 4150, 540, 420),     -1.2, 'cut',  'front',  404, {'tone': CALM}),
         ('dark_timber',      (0.05, 0.05, 0.30, 0.90),  (1900, 4080, 300, 560),    -1.8, 'cut',  'front',  509, {'tone': DARK}),
-        ('brass',            (0.10, 0.30, 0.55, 0.65),  (2150, 4320, 420, 320),     0.9, 'cut',  'front',  508),
+        ('brass',            (0.50, 0.30, 0.90, 0.60),  (2150, 4320, 420, 320),     0.9, 'cut',  'front',  508),
     ],
 
     'echoes': [
-        ((1000, 2560, 2150, 3250),     1.06,  (-25, -35), -0.8, 'cut',  601, LIFT),      # the cabins lift forward
+        ((1000, 2560, 2150, 3250),     1.0,   (0, 0),      0.0, 'torn', 601, {**LIFT, 'rim': True, 'shadow': (6, 9, 14, 0.26)}),   # the cabins, a registered torn print lifted off the view
     ],
 
     'notes': [
         ('layered ceiling: linen swags', (1120, 455), -1.0, (1500, 1550), 0.25, {'from': 'below'}),
         ('concrete',              (2420, 330),       1.5,  (2830, 470),   -0.30, {'from': 'right'}),
-        ('private cabins',        (1640, 3460),     -1.0,  (1900, 3020),   0.20, {'from': 'above', 'size': 72}),
-        ('white\nbrick\nwall',    (3290, 2300),     -2.5,  (3300, 2180),   0.35, {'from': 'above', 'gap': 14, 'size': 72}),
-        ('glass\nbrick\nscreen',  (3300, 2860),     -2.0,  (2860, 3000),   0.30, {'from': 'left', 'size': 70}),
+        ('private cabins',        (1580, 3460),     -1.0,  (1900, 3020),   0.20, {'from': 'above', 'size': 72}),
+        ('white\nbrick\nwall',    (3325, 2300),     -2.5,  (3300, 2180),   0.35, {'from': 'above', 'gap': 14, 'size': 66}),
+        ('glass\nbrick\nscreen',  (3335, 2860),     -2.0,  (2860, 3000),   0.30, {'from': 'left', 'size': 64}),
         ('a path from the\nvoid to the cabins', (200, 4690), 1.0, (1000, 3700), -0.30,
          {'from': 'above_right', 'c1': (820, 4450), 'c2': (900, 3950)}),
-        ('tactile: velvet,\noak, brass', (1600, 4700), -0.8, (1450, 4480), -0.25, {'from': 'above'}),
+        ('tactile: velvet,\noak, brass', (1300, 4700), -0.8, (1450, 4480), -0.25, {'from': 'above_left'}),
         ('fluted oak\ncurve wall', (2560, 4760),     1.2,  (2980, 4580),   0.30, {'from': 'right'}),
         # the senses
         ('sound:\nmurmur\nsinks into\nthe linen', (30, 1520), 2.0, None,  0.0,  {'style': 'sense', 'size': 52}),
         ('colour:\nlinen,\namber,\nterracotta', (30, 1830), 1.5, None,   0.0,  {'style': 'sense', 'size': 52}),
-        ('taste: red wine  ·  smell: candle wax', (1340, 4930), -0.8, None, 0.0, {'style': 'sense'}),
+        ('taste:\nred wine\nsmell:\ncandle\nwax', (3310, 3150), -1.5, None, 0.0, {'style': 'sense', 'size': 52}),
     ],
 
     'intensity': {
