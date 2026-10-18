@@ -585,7 +585,7 @@ def pendant_dome(name, loc, r=0.24, z_ceiling=5.0, mat='brass', coll=None, light
         ld.spot_size = math.radians(150)
         ld.spot_blend = 0.6
         ld.shadow_soft_size = 0.04
-        ld.color = (1.0, 0.72, 0.45)
+        ld.color = (1.0, 0.86, 0.72)
         lo = bpy.data.objects.new(name + '_L', ld)
         lo.location = (x, y, z + 0.005)
         link(lo, coll)
@@ -593,7 +593,7 @@ def pendant_dome(name, loc, r=0.24, z_ceiling=5.0, mat='brass', coll=None, light
         ld2 = bpy.data.lights.new(name + '_up', 'POINT')
         ld2.energy = power * 0.25
         ld2.shadow_soft_size = 0.05
-        ld2.color = (1.0, 0.75, 0.5)
+        ld2.color = (1.0, 0.86, 0.72)
         lo2 = bpy.data.objects.new(name + '_up', ld2)
         lo2.location = (x, y, z + 0.06)
         link(lo2, coll)
@@ -668,7 +668,7 @@ def mushroom_lamp(name, loc, coll=None, power=6.0):
     ld = bpy.data.lights.new(name + '_L', 'POINT')
     ld.energy = power
     ld.shadow_soft_size = 0.03
-    ld.color = (1.0, 0.68, 0.40)
+    ld.color = (1.0, 0.86, 0.72)
     lo = bpy.data.objects.new(name + '_L', ld)
     lo.location = (x, y, z + 0.19)
     link(lo, coll)
@@ -688,14 +688,14 @@ def candle(name, loc, coll=None, h=0.07):
     ld = bpy.data.lights.new(name + '_L', 'POINT')
     ld.energy = 0.8
     ld.shadow_soft_size = 0.01
-    ld.color = (1.0, 0.55, 0.25)
+    ld.color = (1.0, 0.86, 0.72)
     lo = bpy.data.objects.new(name + '_L', ld)
     lo.location = (x, y, z + h + 0.025)
     link(lo, coll)
     return [holder, c, fl, lo]
 
 
-def area_light(name, loc, size, energy, color=(1.0, 0.75, 0.5), rot=(0, 0, 0), coll=None, shape='RECTANGLE',
+def area_light(name, loc, size, energy, color=(1.0, 0.86, 0.72), rot=(0, 0, 0), coll=None, shape='RECTANGLE',
                spread=180.0, camera=False):
     """size = (local x, local y). Hidden from camera rays unless camera=True (e.g. a glow meant to
     be seen through glass blocks)."""
@@ -714,7 +714,7 @@ def area_light(name, loc, size, energy, color=(1.0, 0.75, 0.5), rot=(0, 0, 0), c
     return lo
 
 
-def point_light(name, loc, energy, color=(1.0, 0.72, 0.45), radius=0.05, coll=None):
+def point_light(name, loc, energy, color=(1.0, 0.86, 0.72), radius=0.05, coll=None):
     ld = bpy.data.lights.new(name, 'POINT')
     ld.energy = energy
     ld.color = color
@@ -744,3 +744,61 @@ def disc_with_hole(name, outer_rect, hole_c, hole_r, z, th, mat, coll=None, seg=
 
 def apply_matrix(ob, M):
     ob.matrix_world = Matrix(M) @ ob.matrix_world
+
+
+def rect_table(name, loc, rot=0.0, w=1.3, d=0.75, h=0.75, top='marble_grey', frame='black_metal', coll=None):
+    """Rectangular dining table (client's reference): pale stone top, slim dark metal frame."""
+    parts = [box(name + '_top', (w, d, 0.035), (0, 0, h - 0.0175), top, bev=0.004, coll=coll)]
+    for i, (sx, sy) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):
+        parts.append(box(f'{name}_leg{i}', (0.04, 0.04, h - 0.035), (sx * (w / 2 - 0.08), sy * (d / 2 - 0.08), (h - 0.035) / 2),
+                         frame, coll=coll))
+    parts.append(box(name + '_rail', (w - 0.2, d - 0.2, 0.04), (0, 0, h - 0.06), frame, coll=coll))
+    parent = bpy.data.objects.new(name, None)
+    link(parent, coll)
+    for p_ in parts:
+        p_.parent = parent
+    parent.location = (loc[0], loc[1], 0)
+    parent.rotation_euler = (0, 0, rot)
+    return parent
+
+
+def booth_bench(name, loc, rot=0.0, length=1.6, mat='leather', coll=None):
+    """Straight upholstered booth: seat + channel-tufted back on a dark timber plinth."""
+    parts = [box(name + '_plinth', (length, 0.55, 0.12), (0, 0, 0.06), 'walnut', coll=coll),
+             box(name + '_seat', (length, 0.55, 0.30), (0, 0, 0.27), mat, bev=0.04, coll=coll)]
+    nb = max(3, int(length / 0.18))
+    for i in range(nb):
+        x = -length / 2 + (i + 0.5) * length / nb
+        parts.append(box(f'{name}_ch{i}', (length / nb - 0.012, 0.16, 0.62), (x, 0.24, 0.72), mat, bev=0.05, coll=coll))
+    parent = bpy.data.objects.new(name, None)
+    link(parent, coll)
+    for p_ in parts:
+        p_.parent = parent
+    parent.location = (loc[0], loc[1], 0)
+    parent.rotation_euler = (0, 0, rot)
+    return parent
+
+
+def stone_pendant(name, loc, rot=0.0, z_ceiling=5.0, coll=None, power=60.0):
+    """Rough rectangular stone pendant (client's table reference), glowing from below."""
+    x, y, z = loc
+    sh = box(name + '_stone', (0.95, 0.32, 0.22), (x, y, z), 'stone_rough', coll=coll)
+    sh.rotation_euler = (0, 0, rot)
+    G_disp = sh.modifiers.new('subd', 'SUBSURF')
+    G_disp.levels = G_disp.render_levels = 2
+    G_disp.subdivision_type = 'SIMPLE'
+    tex = bpy.data.textures.new(name + '_tex', 'CLOUDS')
+    tex.noise_scale = 0.06
+    dm = sh.modifiers.new('rough', 'DISPLACE')
+    dm.texture = tex
+    dm.strength = 0.025
+    glow = box(name + '_diffuser', (0.85, 0.24, 0.004), (x, y, z - 0.112), 'lampshade', coll=coll)
+    glow.rotation_euler = (0, 0, rot)
+    out = [sh, glow]
+    for k, dx in enumerate((-0.35, 0.35)):
+        ox, oy = dx * math.cos(rot), dx * math.sin(rot)
+        out.append(cyl(f'{name}_cord{k}', 0.003, z_ceiling - z - 0.11, (x + ox, y + oy, (z_ceiling + z + 0.11) / 2), 'rope',
+                       seg=6, coll=coll))
+    lo = area_light(name + '_L', (x, y, z - 0.13), (0.8, 0.2), power, color=(1.0, 0.86, 0.72), rot=(0, 0, rot), coll=coll)
+    out.append(lo)
+    return out

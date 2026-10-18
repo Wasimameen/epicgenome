@@ -104,6 +104,13 @@ def travertine():
     ortho_cam(0.45)
 
 
+def wood_floor():
+    base(samples=96)
+    wall('wood_floor', 3, 3)
+    sun(150, 25, 3.0)
+    ortho_cam(0.8)
+
+
 def concrete():
     base(samples=128)
     wall('concrete', 3, 3)
@@ -217,7 +224,7 @@ def fluted_oak():
 
 
 SWATCHES = {
-    'split_face_stone': split_face_stone, 'travertine': travertine, 'concrete': concrete,
+    'split_face_stone': split_face_stone, 'travertine': travertine, 'concrete': concrete, 'wood_floor': wood_floor,
     'dark_timber': dark_timber, 'white_brick': white_brick, 'breccia_marble': breccia_marble,
     'glass_block': glass_block, 'sheer_fabric': sheer_fabric, 'linen_drape': linen_drape,
     'brass': brass, 'velvet': velvet, 'olive_leaves': olive_leaves, 'fluted_oak': fluted_oak,

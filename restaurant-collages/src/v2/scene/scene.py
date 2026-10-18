@@ -48,7 +48,7 @@ def coll(name):
 # ----------------------------------------------------------------------------------------------
 def shell():
     c = coll('shell')
-    G.box('floor', (X1 - X0 + 2, Y1 - Y0 + 2, 0.2), ((X0 + X1) / 2, 0, -0.1), 'travertine', coll=c)
+    G.box('floor', (X1 - X0 + 2, Y1 - Y0 + 2, 0.2), ((X0 + X1) / 2, 0, -0.1), 'wood_floor', coll=c)
     # ground-floor ceiling slab with the void
     G.disc_with_hole('slab1', (X0, Y0, X1, Y1), VOID_C, VOID_R, GF, SLAB, 'plaster', coll=c)
     # slab edge band around the void (concrete) - a thin ring
@@ -66,7 +66,7 @@ def shell():
     G.box_uv('wall_N_brick', (X1 - X0, 0.3, GF), ((X0 + X1) / 2, Y1 + 0.15, GF / 2), 'white_brick', coll=c)
     G.box('wall_N_ff', (X1 - X0, 0.3, FF - GF), ((X0 + X1) / 2, Y1 + 0.15, (GF + FF) / 2), 'plaster', coll=c)
     G.box('wall_S', (X1 - X0, 0.3, FF), ((X0 + X1) / 2, Y0 - 0.15, FF / 2), 'plaster', coll=c)
-    G.box('wall_W', (0.3, Y1 - Y0, FF), (X0 - 0.15, 0, FF / 2), 'plaster', coll=c)
+    G.box('wall_W', (0.3, Y1 - Y0, FF), (X0 - 0.15, 0, FF / 2), 'white_brick', coll=c)
     # stainless rail around the void at first floor
     rail = []
     for z in (GF + SLAB + 1.05, GF + SLAB + 0.55):
@@ -266,30 +266,35 @@ def cabins():
         G.wine_glass(f'cab_glass{i}a', (cx - 0.15, cy - 0.05, 0.75), fill=0.03, coll=c)
         G.plate(f'cab_plate{i}', (cx - 0.05, cy - 0.45, 0.75), coll=c)
         # warm cove inside the top of the shell
-        G.area_light(f'cab_cove{i}', (cx, cy + 0.2, 2.3), (1.6, 1.6), 80, color=(1.0, 0.68, 0.4),
+        G.area_light(f'cab_cove{i}', (cx, cy + 0.2, 2.3), (1.6, 1.6), 80, color=(1.0, 0.86, 0.72),
                      rot=(math.pi, 0, 0), coll=c, shape='DISK')
     # glass-block screen beside the first cabin
     G.glass_block_panel('gb_screen', (6.9, 1.4, 0.0), 11, 12, axis='y', coll=c)
     G.box('gb_screen_cap', (0.12, 2.24, 0.06), (6.9, 1.4 + 1.12, 2.46), 'brass', coll=c)
     # warm wash behind the screen, onto cabin 0 and the floor (seen refracted through the blocks)
-    G.area_light('gb_screen_glow', (6.35, 2.5, 1.2), (2.0, 2.2), 120, color=(1.0, 0.74, 0.50),
+    G.area_light('gb_screen_glow', (6.35, 2.5, 1.2), (2.0, 2.2), 120, color=(1.0, 0.86, 0.72),
                  rot=(0, math.radians(90), 0), coll=c)
 
 
 def dining():
+    """Rectangular stone-topped tables with dark leather booths and chairs, rough stone pendants
+    above (the client's table reference)."""
     c = coll('dining')
-    tables = [(4.6, -1.6), (1.6, -0.6), (-1.6, -1.8), (-4.6, -0.4), (2.8, -4.6), (-0.8, -4.9), (6.0, -5.2),
-              (3.4, 1.4), (-0.6, 1.6), (-3.8, 2.0), (-7.0, -1.4), (-6.2, -4.6)]
-    rng = np.random.default_rng(12)
-    for i, (x, y) in enumerate(tables):
-        G.round_table(f'table{i}', (x, y), r=0.42, coll=c)
-        for k in range(3):
-            a = rng.uniform(0, 2 * math.pi) if k == 0 else a + 2 * math.pi / 3 + rng.uniform(-0.3, 0.3)
-            G.tub_chair(f'chair{i}_{k}', (x + 0.72 * math.cos(a), y + 0.72 * math.sin(a)), rot=a + math.pi, coll=c,
-                        mat='velvet_olive' if (i + k) % 3 == 0 else 'velvet')
-        G.candle(f'tcandle{i}', (x, y, 0.75), coll=c)
+    tables = [(4.4, -1.4, 0.0), (1.4, -0.4, 0.0), (-1.6, -1.6, 0.0), (-4.6, -0.2, 0.0), (2.8, -4.6, 0.0),
+              (-0.8, -4.8, 0.0), (5.8, -5.0, 0.0), (3.4, 1.6, 0.0), (-0.6, 1.8, 0.0), (-3.8, 2.0, 0.0),
+              (-7.0, -1.4, 0.0), (-6.2, -4.6, 0.0)]
+    for i, (x, y, r) in enumerate(tables):
+        G.rect_table(f'table{i}', (x, y), rot=r, coll=c)
+        # booth on the north side, two chairs on the south side
+        G.booth_bench(f'booth{i}', (x, y + 0.72), rot=0.0, length=1.5, coll=c)
+        for k, dx in enumerate((-0.35, 0.35)):
+            G.tub_chair(f'chair{i}_{k}', (x + dx, y - 0.72), rot=math.pi / 2, coll=c,
+                        mat='velvet_olive' if (i + k) % 3 == 0 else 'leather')
+        G.stone_pendant(f'pend{i}', (x, y, 2.35), rot=r, z_ceiling=GF, coll=c)
+        G.candle(f'tcandle{i}', (x - 0.2, y, 0.75), coll=c)
         G.wine_glass(f'tglass{i}', (x + 0.15, y + 0.1, 0.75), fill=0.025, coll=c)
-        G.plate(f'tplate{i}', (x - 0.12, y - 0.12, 0.75), coll=c)
+        G.plate(f'tplate{i}', (x + 0.3, y - 0.12, 0.75), coll=c)
+        G.plate(f'tplate{i}b', (x - 0.4, y + 0.14, 0.75), coll=c)
 
 
 def foreground_v1():
@@ -297,7 +302,7 @@ def foreground_v1():
     rust velvet banquette behind it."""
     c = coll('fg1')
     tx, ty = 9.15, -2.45
-    G.round_table('fg_table', (tx, ty), r=0.55, coll=c, top='marble_white')
+    G.rect_table('fg_table', (tx, ty), rot=math.pi / 2, w=1.3, d=0.8, coll=c)
     G.mushroom_lamp('fg_lamp', (tx - 0.22, ty + 0.18, 0.75), coll=c)
     G.wine_glass('fg_glass_a', (tx + 0.05, ty - 0.18, 0.75), fill=0.035, coll=c)
     G.wine_glass('fg_glass_b', (tx + 0.25, ty + 0.12, 0.75), fill=0.02, coll=c)
@@ -318,16 +323,15 @@ def foreground_v1():
         ob.rotation_euler = Euler((0.1 * rng.standard_normal(), 0.1 * rng.standard_normal(), rng.uniform(0, 3.1)))
     G.plate('fg_oil_dish', (tx + 0.22, ty - 0.08, 0.769), r=0.06, coll=c)
     G.cyl('fg_oil', 0.04, 0.004, (tx + 0.22, ty - 0.08, 0.7795), 'olive_oil', seg=48, coll=c)
-    # banquette arc on the far side of the table (east), facing the camera
-    G.seat_ring('fg_banq_seat', (tx, ty), 0.85, 1.45, math.radians(-75), math.radians(75), 0.0, 0.46, coll=c)
-    G.channel_back('fg_banq_back', (tx, ty), 1.32, math.radians(-73), math.radians(73), 0.42, 0.42, lean=0.1, coll=c)
-    G.tub_chair('fg_chair', (tx - 0.75, ty - 0.35), rot=math.radians(25), coll=c)     # faces the table
+    # straight leather booth on the far side (east), facing the camera
+    G.booth_bench('fg_booth', (tx + 0.75, ty), rot=-math.pi / 2, length=1.7, coll=c)
+    G.tub_chair('fg_chair', (tx - 0.75, ty - 0.35), rot=math.radians(0), coll=c, mat='leather')
 
 
 def foreground_v2():
     c = coll('fg2')
     tx, ty = 9.0, -1.25
-    G.round_table('fg2_table', (tx, ty), r=0.5, coll=c, top='marble_white')
+    G.rect_table('fg2_table', (tx, ty), rot=0.3, coll=c)
     G.wine_glass('fg2_glass_a', (tx - 0.12, ty + 0.1, 0.75), fill=0.03, coll=c)
     G.wine_glass('fg2_glass_b', (tx + 0.18, ty - 0.12, 0.75), fill=0.0, coll=c)
     G.plate('fg2_plate', (tx + 0.02, ty - 0.18, 0.75), coll=c)
@@ -342,7 +346,7 @@ def lights(view):
     sd = bpy.data.lights.new('sun', 'SUN')
     sd.energy = 2.5
     sd.angle = math.radians(0.8)
-    sd.color = (1.0, 0.66, 0.38)
+    sd.color = (1.0, 0.86, 0.72)
     so = bpy.data.objects.new('sun', sd)
     az, el = math.radians(SUN_AZ), math.radians(SUN_EL)          # azimuth from north, clockwise
     to_sun = Vector((math.sin(az) * math.cos(el), math.cos(az) * math.cos(el), math.sin(el)))
@@ -386,7 +390,7 @@ def lights(view):
     sp.spot_size = math.radians(32)
     sp.spot_blend = 0.35
     sp.shadow_soft_size = 0.05
-    sp.color = (1.0, 0.70, 0.42)
+    sp.color = (1.0, 0.86, 0.72)
     spo = bpy.data.objects.new('dapple', sp)
     spo.location = (VOID_C[0] - 3.5, VOID_C[1] + 1.0, 14.5)
     G.link(spo, c)

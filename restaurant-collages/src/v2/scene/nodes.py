@@ -321,7 +321,7 @@ def _wood(name, dark=(0.10, 0.055, 0.03), light=(0.24, 0.135, 0.07), rough=0.42,
 
 
 def _oak(name):
-    return _wood(name, dark=(0.20, 0.115, 0.055), light=(0.42, 0.27, 0.14), rough=0.5)
+    return _wood(name, dark=(0.20, 0.15, 0.10), light=(0.44, 0.36, 0.27), rough=0.5)      # natural, not orange
 
 
 def _walnut(name):
@@ -412,7 +412,7 @@ def _marble_white(name):
     return m
 
 
-def _velvet(name, base=(0.15, 0.06, 0.032), sheen=(1.0, 0.76, 0.6)):
+def _velvet(name, base=(0.085, 0.066, 0.052), sheen=(0.92, 0.86, 0.78)):
     m, g, out = new_material(name)
     co = g.coord('Object')
     crush = g.noise(co, scale=18.0, detail=5, rough=0.6)
@@ -424,7 +424,7 @@ def _velvet(name, base=(0.15, 0.06, 0.032), sheen=(1.0, 0.76, 0.6)):
 
 
 def _velvet_olive(name):
-    return _velvet(name, base=(0.17, 0.17, 0.09), sheen=(0.85, 0.85, 0.62))
+    return _velvet(name, base=(0.16, 0.16, 0.12), sheen=(0.85, 0.85, 0.75))
 
 
 def _leather(name):
@@ -432,7 +432,7 @@ def _leather(name):
     co = g.coord('Object')
     grain = g.voronoi(co, scale=220.0)
     big = g.noise(co, scale=3.0, detail=4)
-    c, _ = g.ramp(g.o(big, 'Fac'), [(0.3, (0.16, 0.07, 0.035)), (0.7, (0.27, 0.12, 0.055))])
+    c, _ = g.ramp(g.o(big, 'Fac'), [(0.3, (0.075, 0.052, 0.04)), (0.7, (0.15, 0.105, 0.075))])
     bsdf = g.principled(base=c, rough=0.42, spec=0.5, coat=0.25, coat_rough=0.35,
                         normal=g.bump(g.o(grain, 'Distance'), 0.15, 0.0008))
     g.l(bsdf, out.inputs['Surface'])
@@ -527,8 +527,8 @@ def _glass_block(name):
     nz = g.noise(co, scale=14.0, detail=3)
     h = g.math('ADD', g.math('MULTIPLY', g.o(w1, 'Fac'), 0.7), g.math('MULTIPLY', g.o(nz, 'Fac'), 0.5))
     nrm = g.bump(h, 0.9, 0.004)
-    bsdf = g.principled(base=(0.98, 0.86, 0.68), trans=1.0, rough=0.05, ior=1.5, spec=0.5, normal=nrm)
-    tl = g.n('BsdfTranslucent', Color=(1.0, 0.76, 0.48))
+    bsdf = g.principled(base=(0.96, 0.93, 0.86), trans=1.0, rough=0.05, ior=1.5, spec=0.5, normal=nrm)
+    tl = g.n('BsdfTranslucent', Color=(1.0, 0.90, 0.78))
     g.l(nrm, tl.inputs['Normal'])
     mx = g.n('MixShader', Fac=0.16)
     g.l(bsdf, mx.inputs[1])
@@ -833,8 +833,55 @@ def _flame(name):
     return _emit(name, 1800, 60.0)
 
 
+def _wood_floor(name):
+    """Dark smoked-oak plank floor (client: 'dark wooden floors'): 0.19 m boards, random lengths."""
+    m, g, out = new_material(name)
+    co = g.coord('Object')
+    sep = g.n('SeparateXYZ')
+    g.l(co, sep.inputs[0])
+    row = g.math('FLOOR', g.math('DIVIDE', sep.outputs['Y'], 0.19))
+    wn = g.n('TexWhiteNoise', {'noise_dimensions': '1D'})
+    g.l(row, g.sock(wn, 'W'))
+    off = g.math('MULTIPLY', g.o(wn, 'Value'), 2.4)
+    xs = g.math('ADD', sep.outputs['X'], off)
+    col = g.math('FLOOR', g.math('DIVIDE', xs, 1.6))
+    fx = g.math('FRACT', g.math('DIVIDE', xs, 1.6))
+    fy = g.math('FRACT', g.math('DIVIDE', sep.outputs['Y'], 0.19))
+    jx = g.math('MINIMUM', g.math('MULTIPLY', fx, 1.6), g.math('MULTIPLY', g.math('SUBTRACT', 1.0, fx), 1.6))
+    jy = g.math('MINIMUM', g.math('MULTIPLY', fy, 0.19), g.math('MULTIPLY', g.math('SUBTRACT', 1.0, fy), 0.19))
+    joint = g.maprange(g.math('MINIMUM', jx, jy), 0.0006, 0.0016, 1.0, 0.0)
+    wn2 = g.n('TexWhiteNoise', {'noise_dimensions': '1D'})
+    g.l(g.math('ADD', g.math('MULTIPLY', row, 13.7), col), g.sock(wn2, 'W'))
+    board = g.o(wn2, 'Value')
+    st = g.vmath('MULTIPLY', co, (0.25, 9.0, 1.0))
+    grain = g.noise(g.vmath('ADD', st, g.o(g.noise(co, scale=2.0, detail=2), 'Color')), scale=6.0, detail=8, rough=0.6, dist=1.2)
+    c, _ = g.ramp(g.o(grain, 'Fac'), [(0.3, (0.035, 0.024, 0.017)), (0.55, (0.075, 0.052, 0.036)), (0.8, (0.12, 0.085, 0.06))])
+    tone, _ = g.ramp(board, [(0.0, (0.80, 0.80, 0.80)), (1.0, (1.18, 1.15, 1.1))])
+    c = g.mix(1.0, c, tone, 'MULTIPLY')
+    c = g.mix(g.math('MULTIPLY', joint, 0.9), c, (0.012, 0.009, 0.007))
+    h = g.math('ADD', g.math('MULTIPLY', g.o(grain, 'Fac'), 0.3), g.math('MULTIPLY', joint, -1.0))
+    g.l(g.principled(base=c, rough=0.32, spec=0.5, coat=0.2, coat_rough=0.15, normal=g.bump(h, 0.3, 0.001)), out.inputs['Surface'])
+    return m
+
+
+def _marble_grey(name):
+    """Pale grey stone table tops (client's table reference)."""
+    m, g, out = new_material(name)
+    co = g.coord('Object')
+    warp = g.noise(co, scale=1.4, detail=8, rough=0.62, dist=1.4)
+    w = g.n('TexWave', {'wave_type': 'BANDS', 'bands_direction': 'DIAGONAL', 'wave_profile': 'SIN'},
+            Scale=1.6, Distortion=10.0, Detail=8.0, **{'Detail Scale': 1.2, 'Detail Roughness': 0.6})
+    g.l(g.vmath('ADD', co, g.o(warp, 'Color')), w.inputs['Vector'])
+    vein = g.maprange(g.o(w, 'Fac'), 0.0, 0.10, 0.6, 0.0)
+    c = g.mix(vein, (0.52, 0.51, 0.49), (0.30, 0.29, 0.28))
+    soft = g.noise(co, scale=6.0, detail=6)
+    c = g.mix(0.12, c, g.o(soft, 'Color'), 'OVERLAY')
+    g.l(g.principled(base=c, rough=0.22, spec=0.5, coat=0.2, coat_rough=0.1), out.inputs['Surface'])
+    return m
+
+
 BUILDERS = {
-    'travertine': _travertine, 'split_face': _split_face, 'concrete': _concrete,
+    'travertine': _travertine, 'wood_floor': _wood_floor, 'marble_grey': _marble_grey, 'split_face': _split_face, 'concrete': _concrete,
     'plaster': _plaster, 'plaster_out': _render_plaster_out, 'stone_out': _stone_out, 'oak': _oak, 'walnut': _walnut,
     'white_brick': _white_brick, 'breccia': _breccia, 'marble_white': _marble_white,
     'velvet': _velvet, 'velvet_olive': _velvet_olive, 'leather': _leather, 'brass': _brass,
