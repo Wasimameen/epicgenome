@@ -1,8 +1,8 @@
 Restaurant - Atmosphere collage 01 - Looking from within
 3508 x 4961 px @ 300 ppi (A3 portrait), sRGB, 8-bit RGB
-135 layers/groups - top of the Layers panel first
-build stamp: sources+inputs e412af40c550fdeb - git 855515c + 1 uncommitted source files
-inputs: build/v2/render/view1.png ea6c4f7f8dc4, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/glass_block.png bee815e623c0, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/olive_leaves.png ed8343addf19, build/v2/swatch/sheer_fabric.png e760fe78084f, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png 037359cc9894
+134 layers/groups - top of the Layers panel first
+build stamp: sources+inputs 3f60243dcd499a18 - git fdf4a7a (clean)
+inputs: build/v2/render/view1.png efef4624528e, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/glass_block.png 45595a998cb2, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/olive_leaves.png ed8343addf19, build/v2/swatch/sheer_fabric.png e760fe78084f, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png bac33989f3f3, build/v2/swatch/wood_floor.png c37cbf21cfc4
 
 ▾ !! READ ME - how this file is built   [hidden]
   · READ ME - notes (hide group to view)
@@ -66,7 +66,7 @@ inputs: build/v2/render/view1.png ea6c4f7f8dc4, build/v2/swatch/brass.png a5e2c3
     · TXT - olive tree
 ▾ 50 - Overlap intensity (colour where spaces overlap)
   ■ Intensity - chosen area glow 2   [soft light, 30%, mask]
-  ■ Intensity - chosen area glow 1   [color, 40%, mask]
+  ■ Intensity - chosen area glow 1   [soft light, 25%, mask]
   ■ Intensity - fragments over the view   [soft light, 25%, mask]
 ▾ 45 - Print grain
   · Print grain (soft light)   [soft light, 50%]
@@ -102,10 +102,9 @@ inputs: build/v2/render/view1.png ea6c4f7f8dc4, build/v2/swatch/brass.png a5e2c3
   ▾ Frag 07 - split face stone (torn)
     · Image - Frag 07 - split face stone (torn)   [mask]
     · Shadow - Frag 07 - split face stone (torn)   [multiply, 20%]
-  ▾ Frag 06 - dark timber (torn)
-    ■ Tone - Frag 06 - dark timber (torn)   [multiply, 55%, clipped]
-    · Image - Frag 06 - dark timber (torn)   [mask]
-    · Shadow - Frag 06 - dark timber (torn)   [multiply, 20%]
+  ▾ Frag 06 - wood floor (torn)
+    · Image - Frag 06 - wood floor (torn)   [mask]
+    · Shadow - Frag 06 - wood floor (torn)   [multiply, 20%]
   ▾ Frag 05 - split face stone (torn)
     · Image - Frag 05 - split face stone (torn)   [mask]
     · Shadow - Frag 05 - split face stone (torn)   [multiply, 20%]

@@ -1,8 +1,8 @@
 Restaurant - Atmosphere collage 02 - Looking towards
 3508 x 4961 px @ 300 ppi (A3 portrait), sRGB, 8-bit RGB
-117 layers/groups - top of the Layers panel first
-build stamp: sources+inputs 2852323960f7b654 - git dc76436 + 1 uncommitted source files
-inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/fluted_oak.png 67f80825ec4e, build/v2/swatch/glass_block.png bee815e623c0, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png 037359cc9894, build/v2/swatch/white_brick.png f0bc786e1e9b
+116 layers/groups - top of the Layers panel first
+build stamp: sources+inputs 8c7b0dac1e5027f5 - git fdf4a7a (clean)
+inputs: build/v2/render/view2.png 6a6a5b96e64e, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/fluted_oak.png 5361f6d63299, build/v2/swatch/glass_block.png 45595a998cb2, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png bac33989f3f3, build/v2/swatch/white_brick.png f0bc786e1e9b, build/v2/swatch/wood_floor.png c37cbf21cfc4
 
 ▾ !! READ ME - how this file is built   [hidden]
   · READ ME - notes (hide group to view)
@@ -59,7 +59,7 @@ inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3
     · TXT - layered ceiling: linen swags
 ▾ 50 - Overlap intensity (colour where spaces overlap)
   ■ Intensity - chosen area glow 2   [soft light, 25%, mask]
-  ■ Intensity - chosen area glow 1   [color, 35%, mask]
+  ■ Intensity - chosen area glow 1   [soft light, 25%, mask]
   ■ Intensity - fragments over the view   [soft light, 25%, mask]
 ▾ 45 - Print grain
   · Print grain (soft light)   [soft light, 50%]
@@ -106,10 +106,9 @@ inputs: build/v2/render/view2.png 8d64b7340623, build/v2/swatch/brass.png a5e2c3
     · Main view - render   [mask]
     · Shadow - main view   [multiply, 20%]
 ▾ 10 - Fragments behind
-  ▾ Frag 03 - dark timber (cut)
-    ■ Tone - Frag 03 - dark timber (cut)   [multiply, 55%, clipped]
-    · Image - Frag 03 - dark timber (cut)   [mask]
-    · Shadow - Frag 03 - dark timber (cut)   [multiply, 14%]
+  ▾ Frag 03 - wood floor (cut)
+    · Image - Frag 03 - wood floor (cut)   [mask]
+    · Shadow - Frag 03 - wood floor (cut)   [multiply, 14%]
   ▾ Frag 02 - dark timber (cut)
     ■ Tone - Frag 02 - dark timber (cut)   [multiply, 55%, clipped]
     · Image - Frag 02 - dark timber (cut)   [mask]
