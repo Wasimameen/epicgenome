@@ -1,0 +1,998 @@
+{
+ "area": "outside",
+ "module": "src/lib/outside.py",
+ "build": "python3 -c \"from lib import outside; outside.build()\"  (run from src/)",
+ "contact_sheet": "build/contact/outside.jpg",
+ "items": [
+  {
+   "path": "assets/outside/street_dusk.png",
+   "size": [
+    5400,
+    3800
+   ],
+   "description": "Blue-hour city street seen from inside the restaurant (seated eye height 1.3 m, looking straight across): indigo->dusk->violet sky with a faint warm band, two hazed skyline depths (600 m, 200 m) + the opposite Haussmann-style facades (55 m) with lit windows, shopfronts with patrons, a side street receding to the vanishing point, street lamps with halos, overhead tram wires, a motion-blurred tram, street trees, small cool pedestrian silhouettes, wet road with streaked reflections, a zebra crossing, interior pendant reflections as bokeh. Soft focus (lens disc ~7 px), film grain. Opaque RGBA.",
+   "anchors": {
+    "horizon_y": 2250.0,
+    "vanishing_point": [
+     2700.0,
+     2250.0
+    ],
+    "facade_ground_y": 2335.1,
+    "far_kerb_y": 2343.6,
+    "near_kerb_y": 2958.0,
+    "tram_nose_x": 1800.0,
+    "tram_body_y": [
+     1942,
+     2408
+    ],
+    "lamp_lantern_centres": [
+     [
+      430,
+      1812
+     ],
+     [
+      2790,
+      1812
+     ],
+     [
+      5060,
+      1812
+     ]
+    ],
+    "side_street_gap_x": [
+     2960.0,
+     3500.0
+    ],
+    "tree_trunks_x": [
+     1560.0,
+     3960.0,
+     5330.0
+    ],
+    "figures": [
+     {
+      "name": "couple_table",
+      "x": 2390,
+      "depth_m": 53.0
+     },
+     {
+      "name": "waiter",
+      "x": 2665,
+      "depth_m": 52.4
+     },
+     {
+      "name": "man",
+      "x": 3725,
+      "depth_m": 53.0
+     },
+     {
+      "name": "woman",
+      "x": 3800,
+      "depth_m": 53.0
+     },
+     {
+      "name": "walker",
+      "x": 4290,
+      "depth_m": 51.8
+     },
+     {
+      "name": "woman_table",
+      "x": 5215,
+      "depth_m": 53.0
+     },
+     {
+      "name": "walker",
+      "x": 3125,
+      "depth_m": 88.0
+     },
+     {
+      "name": "man",
+      "x": 3024,
+      "depth_m": 120.0
+     }
+    ],
+    "ground_y_of_depth": "y = 2250 + 4680 / D  (D metres)"
+   },
+   "suggested_use": "Collage 01 outside view (behind / through the glass-block facade) or as a cool blue-hour plate; rebuild it in the PSD from street_layers/ to tweak each depth."
+  },
+  {
+   "path": "assets/outside/street_layers",
+   "kind": "layer stack",
+   "description": "The 14 full-canvas (5400x3800) RGBA layers of street_dusk.png, bottom -> top. Stacking them at (0,0) with the listed blend modes (normal / screen, 100 %, straight alpha, Photoshop formulas as in src/psdkit.py) reproduces street_dusk.png exactly (verified bit-exact with outside.composite_layers / psdkit).",
+   "layers": [
+    {
+     "order": 0,
+     "name": "sky",
+     "path": "assets/outside/street_layers/sky.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "opaque sky gradient (indigo #151A30 top -> dusk -> violet -> faint warm band at the horizon) + thin stratus, grain"
+    },
+    {
+     "order": 1,
+     "name": "buildings_far",
+     "path": "assets/outside/street_layers/buildings_far.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "two hazed skyline bands (600 m with spire + dome, 200 m), cooler/lighter with distance"
+    },
+    {
+     "order": 2,
+     "name": "buildings_near",
+     "path": "assets/outside/street_layers/buildings_near.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "opposite facades (55 m): stone / brick / stucco / shuttered, mansards, chimneys, balconies, unlit glass, awnings, side-street walls"
+    },
+    {
+     "order": 3,
+     "name": "ground",
+     "path": "assets/outside/street_layers/ground.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "opaque wet pavements + road: asphalt texture, tram rails, worn paint + zebra crossing, mirrored scene in the water film, restaurant light spill at the bottom"
+    },
+    {
+     "order": 4,
+     "name": "windows_lights",
+     "path": "assets/outside/street_layers/windows_lights.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "screen",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "emission of lit windows (warm, curtains, blinds, cool, TV) incl. tiny far-skyline windows, with bloom"
+    },
+    {
+     "order": 5,
+     "name": "street_glow",
+     "path": "assets/outside/street_layers/street_glow.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "screen",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "shop interiors with silhouetted patrons, gooseneck fascia lamps, light spill on the far pavement, side-street shops"
+    },
+    {
+     "order": 6,
+     "name": "reflections",
+     "path": "assets/outside/street_layers/reflections.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "screen",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "lights mirrored in the wet street, streaked vertically; tram headlight pool"
+    },
+    {
+     "order": 7,
+     "name": "mist",
+     "path": "assets/outside/street_layers/mist.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "screen",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "low blue street-level fog + atmospheric scattering of all lights"
+    },
+    {
+     "order": 8,
+     "name": "trees",
+     "path": "assets/outside/street_layers/trees.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "four street trees (one in the side street), dark crowns warm-lit from below"
+    },
+    {
+     "order": 9,
+     "name": "lamps",
+     "path": "assets/outside/street_layers/lamps.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "cast-iron lamp posts with glowing lanterns + overhead tram wires (contact, messenger, droppers, span wires)"
+    },
+    {
+     "order": 10,
+     "name": "lamp_halos",
+     "path": "assets/outside/street_layers/lamp_halos.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "screen",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "lantern halos, mist cones and light pools"
+    },
+    {
+     "order": 11,
+     "name": "figures",
+     "path": "assets/outside/street_layers/figures.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "pedestrians keyed from diners_silhouettes.png: cafe-terrace couple, waiter, standing couple, walker, woman with coffee, two in the side street"
+    },
+    {
+     "order": 12,
+     "name": "tram",
+     "path": "assets/outside/street_layers/tram.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "normal",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "low-floor tram (nose at x=1800) moving right, 84 px motion blur, lit saloon with passenger silhouettes"
+    },
+    {
+     "order": 13,
+     "name": "bokeh",
+     "path": "assets/outside/street_layers/bokeh.png",
+     "size": [
+      5400,
+      3800
+     ],
+     "blend": "screen",
+     "opacity": 1.0,
+     "x": 0,
+     "y": 0,
+     "description": "out-of-focus reflections of the restaurant pendants in the window + halation of the bright parts"
+    }
+   ],
+   "suggested_use": "psdkit: Pixel(name, rgba, 0, 0, blend=blend) for each, in order, inside a group \"OUTSIDE \u00b7 street\"; screen layers can be dimmed by opacity to tune the mood."
+  },
+  {
+   "path": "assets/outside/glassblock_dusk.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "description": "street_dusk seen through a 5x6 wall of wavy pressed glass blocks: blue street in the faces, warm interior light caught in the celadon rims, mortar lit low from inside. Opaque RGBA (alpha 255).",
+   "anchors": {
+    "grid": {
+     "cols": 5,
+     "rows": 6,
+     "block_px": 566,
+     "mortar_px": 28,
+     "block_rects_xyxy": [
+      [
+       28,
+       28,
+       594,
+       594
+      ],
+      [
+       622,
+       28,
+       1188,
+       594
+      ],
+      [
+       1216,
+       28,
+       1782,
+       594
+      ],
+      [
+       1810,
+       28,
+       2376,
+       594
+      ],
+      [
+       2404,
+       28,
+       2970,
+       594
+      ],
+      [
+       28,
+       622,
+       594,
+       1188
+      ],
+      [
+       622,
+       622,
+       1188,
+       1188
+      ],
+      [
+       1216,
+       622,
+       1782,
+       1188
+      ],
+      [
+       1810,
+       622,
+       2376,
+       1188
+      ],
+      [
+       2404,
+       622,
+       2970,
+       1188
+      ],
+      [
+       28,
+       1216,
+       594,
+       1782
+      ],
+      [
+       622,
+       1216,
+       1188,
+       1782
+      ],
+      [
+       1216,
+       1216,
+       1782,
+       1782
+      ],
+      [
+       1810,
+       1216,
+       2376,
+       1782
+      ],
+      [
+       2404,
+       1216,
+       2970,
+       1782
+      ],
+      [
+       28,
+       1810,
+       594,
+       2376
+      ],
+      [
+       622,
+       1810,
+       1188,
+       2376
+      ],
+      [
+       1216,
+       1810,
+       1782,
+       2376
+      ],
+      [
+       1810,
+       1810,
+       2376,
+       2376
+      ],
+      [
+       2404,
+       1810,
+       2970,
+       2376
+      ],
+      [
+       28,
+       2404,
+       594,
+       2970
+      ],
+      [
+       622,
+       2404,
+       1188,
+       2970
+      ],
+      [
+       1216,
+       2404,
+       1782,
+       2970
+      ],
+      [
+       1810,
+       2404,
+       2376,
+       2970
+      ],
+      [
+       2404,
+       2404,
+       2970,
+       2970
+      ],
+      [
+       28,
+       2998,
+       594,
+       3564
+      ],
+      [
+       622,
+       2998,
+       1188,
+       3564
+      ],
+      [
+       1216,
+       2998,
+       1782,
+       3564
+      ],
+      [
+       1810,
+       2998,
+       2376,
+       3564
+      ],
+      [
+       2404,
+       2998,
+       2970,
+       3564
+      ]
+     ],
+     "note": "block (c, r) = [28 + c*594, 28 + r*594, +566, +566]; outer mortar 28 px"
+    }
+   },
+   "suggested_use": "Collage 01: the glass-block facade between the void and the street.",
+   "masks": {
+    "glass": "assets/outside/glassblock_dusk_mask_glass.png",
+    "face": "assets/outside/glassblock_dusk_mask_face.png",
+    "note": "8-bit L, white = glass (incl. rims) / white = patterned face only; invert glass for the mortar grid"
+   }
+  },
+  {
+   "path": "assets/outside/glassblock_dusk_mask_glass.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "kind": "mask",
+   "description": "glass mask of glassblock_dusk.png (white = glass)",
+   "suggested_use": "layer mask / clipping base for tints inside the glass or on the mortar"
+  },
+  {
+   "path": "assets/outside/glassblock_dusk_mask_face.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "kind": "mask",
+   "description": "face mask of glassblock_dusk.png (white = face)",
+   "suggested_use": "layer mask / clipping base for tints inside the glass or on the mortar"
+  },
+  {
+   "path": "assets/outside/glassblock_warm.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "description": "A softened cabins_row (amber oak, terracotta velvet) seen through the blocks. Opaque RGBA (alpha 255).",
+   "anchors": {
+    "grid": {
+     "cols": 5,
+     "rows": 6,
+     "block_px": 566,
+     "mortar_px": 28,
+     "block_rects_xyxy": [
+      [
+       28,
+       28,
+       594,
+       594
+      ],
+      [
+       622,
+       28,
+       1188,
+       594
+      ],
+      [
+       1216,
+       28,
+       1782,
+       594
+      ],
+      [
+       1810,
+       28,
+       2376,
+       594
+      ],
+      [
+       2404,
+       28,
+       2970,
+       594
+      ],
+      [
+       28,
+       622,
+       594,
+       1188
+      ],
+      [
+       622,
+       622,
+       1188,
+       1188
+      ],
+      [
+       1216,
+       622,
+       1782,
+       1188
+      ],
+      [
+       1810,
+       622,
+       2376,
+       1188
+      ],
+      [
+       2404,
+       622,
+       2970,
+       1188
+      ],
+      [
+       28,
+       1216,
+       594,
+       1782
+      ],
+      [
+       622,
+       1216,
+       1188,
+       1782
+      ],
+      [
+       1216,
+       1216,
+       1782,
+       1782
+      ],
+      [
+       1810,
+       1216,
+       2376,
+       1782
+      ],
+      [
+       2404,
+       1216,
+       2970,
+       1782
+      ],
+      [
+       28,
+       1810,
+       594,
+       2376
+      ],
+      [
+       622,
+       1810,
+       1188,
+       2376
+      ],
+      [
+       1216,
+       1810,
+       1782,
+       2376
+      ],
+      [
+       1810,
+       1810,
+       2376,
+       2376
+      ],
+      [
+       2404,
+       1810,
+       2970,
+       2376
+      ],
+      [
+       28,
+       2404,
+       594,
+       2970
+      ],
+      [
+       622,
+       2404,
+       1188,
+       2970
+      ],
+      [
+       1216,
+       2404,
+       1782,
+       2970
+      ],
+      [
+       1810,
+       2404,
+       2376,
+       2970
+      ],
+      [
+       2404,
+       2404,
+       2970,
+       2970
+      ],
+      [
+       28,
+       2998,
+       594,
+       3564
+      ],
+      [
+       622,
+       2998,
+       1188,
+       3564
+      ],
+      [
+       1216,
+       2998,
+       1782,
+       3564
+      ],
+      [
+       1810,
+       2998,
+       2376,
+       3564
+      ],
+      [
+       2404,
+       2998,
+       2970,
+       3564
+      ]
+     ],
+     "note": "block (c, r) = [28 + c*594, 28 + r*594, +566, +566]; outer mortar 28 px"
+    }
+   },
+   "suggested_use": "Collage 02: the glass-block screen at the edge of the dining room / cabins.",
+   "masks": {
+    "glass": "assets/outside/glassblock_warm_mask_glass.png",
+    "face": "assets/outside/glassblock_warm_mask_face.png",
+    "note": "8-bit L, white = glass (incl. rims) / white = patterned face only; invert glass for the mortar grid"
+   }
+  },
+  {
+   "path": "assets/outside/glassblock_warm_mask_glass.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "kind": "mask",
+   "description": "glass mask of glassblock_warm.png (white = glass)",
+   "suggested_use": "layer mask / clipping base for tints inside the glass or on the mortar"
+  },
+  {
+   "path": "assets/outside/glassblock_warm_mask_face.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "kind": "mask",
+   "description": "face mask of glassblock_warm.png (white = face)",
+   "suggested_use": "layer mask / clipping base for tints inside the glass or on the mortar"
+  },
+  {
+   "path": "assets/outside/glassblock_canopy.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "description": "void_lookup_B tree canopy + round skylight seen through the blocks (green-gold, bright). Opaque RGBA (alpha 255).",
+   "anchors": {
+    "grid": {
+     "cols": 5,
+     "rows": 6,
+     "block_px": 566,
+     "mortar_px": 28,
+     "block_rects_xyxy": [
+      [
+       28,
+       28,
+       594,
+       594
+      ],
+      [
+       622,
+       28,
+       1188,
+       594
+      ],
+      [
+       1216,
+       28,
+       1782,
+       594
+      ],
+      [
+       1810,
+       28,
+       2376,
+       594
+      ],
+      [
+       2404,
+       28,
+       2970,
+       594
+      ],
+      [
+       28,
+       622,
+       594,
+       1188
+      ],
+      [
+       622,
+       622,
+       1188,
+       1188
+      ],
+      [
+       1216,
+       622,
+       1782,
+       1188
+      ],
+      [
+       1810,
+       622,
+       2376,
+       1188
+      ],
+      [
+       2404,
+       622,
+       2970,
+       1188
+      ],
+      [
+       28,
+       1216,
+       594,
+       1782
+      ],
+      [
+       622,
+       1216,
+       1188,
+       1782
+      ],
+      [
+       1216,
+       1216,
+       1782,
+       1782
+      ],
+      [
+       1810,
+       1216,
+       2376,
+       1782
+      ],
+      [
+       2404,
+       1216,
+       2970,
+       1782
+      ],
+      [
+       28,
+       1810,
+       594,
+       2376
+      ],
+      [
+       622,
+       1810,
+       1188,
+       2376
+      ],
+      [
+       1216,
+       1810,
+       1782,
+       2376
+      ],
+      [
+       1810,
+       1810,
+       2376,
+       2376
+      ],
+      [
+       2404,
+       1810,
+       2970,
+       2376
+      ],
+      [
+       28,
+       2404,
+       594,
+       2970
+      ],
+      [
+       622,
+       2404,
+       1188,
+       2970
+      ],
+      [
+       1216,
+       2404,
+       1782,
+       2970
+      ],
+      [
+       1810,
+       2404,
+       2376,
+       2970
+      ],
+      [
+       2404,
+       2404,
+       2970,
+       2970
+      ],
+      [
+       28,
+       2998,
+       594,
+       3564
+      ],
+      [
+       622,
+       2998,
+       1188,
+       3564
+      ],
+      [
+       1216,
+       2998,
+       1782,
+       3564
+      ],
+      [
+       1810,
+       2998,
+       2376,
+       3564
+      ],
+      [
+       2404,
+       2998,
+       2970,
+       3564
+      ]
+     ],
+     "note": "block (c, r) = [28 + c*594, 28 + r*594, +566, +566]; outer mortar 28 px"
+    }
+   },
+   "suggested_use": "Collage 01: glass blocks glowing with the void core.",
+   "masks": {
+    "glass": "assets/outside/glassblock_canopy_mask_glass.png",
+    "face": "assets/outside/glassblock_canopy_mask_face.png",
+    "note": "8-bit L, white = glass (incl. rims) / white = patterned face only; invert glass for the mortar grid"
+   }
+  },
+  {
+   "path": "assets/outside/glassblock_canopy_mask_glass.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "kind": "mask",
+   "description": "glass mask of glassblock_canopy.png (white = glass)",
+   "suggested_use": "layer mask / clipping base for tints inside the glass or on the mortar"
+  },
+  {
+   "path": "assets/outside/glassblock_canopy_mask_face.png",
+   "size": [
+    2998,
+    3592
+   ],
+   "kind": "mask",
+   "description": "face mask of glassblock_canopy.png (white = face)",
+   "suggested_use": "layer mask / clipping base for tints inside the glass or on the mortar"
+  },
+  {
+   "path": "assets/outside/glassblock_A_dusk_grade.png",
+   "size": [
+    4736,
+    3552
+   ],
+   "description": "assets/gen/glassblock_wall_A.png graded to blue hour at native size: cool indigo / dusk / violet mid-tones, celadon-blue rims, the brightest warm points (pendants, hot reflections) kept amber. Opaque RGBA.",
+   "anchors": {
+    "same_pixel_grid_as": "assets/gen/glassblock_wall_A.png"
+   },
+   "suggested_use": "Drop-in replacement for wall A where the scene is at blue hour (collage 01 facade)."
+  },
+  {
+   "path": "assets/outside/rain_on_glass.png",
+   "size": [
+    3000,
+    3600
+   ],
+   "description": "Rain on a window: ~10k fine droplets (dark refractive rim, soft body, caustic crescent, specular point) + 9 wandering runs with beads and heads. Straight-alpha RGBA, mostly transparent.",
+   "suggested_use": "Normal blend over any window view at 60-100 %; a duplicate in screen at 30 % adds sparkle. Scale freely (designed at ~glass-block size)."
+  }
+ ]
+}

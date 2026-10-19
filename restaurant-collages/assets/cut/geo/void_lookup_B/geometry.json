@@ -1,0 +1,86 @@
+{
+ "source": "assets/gen/void_lookup_B.png",
+ "size": [
+  3664,
+  4576
+ ],
+ "ellipses": {
+  "slab_outer": {
+   "centre": [
+    1823.33,
+    2150.68
+   ],
+   "axes": [
+    2357.64,
+    1873.0
+   ],
+   "angle_deg": -1.26,
+   "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+   "edge_inlier_fraction": 0.6,
+   "edge_rms_px": 1.26
+  },
+  "rail_outer": {
+   "centre": [
+    1838.31,
+    2024.0
+   ],
+   "axes": [
+    1961.02,
+    1689.0
+   ],
+   "angle_deg": 0.21,
+   "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+   "edge_inlier_fraction": NaN,
+   "edge_rms_px": NaN
+  },
+  "rail_inner": {
+   "centre": [
+    1883.78,
+    1818.51
+   ],
+   "axes": [
+    1694.3,
+    1479.56
+   ],
+   "angle_deg": -0.04,
+   "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+   "edge_inlier_fraction": 0.6,
+   "edge_rms_px": 1.42
+  },
+  "upper_slab": {
+   "centre": [
+    1844.59,
+    1569.07
+   ],
+   "axes": [
+    1542.31,
+    1236.72
+   ],
+   "angle_deg": -2.62,
+   "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+   "edge_inlier_fraction": 0.62,
+   "edge_rms_px": 1.38
+  },
+  "skylight": {
+   "centre": [
+    1774.91,
+    1171.58
+   ],
+   "axes": [
+    1013.39,
+    757.1
+   ],
+   "angle_deg": 6.74,
+   "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+   "edge_inlier_fraction": 0.55,
+   "edge_rms_px": 1.39
+  }
+ },
+ "order_outer_to_inner": [
+  "slab_outer",
+  "rail_outer",
+  "rail_inner",
+  "upper_slab",
+  "skylight"
+ ]
+}

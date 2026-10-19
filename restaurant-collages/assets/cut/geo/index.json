@@ -1,0 +1,2926 @@
+{
+ "area": "geometry",
+ "module": "src/lib/geometry.py",
+ "build": "cd src && python3 -c \"from lib import geometry; geometry.build()\"",
+ "conventions": "All masks are full source-image size, 8-bit L PNG, white = keep, analytically anti-aliased (signed-distance coverage) for parametric shapes. Coordinates are source-image pixels; pixel (i, j) covers [i, i+1) x [j, j+1). Ellipses: centre, semi-axes (rx along angle, ry), angle in degrees clockwise (image y down). Lines: x = a + b*y (vertical) / polynomials as noted.",
+ "outputs": [
+  {
+   "path": "assets/cut/geo/cabins_row/shell_1.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 1: VISIBLE fluted-oak shell incl. smooth arch frame band and kick plate; opening, drapery and defocused foreground removed (partition layer)",
+   "suggested_use": "clip oak texture / colour washes to the visible shell",
+   "anchors": {
+    "id": 1,
+    "left_x": 442.15,
+    "right_x": 1747.62,
+    "centre_x": 1094.89,
+    "top_y": 402.94,
+    "top_y_at_sides": 458.75,
+    "bottom_y": 2500.36,
+    "bottom_y_at_sides": 2418.0,
+    "side_lines": {
+     "left": [
+      442.66,
+      -0.0
+     ],
+     "right": [
+      1747.52,
+      0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "top_arc": {
+     "c0": 458.75,
+     "k": -55.81,
+     "xc": 1095.01,
+     "hw": 652.55,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "shared_k": false,
+     "rms": 0.73
+    },
+    "bottom_arc": {
+     "c0": 2418.0,
+     "k": 82.36,
+     "xc": 1094.82,
+     "hw": 652.84,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "note": "floor line = bottom of stainless kick plate"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_1_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 1: AMODAL shell silhouette (parametric cylinder: 2 vertical lines + top/floor elliptical arcs), ignores occluders and the opening",
+   "suggested_use": "rebuild / extend shells, shadows"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_1.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 1: VISIBLE arch opening = front-face hole (rect + elliptical head, inner edge of the arch frame) down to the floor line; includes the visible jamb reveal",
+   "suggested_use": "glow / colour intensity inside the cabin, place content behind the arch",
+   "anchors": {
+    "id": 1,
+    "left_x": 647.95,
+    "right_x": 1375.35,
+    "centre_x": 1011.65,
+    "spring_y": 1057.32,
+    "crown_y": 682.0,
+    "bottom_y": 2499.69,
+    "bottom_y_at_left_jamb": 2477.7,
+    "bottom_y_at_right_jamb": 2492.62,
+    "rx": 363.7,
+    "ry": 375.32,
+    "jamb_lines": {
+     "left": [
+      649.93,
+      -0.0
+     ],
+     "right": [
+      1378.19,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "head_correction": {
+     "coeffs": [
+      -2.21,
+      -2.43,
+      0.16,
+      0.75,
+      0.3,
+      -0.13,
+      -0.34,
+      0.27
+     ],
+     "t_range": [
+      3.19,
+      6.23
+     ],
+     "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+     "max_abs_px": 5.13,
+     "edge_resid_rms_px": 0.23,
+     "pure_ellipse_resid_rms_px": 2.43
+    },
+    "frame_outer": {
+     "left_x": 632.4,
+     "right_x": 1388.76,
+     "crown_y": 674.19,
+     "spring_y": 1071.4,
+     "note": "outer edge of the smooth arch frame band"
+    },
+    "reveal_back_edge": {
+     "side": "L",
+     "x_at_y1400": 694.3,
+     "note": "visible jamb reveal (inside the opening) ends here"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_1_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 1: AMODAL arch opening (parametric, ignores foreground)",
+   "suggested_use": "parametric cut-outs"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_2.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 2: VISIBLE fluted-oak shell incl. smooth arch frame band and kick plate; opening, drapery and defocused foreground removed (partition layer)",
+   "suggested_use": "clip oak texture / colour washes to the visible shell",
+   "anchors": {
+    "id": 2,
+    "left_x": 1771.31,
+    "right_x": 3131.13,
+    "centre_x": 2451.22,
+    "top_y": 357.91,
+    "top_y_at_sides": 413.72,
+    "bottom_y": 2531.1,
+    "bottom_y_at_sides": 2453.73,
+    "side_lines": {
+     "left": [
+      1771.45,
+      -0.0
+     ],
+     "right": [
+      3131.56,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "top_arc": {
+     "c0": 413.72,
+     "k": -55.81,
+     "xc": 2451.39,
+     "hw": 680.0,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "shared_k": true,
+     "rms": 0.64
+    },
+    "bottom_arc": {
+     "c0": 2453.73,
+     "k": 77.37,
+     "xc": 2451.12,
+     "hw": 679.86,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "note": "floor line = bottom of stainless kick plate"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_2_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 2: AMODAL shell silhouette (parametric cylinder: 2 vertical lines + top/floor elliptical arcs), ignores occluders and the opening",
+   "suggested_use": "rebuild / extend shells, shadows"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_2.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 2: VISIBLE arch opening = front-face hole (rect + elliptical head, inner edge of the arch frame) down to the floor line; includes the visible jamb reveal",
+   "suggested_use": "glow / colour intensity inside the cabin, place content behind the arch",
+   "anchors": {
+    "id": 2,
+    "left_x": 2038.98,
+    "right_x": 2798.2,
+    "centre_x": 2418.59,
+    "spring_y": 1030.38,
+    "crown_y": 661.19,
+    "bottom_y": 2531.01,
+    "bottom_y_at_left_jamb": 2514.54,
+    "bottom_y_at_right_jamb": 2520.53,
+    "rx": 379.61,
+    "ry": 369.19,
+    "jamb_lines": {
+     "left": [
+      2044.4,
+      -0.01
+     ],
+     "right": [
+      2800.86,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "head_correction": {
+     "coeffs": [
+      -0.08,
+      -1.34,
+      -0.89,
+      -0.2,
+      -0.78,
+      -0.45,
+      -0.11,
+      -0.12
+     ],
+     "t_range": [
+      3.19,
+      6.23
+     ],
+     "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+     "max_abs_px": 3.12,
+     "edge_resid_rms_px": 0.28,
+     "pure_ellipse_resid_rms_px": 1.34
+    },
+    "frame_outer": {
+     "left_x": 2020.93,
+     "right_x": 2815.3,
+     "crown_y": 645.19,
+     "spring_y": 1055.42,
+     "note": "outer edge of the smooth arch frame band"
+    },
+    "reveal_back_edge": {
+     "side": "L",
+     "x_at_y1400": 2057.03,
+     "note": "visible jamb reveal (inside the opening) ends here"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_2_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 2: AMODAL arch opening (parametric, ignores foreground)",
+   "suggested_use": "parametric cut-outs"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_3.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 3: VISIBLE fluted-oak shell incl. smooth arch frame band and kick plate; opening, drapery and defocused foreground removed (partition layer)",
+   "suggested_use": "clip oak texture / colour washes to the visible shell",
+   "anchors": {
+    "id": 3,
+    "left_x": 3140.37,
+    "right_x": 4538.26,
+    "centre_x": 3839.31,
+    "top_y": 334.81,
+    "top_y_at_sides": 390.62,
+    "bottom_y": 2552.91,
+    "bottom_y_at_sides": 2472.78,
+    "side_lines": {
+     "left": [
+      3140.58,
+      -0.0
+     ],
+     "right": [
+      4538.32,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "top_arc": {
+     "c0": 390.62,
+     "k": -55.81,
+     "xc": 3839.4,
+     "hw": 698.9,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "shared_k": true,
+     "rms": 0.54
+    },
+    "bottom_arc": {
+     "c0": 2472.78,
+     "k": 80.14,
+     "xc": 3839.27,
+     "hw": 698.97,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "note": "floor line = bottom of stainless kick plate"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_3_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 3: AMODAL shell silhouette (parametric cylinder: 2 vertical lines + top/floor elliptical arcs), ignores occluders and the opening",
+   "suggested_use": "rebuild / extend shells, shadows"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_3.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 3: VISIBLE arch opening = front-face hole (rect + elliptical head, inner edge of the arch frame) down to the floor line; includes the visible jamb reveal",
+   "suggested_use": "glow / colour intensity inside the cabin, place content behind the arch",
+   "anchors": {
+    "id": 3,
+    "left_x": 3502.12,
+    "right_x": 4286.79,
+    "centre_x": 3894.45,
+    "spring_y": 1033.41,
+    "crown_y": 660.88,
+    "bottom_y": 2552.66,
+    "bottom_y_at_left_jamb": 2543.1,
+    "bottom_y_at_right_jamb": 2534.87,
+    "rx": 392.34,
+    "ry": 372.53,
+    "jamb_lines": {
+     "left": [
+      3500.82,
+      0.0
+     ],
+     "right": [
+      4290.52,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "head_correction": {
+     "coeffs": [
+      -0.17,
+      -1.33,
+      -0.61,
+      -0.47,
+      -0.74,
+      0.09,
+      -0.13,
+      -0.08
+     ],
+     "t_range": [
+      3.19,
+      6.23
+     ],
+     "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+     "max_abs_px": 2.71,
+     "edge_resid_rms_px": 0.41,
+     "pure_ellipse_resid_rms_px": 1.28
+    },
+    "frame_outer": {
+     "left_x": 3486.18,
+     "right_x": 4302.93,
+     "crown_y": 644.69,
+     "spring_y": 1041.89,
+     "note": "outer edge of the smooth arch frame band"
+    },
+    "reveal_back_edge": {
+     "side": "R",
+     "x_at_y1400": 4258.04,
+     "note": "visible jamb reveal (inside the opening) ends here"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_3_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 3: AMODAL arch opening (parametric, ignores foreground)",
+   "suggested_use": "parametric cut-outs"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_4.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 4: VISIBLE fluted-oak shell incl. smooth arch frame band and kick plate; opening, drapery and defocused foreground removed (partition layer)",
+   "suggested_use": "clip oak texture / colour washes to the visible shell",
+   "anchors": {
+    "id": 4,
+    "left_x": 4555.9,
+    "right_x": 5979.87,
+    "centre_x": 5267.89,
+    "top_y": 350.75,
+    "top_y_at_sides": 406.56,
+    "bottom_y": 2525.02,
+    "bottom_y_at_sides": 2446.26,
+    "side_lines": {
+     "left": [
+      4555.93,
+      -0.0
+     ],
+     "right": [
+      5980.26,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "top_arc": {
+     "c0": 406.56,
+     "k": -55.81,
+     "xc": 5268.01,
+     "hw": 712.09,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "shared_k": true,
+     "rms": 0.87
+    },
+    "bottom_arc": {
+     "c0": 2446.26,
+     "k": 78.75,
+     "xc": 5267.82,
+     "hw": 711.92,
+     "form": "y = c0 + k*sqrt(1-((x-xc)/hw)^2)",
+     "note": "floor line = bottom of stainless kick plate"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shell_4_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 4: AMODAL shell silhouette (parametric cylinder: 2 vertical lines + top/floor elliptical arcs), ignores occluders and the opening",
+   "suggested_use": "rebuild / extend shells, shadows"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_4.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 4: VISIBLE arch opening = front-face hole (rect + elliptical head, inner edge of the arch frame) down to the floor line; includes the visible jamb reveal",
+   "suggested_use": "glow / colour intensity inside the cabin, place content behind the arch",
+   "anchors": {
+    "id": 4,
+    "left_x": 4917.91,
+    "right_x": 5740.94,
+    "centre_x": 5329.42,
+    "spring_y": 1056.06,
+    "crown_y": 662.63,
+    "bottom_y": 2524.72,
+    "bottom_y_at_left_jamb": 2515.08,
+    "bottom_y_at_right_jamb": 2505.6,
+    "rx": 411.52,
+    "ry": 393.44,
+    "jamb_lines": {
+     "left": [
+      4915.35,
+      0.0
+     ],
+     "right": [
+      5744.38,
+      -0.0
+     ],
+     "form": "x = a + b*y"
+    },
+    "head_correction": {
+     "coeffs": [
+      -1.91,
+      2.74,
+      -2.02,
+      0.38,
+      0.03,
+      0.51,
+      -0.28,
+      0.12
+     ],
+     "t_range": [
+      3.19,
+      6.23
+     ],
+     "form": "normal offset d(t)=sum c_k sin(k*pi*u), u=(t-t0)/(t1-t0); ellipse point (cx+rx cos t, spring_y+ry sin t), t in [pi,2pi]",
+     "max_abs_px": 5.46,
+     "edge_resid_rms_px": 0.4,
+     "pure_ellipse_resid_rms_px": 2.78
+    },
+    "frame_outer": {
+     "left_x": 4901.35,
+     "right_x": 5756.85,
+     "crown_y": 649.75,
+     "spring_y": 1056.67,
+     "note": "outer edge of the smooth arch frame band"
+    },
+    "reveal_back_edge": {
+     "side": "R",
+     "x_at_y1400": 5692.03,
+     "note": "visible jamb reveal (inside the opening) ends here"
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arch_4_geo.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "cabin 4: AMODAL arch opening (parametric, ignores foreground)",
+   "suggested_use": "parametric cut-outs"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/ceiling_band.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "festoon drapery strip along the top (height field from y=0 to the scalloped hem), soft hem matte by blue-channel unmixing",
+   "suggested_use": "separate / recolour the draped ceiling",
+   "anchors": {
+    "hem_y_min": 277,
+    "hem_y_max": 478
+   }
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/foreground_band.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "defocused foreground: chairs, two tables, glasses, candles (GrabCut from seed polygons + RGB colour-unmixing for the soft defocus edges)",
+   "suggested_use": "keep foreground on top / blur / darken"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/back_wall.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "everything else: gaps between and behind the cabins, side views into the restaurant, floor around the shells",
+   "suggested_use": "background replacement / atmosphere fills"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/shells_all.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "union of the 4 visible shells",
+   "suggested_use": "one-shot shell selection"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/arches_all.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "union of the 4 visible arch openings",
+   "suggested_use": "one-shot opening selection"
+  },
+  {
+   "path": "assets/cut/geo/cabins_row/geometry.json",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "all fitted cabin parameters (JSON)",
+   "suggested_use": "parametric reconstruction"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/skylight_glazing.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "skylight glazing: everything inside the innermost ring (glazing + mullions + sky; the tree canopy in front is included)",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/upper_slab_ring.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "white fascia of the upper slab + inner rail + skylight well wall (between upper slab edge and glazing)",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/upper_floor_annulus.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "first-floor annulus between the stainless handrail and the upper slab edge: curtains, pendants, dining",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/rail_band.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "stainless rail ring band: handrail tube + balusters, from the slab edge to the inner edge of the handrail",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/slab_underside_ring.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "white underside/edge of the first-floor slab ringing the void",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/outside_ceiling.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "everything outside the slab ring (ground-floor ceiling, walls, lower part of the image)",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/lower_part.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "ground-floor zone below the slab ring (outside the slab ellipse, below its centre line)",
+   "suggested_use": "clip colour planes / textures per ring; the rings are concentric depth layers"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_B/geometry.json",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "fitted ring ellipses (centre, semi-axes, angle)",
+   "suggested_use": "parametric rings / sound-ring graphics aligned to the void",
+   "anchors": {
+    "slab_outer": {
+     "centre": [
+      1823.33,
+      2150.68
+     ],
+     "axes": [
+      2357.64,
+      1873.0
+     ],
+     "angle_deg": -1.26,
+     "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+     "edge_inlier_fraction": 0.6,
+     "edge_rms_px": 1.26
+    },
+    "rail_outer": {
+     "centre": [
+      1838.31,
+      2024.0
+     ],
+     "axes": [
+      1961.02,
+      1689.0
+     ],
+     "angle_deg": 0.21,
+     "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+     "edge_inlier_fraction": NaN,
+     "edge_rms_px": NaN
+    },
+    "rail_inner": {
+     "centre": [
+      1883.78,
+      1818.51
+     ],
+     "axes": [
+      1694.3,
+      1479.56
+     ],
+     "angle_deg": -0.04,
+     "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+     "edge_inlier_fraction": 0.6,
+     "edge_rms_px": 1.42
+    },
+    "upper_slab": {
+     "centre": [
+      1844.59,
+      1569.07
+     ],
+     "axes": [
+      1542.31,
+      1236.72
+     ],
+     "angle_deg": -2.62,
+     "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+     "edge_inlier_fraction": 0.62,
+     "edge_rms_px": 1.38
+    },
+    "skylight": {
+     "centre": [
+      1774.91,
+      1171.58
+     ],
+     "axes": [
+      1013.39,
+      757.1
+     ],
+     "angle_deg": 6.74,
+     "form": "semi-axes rx (along angle) / ry, angle clockwise in image coords",
+     "edge_inlier_fraction": 0.55,
+     "edge_rms_px": 1.39
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_A/opening.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "the round opening: everything inside the slab edge of the upper void (upper rail, upper floor, skylight, tree canopy in front included)",
+   "suggested_use": "clip colour/light planes to the void levels; ring graphics aligned to the opening"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_A/opening_beyond_rail.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "inside the upper handrail: skylight + upper level seen through the rail",
+   "suggested_use": "clip colour/light planes to the void levels; ring graphics aligned to the opening"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_A/upper_rail_band.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "upper stainless rail ellipse band (foot of balusters -> inner edge of handrail)",
+   "suggested_use": "clip colour/light planes to the void levels; ring graphics aligned to the opening"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_A/collar_ring.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "white slab collar ringing the opening",
+   "suggested_use": "clip colour/light planes to the void levels; ring graphics aligned to the opening"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_A/first_floor_rail_band.png",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "first-floor stainless balustrade band: top of the handrail -> top of the white slab fascia (incl. bottom rail + base strip), near arc",
+   "suggested_use": "clip colour/light planes to the void levels; ring graphics aligned to the opening"
+  },
+  {
+   "path": "assets/cut/geo/void_lookup_A/geometry.json",
+   "size": [
+    3664,
+    4576
+   ],
+   "description": "fitted ellipses (opening/collar/upper handrail) + first-floor rail curves",
+   "suggested_use": "parametric overlays",
+   "anchors": {
+    "collar_outer": {
+     "centre": [
+      1935.34,
+      1369.71
+     ],
+     "axes": [
+      1514.08,
+      1131.76
+     ],
+     "angle_deg": -0.76,
+     "edge_rms_px": 1.28
+    },
+    "collar_inner": {
+     "centre": [
+      1923.35,
+      1303.42
+     ],
+     "axes": [
+      1367.57,
+      1065.77
+     ],
+     "angle_deg": 0.27,
+     "edge_rms_px": 1.29
+    },
+    "upper_handrail": {
+     "centre": [
+      1849.58,
+      1179.65
+     ],
+     "axes": [
+      1119.54,
+      880.85
+     ],
+     "angle_deg": -0.03,
+     "edge_rms_px": 1.28
+    },
+    "ff_handrail_top": {
+     "y_every_16px": [
+      [
+       0.0,
+       2375.21
+      ],
+      [
+       16.0,
+       2387.5
+      ],
+      [
+       32.0,
+       2399.5
+      ],
+      [
+       48.0,
+       2411.23
+      ],
+      [
+       64.0,
+       2422.69
+      ],
+      [
+       80.0,
+       2433.88
+      ],
+      [
+       96.0,
+       2444.82
+      ],
+      [
+       112.0,
+       2455.5
+      ],
+      [
+       128.0,
+       2465.93
+      ],
+      [
+       144.0,
+       2476.11
+      ],
+      [
+       160.0,
+       2486.06
+      ],
+      [
+       176.0,
+       2495.78
+      ],
+      [
+       192.0,
+       2505.27
+      ],
+      [
+       208.0,
+       2514.53
+      ],
+      [
+       224.0,
+       2523.58
+      ],
+      [
+       240.0,
+       2532.42
+      ],
+      [
+       256.0,
+       2541.06
+      ],
+      [
+       272.0,
+       2549.49
+      ],
+      [
+       288.0,
+       2557.73
+      ],
+      [
+       304.0,
+       2565.78
+      ],
+      [
+       320.0,
+       2573.64
+      ],
+      [
+       336.0,
+       2581.33
+      ],
+      [
+       352.0,
+       2588.84
+      ],
+      [
+       368.0,
+       2596.19
+      ],
+      [
+       384.0,
+       2603.37
+      ],
+      [
+       400.0,
+       2610.39
+      ],
+      [
+       416.0,
+       2617.27
+      ],
+      [
+       432.0,
+       2623.99
+      ],
+      [
+       448.0,
+       2630.58
+      ],
+      [
+       464.0,
+       2637.03
+      ],
+      [
+       480.0,
+       2643.35
+      ],
+      [
+       496.0,
+       2649.54
+      ],
+      [
+       512.0,
+       2655.62
+      ],
+      [
+       528.0,
+       2661.58
+      ],
+      [
+       544.0,
+       2667.43
+      ],
+      [
+       560.0,
+       2673.18
+      ],
+      [
+       576.0,
+       2678.82
+      ],
+      [
+       592.0,
+       2684.37
+      ],
+      [
+       608.0,
+       2689.81
+      ],
+      [
+       624.0,
+       2695.17
+      ],
+      [
+       640.0,
+       2700.44
+      ],
+      [
+       656.0,
+       2705.62
+      ],
+      [
+       672.0,
+       2710.72
+      ],
+      [
+       688.0,
+       2715.74
+      ],
+      [
+       704.0,
+       2720.69
+      ],
+      [
+       720.0,
+       2725.57
+      ],
+      [
+       736.0,
+       2730.38
+      ],
+      [
+       752.0,
+       2735.13
+      ],
+      [
+       768.0,
+       2739.81
+      ],
+      [
+       784.0,
+       2744.44
+      ],
+      [
+       800.0,
+       2749.02
+      ],
+      [
+       816.0,
+       2753.54
+      ],
+      [
+       832.0,
+       2758.02
+      ],
+      [
+       848.0,
+       2762.46
+      ],
+      [
+       864.0,
+       2766.86
+      ],
+      [
+       880.0,
+       2771.22
+      ],
+      [
+       896.0,
+       2775.54
+      ],
+      [
+       912.0,
+       2779.82
+      ],
+      [
+       928.0,
+       2784.06
+      ],
+      [
+       944.0,
+       2788.26
+      ],
+      [
+       960.0,
+       2792.42
+      ],
+      [
+       976.0,
+       2796.53
+      ],
+      [
+       992.0,
+       2800.6
+      ],
+      [
+       1008.0,
+       2804.63
+      ],
+      [
+       1024.0,
+       2808.61
+      ],
+      [
+       1040.0,
+       2812.55
+      ],
+      [
+       1056.0,
+       2816.44
+      ],
+      [
+       1072.0,
+       2820.29
+      ],
+      [
+       1088.0,
+       2824.09
+      ],
+      [
+       1104.0,
+       2827.84
+      ],
+      [
+       1120.0,
+       2831.54
+      ],
+      [
+       1136.0,
+       2835.19
+      ],
+      [
+       1152.0,
+       2838.79
+      ],
+      [
+       1168.0,
+       2842.35
+      ],
+      [
+       1184.0,
+       2845.85
+      ],
+      [
+       1200.0,
+       2849.29
+      ],
+      [
+       1216.0,
+       2852.69
+      ],
+      [
+       1232.0,
+       2856.03
+      ],
+      [
+       1248.0,
+       2859.32
+      ],
+      [
+       1264.0,
+       2862.55
+      ],
+      [
+       1280.0,
+       2865.73
+      ],
+      [
+       1296.0,
+       2868.85
+      ],
+      [
+       1312.0,
+       2871.91
+      ],
+      [
+       1328.0,
+       2874.92
+      ],
+      [
+       1344.0,
+       2877.87
+      ],
+      [
+       1360.0,
+       2880.76
+      ],
+      [
+       1376.0,
+       2883.58
+      ],
+      [
+       1392.0,
+       2886.35
+      ],
+      [
+       1408.0,
+       2889.06
+      ],
+      [
+       1424.0,
+       2891.71
+      ],
+      [
+       1440.0,
+       2894.29
+      ],
+      [
+       1456.0,
+       2896.81
+      ],
+      [
+       1472.0,
+       2899.27
+      ],
+      [
+       1488.0,
+       2901.66
+      ],
+      [
+       1504.0,
+       2903.99
+      ],
+      [
+       1520.0,
+       2906.25
+      ],
+      [
+       1536.0,
+       2908.44
+      ],
+      [
+       1552.0,
+       2910.57
+      ],
+      [
+       1568.0,
+       2912.63
+      ],
+      [
+       1584.0,
+       2914.62
+      ],
+      [
+       1600.0,
+       2916.54
+      ],
+      [
+       1616.0,
+       2918.39
+      ],
+      [
+       1632.0,
+       2920.17
+      ],
+      [
+       1648.0,
+       2921.88
+      ],
+      [
+       1664.0,
+       2923.51
+      ],
+      [
+       1680.0,
+       2925.08
+      ],
+      [
+       1696.0,
+       2926.57
+      ],
+      [
+       1712.0,
+       2927.99
+      ],
+      [
+       1728.0,
+       2929.33
+      ],
+      [
+       1744.0,
+       2930.59
+      ],
+      [
+       1760.0,
+       2931.78
+      ],
+      [
+       1776.0,
+       2932.89
+      ],
+      [
+       1792.0,
+       2933.93
+      ],
+      [
+       1808.0,
+       2934.89
+      ],
+      [
+       1824.0,
+       2935.76
+      ],
+      [
+       1840.0,
+       2936.56
+      ],
+      [
+       1856.0,
+       2937.28
+      ],
+      [
+       1872.0,
+       2937.92
+      ],
+      [
+       1888.0,
+       2938.47
+      ],
+      [
+       1904.0,
+       2938.94
+      ],
+      [
+       1920.0,
+       2939.33
+      ],
+      [
+       1936.0,
+       2939.64
+      ],
+      [
+       1952.0,
+       2939.86
+      ],
+      [
+       1968.0,
+       2940.0
+      ],
+      [
+       1984.0,
+       2940.06
+      ],
+      [
+       2000.0,
+       2940.03
+      ],
+      [
+       2016.0,
+       2939.91
+      ],
+      [
+       2032.0,
+       2939.71
+      ],
+      [
+       2048.0,
+       2939.43
+      ],
+      [
+       2064.0,
+       2939.06
+      ],
+      [
+       2080.0,
+       2938.61
+      ],
+      [
+       2096.0,
+       2938.07
+      ],
+      [
+       2112.0,
+       2937.45
+      ],
+      [
+       2128.0,
+       2936.74
+      ],
+      [
+       2144.0,
+       2935.94
+      ],
+      [
+       2160.0,
+       2935.06
+      ],
+      [
+       2176.0,
+       2934.09
+      ],
+      [
+       2192.0,
+       2933.04
+      ],
+      [
+       2208.0,
+       2931.9
+      ],
+      [
+       2224.0,
+       2930.67
+      ],
+      [
+       2240.0,
+       2929.35
+      ],
+      [
+       2256.0,
+       2927.95
+      ],
+      [
+       2272.0,
+       2926.46
+      ],
+      [
+       2288.0,
+       2924.88
+      ],
+      [
+       2304.0,
+       2923.22
+      ],
+      [
+       2320.0,
+       2921.47
+      ],
+      [
+       2336.0,
+       2919.62
+      ],
+      [
+       2352.0,
+       2917.7
+      ],
+      [
+       2368.0,
+       2915.68
+      ],
+      [
+       2384.0,
+       2913.57
+      ],
+      [
+       2400.0,
+       2911.37
+      ],
+      [
+       2416.0,
+       2909.09
+      ],
+      [
+       2432.0,
+       2906.72
+      ],
+      [
+       2448.0,
+       2904.25
+      ],
+      [
+       2464.0,
+       2901.7
+      ],
+      [
+       2480.0,
+       2899.06
+      ],
+      [
+       2496.0,
+       2896.32
+      ],
+      [
+       2512.0,
+       2893.5
+      ],
+      [
+       2528.0,
+       2890.58
+      ],
+      [
+       2544.0,
+       2887.58
+      ],
+      [
+       2560.0,
+       2884.49
+      ],
+      [
+       2576.0,
+       2881.31
+      ],
+      [
+       2592.0,
+       2878.04
+      ],
+      [
+       2608.0,
+       2874.68
+      ],
+      [
+       2624.0,
+       2871.25
+      ],
+      [
+       2640.0,
+       2867.73
+      ],
+      [
+       2656.0,
+       2864.12
+      ],
+      [
+       2672.0,
+       2860.44
+      ],
+      [
+       2688.0,
+       2856.68
+      ],
+      [
+       2704.0,
+       2852.84
+      ],
+      [
+       2720.0,
+       2848.92
+      ],
+      [
+       2736.0,
+       2844.93
+      ],
+      [
+       2752.0,
+       2840.86
+      ],
+      [
+       2768.0,
+       2836.72
+      ],
+      [
+       2784.0,
+       2832.51
+      ],
+      [
+       2800.0,
+       2828.23
+      ],
+      [
+       2816.0,
+       2823.88
+      ],
+      [
+       2832.0,
+       2819.46
+      ],
+      [
+       2848.0,
+       2814.97
+      ],
+      [
+       2864.0,
+       2810.42
+      ],
+      [
+       2880.0,
+       2805.8
+      ],
+      [
+       2896.0,
+       2801.12
+      ],
+      [
+       2912.0,
+       2796.38
+      ],
+      [
+       2928.0,
+       2791.58
+      ],
+      [
+       2944.0,
+       2786.72
+      ],
+      [
+       2960.0,
+       2781.8
+      ],
+      [
+       2976.0,
+       2776.82
+      ],
+      [
+       2992.0,
+       2771.79
+      ],
+      [
+       3008.0,
+       2766.7
+      ],
+      [
+       3024.0,
+       2761.56
+      ],
+      [
+       3040.0,
+       2756.37
+      ],
+      [
+       3056.0,
+       2751.12
+      ],
+      [
+       3072.0,
+       2745.83
+      ],
+      [
+       3088.0,
+       2740.48
+      ],
+      [
+       3104.0,
+       2735.09
+      ],
+      [
+       3120.0,
+       2729.64
+      ],
+      [
+       3136.0,
+       2724.15
+      ],
+      [
+       3152.0,
+       2718.6
+      ],
+      [
+       3168.0,
+       2713.01
+      ],
+      [
+       3184.0,
+       2707.37
+      ],
+      [
+       3200.0,
+       2701.68
+      ],
+      [
+       3216.0,
+       2695.94
+      ],
+      [
+       3232.0,
+       2690.16
+      ],
+      [
+       3248.0,
+       2684.33
+      ],
+      [
+       3264.0,
+       2678.45
+      ],
+      [
+       3280.0,
+       2672.53
+      ],
+      [
+       3296.0,
+       2666.57
+      ],
+      [
+       3312.0,
+       2660.55
+      ],
+      [
+       3328.0,
+       2654.5
+      ],
+      [
+       3344.0,
+       2648.4
+      ],
+      [
+       3360.0,
+       2642.26
+      ],
+      [
+       3376.0,
+       2636.07
+      ],
+      [
+       3392.0,
+       2629.84
+      ],
+      [
+       3408.0,
+       2623.57
+      ],
+      [
+       3424.0,
+       2617.25
+      ],
+      [
+       3440.0,
+       2610.9
+      ],
+      [
+       3456.0,
+       2604.5
+      ],
+      [
+       3472.0,
+       2598.07
+      ],
+      [
+       3488.0,
+       2591.59
+      ],
+      [
+       3504.0,
+       2585.07
+      ],
+      [
+       3520.0,
+       2578.52
+      ],
+      [
+       3536.0,
+       2571.92
+      ],
+      [
+       3552.0,
+       2565.29
+      ],
+      [
+       3568.0,
+       2558.62
+      ],
+      [
+       3584.0,
+       2551.91
+      ],
+      [
+       3600.0,
+       2545.16
+      ],
+      [
+       3616.0,
+       2538.38
+      ],
+      [
+       3632.0,
+       2531.56
+      ],
+      [
+       3648.0,
+       2524.7
+      ],
+      [
+       3664.0,
+       2517.81
+      ]
+     ],
+     "edge_rms_px": 1.51,
+     "inlier_fraction": 0.77,
+     "anchors": [
+      [
+       150,
+       2478
+      ],
+      [
+       300,
+       2576
+      ],
+      [
+       600,
+       2680
+      ],
+      [
+       900,
+       2769
+      ],
+      [
+       1300,
+       2868
+      ],
+      [
+       2500,
+       2893
+      ],
+      [
+       3000,
+       2765
+      ],
+      [
+       3300,
+       2661
+      ],
+      [
+       3400,
+       2625
+      ],
+      [
+       3550,
+       2562
+      ]
+     ]
+    },
+    "ff_slab_edge": {
+     "y_every_16px": [
+      [
+       0.0,
+       3048.09
+      ],
+      [
+       16.0,
+       3051.48
+      ],
+      [
+       32.0,
+       3054.88
+      ],
+      [
+       48.0,
+       3058.26
+      ],
+      [
+       64.0,
+       3061.65
+      ],
+      [
+       80.0,
+       3065.03
+      ],
+      [
+       96.0,
+       3068.4
+      ],
+      [
+       112.0,
+       3071.77
+      ],
+      [
+       128.0,
+       3075.13
+      ],
+      [
+       144.0,
+       3078.49
+      ],
+      [
+       160.0,
+       3081.84
+      ],
+      [
+       176.0,
+       3085.18
+      ],
+      [
+       192.0,
+       3088.51
+      ],
+      [
+       208.0,
+       3091.84
+      ],
+      [
+       224.0,
+       3095.16
+      ],
+      [
+       240.0,
+       3098.47
+      ],
+      [
+       256.0,
+       3101.77
+      ],
+      [
+       272.0,
+       3105.06
+      ],
+      [
+       288.0,
+       3108.33
+      ],
+      [
+       304.0,
+       3111.6
+      ],
+      [
+       320.0,
+       3114.86
+      ],
+      [
+       336.0,
+       3118.11
+      ],
+      [
+       352.0,
+       3121.34
+      ],
+      [
+       368.0,
+       3124.57
+      ],
+      [
+       384.0,
+       3127.78
+      ],
+      [
+       400.0,
+       3130.98
+      ],
+      [
+       416.0,
+       3134.16
+      ],
+      [
+       432.0,
+       3137.33
+      ],
+      [
+       448.0,
+       3140.49
+      ],
+      [
+       464.0,
+       3143.63
+      ],
+      [
+       480.0,
+       3146.76
+      ],
+      [
+       496.0,
+       3149.87
+      ],
+      [
+       512.0,
+       3152.97
+      ],
+      [
+       528.0,
+       3156.05
+      ],
+      [
+       544.0,
+       3159.11
+      ],
+      [
+       560.0,
+       3162.16
+      ],
+      [
+       576.0,
+       3165.19
+      ],
+      [
+       592.0,
+       3168.2
+      ],
+      [
+       608.0,
+       3171.2
+      ],
+      [
+       624.0,
+       3174.17
+      ],
+      [
+       640.0,
+       3177.13
+      ],
+      [
+       656.0,
+       3180.07
+      ],
+      [
+       672.0,
+       3182.99
+      ],
+      [
+       688.0,
+       3185.89
+      ],
+      [
+       704.0,
+       3188.77
+      ],
+      [
+       720.0,
+       3191.62
+      ],
+      [
+       736.0,
+       3194.46
+      ],
+      [
+       752.0,
+       3197.27
+      ],
+      [
+       768.0,
+       3200.07
+      ],
+      [
+       784.0,
+       3202.84
+      ],
+      [
+       800.0,
+       3205.58
+      ],
+      [
+       816.0,
+       3208.31
+      ],
+      [
+       832.0,
+       3211.01
+      ],
+      [
+       848.0,
+       3213.69
+      ],
+      [
+       864.0,
+       3216.34
+      ],
+      [
+       880.0,
+       3218.97
+      ],
+      [
+       896.0,
+       3221.57
+      ],
+      [
+       912.0,
+       3224.15
+      ],
+      [
+       928.0,
+       3226.7
+      ],
+      [
+       944.0,
+       3229.23
+      ],
+      [
+       960.0,
+       3231.72
+      ],
+      [
+       976.0,
+       3234.2
+      ],
+      [
+       992.0,
+       3236.64
+      ],
+      [
+       1008.0,
+       3239.05
+      ],
+      [
+       1024.0,
+       3241.44
+      ],
+      [
+       1040.0,
+       3243.8
+      ],
+      [
+       1056.0,
+       3246.13
+      ],
+      [
+       1072.0,
+       3248.43
+      ],
+      [
+       1088.0,
+       3250.7
+      ],
+      [
+       1104.0,
+       3252.94
+      ],
+      [
+       1120.0,
+       3255.15
+      ],
+      [
+       1136.0,
+       3257.33
+      ],
+      [
+       1152.0,
+       3259.48
+      ],
+      [
+       1168.0,
+       3261.59
+      ],
+      [
+       1184.0,
+       3263.67
+      ],
+      [
+       1200.0,
+       3265.72
+      ],
+      [
+       1216.0,
+       3267.74
+      ],
+      [
+       1232.0,
+       3269.73
+      ],
+      [
+       1248.0,
+       3271.68
+      ],
+      [
+       1264.0,
+       3273.59
+      ],
+      [
+       1280.0,
+       3275.47
+      ],
+      [
+       1296.0,
+       3277.32
+      ],
+      [
+       1312.0,
+       3279.13
+      ],
+      [
+       1328.0,
+       3280.9
+      ],
+      [
+       1344.0,
+       3282.64
+      ],
+      [
+       1360.0,
+       3284.34
+      ],
+      [
+       1376.0,
+       3286.01
+      ],
+      [
+       1392.0,
+       3287.64
+      ],
+      [
+       1408.0,
+       3289.22
+      ],
+      [
+       1424.0,
+       3290.78
+      ],
+      [
+       1440.0,
+       3292.29
+      ],
+      [
+       1456.0,
+       3293.76
+      ],
+      [
+       1472.0,
+       3295.2
+      ],
+      [
+       1488.0,
+       3296.59
+      ],
+      [
+       1504.0,
+       3297.95
+      ],
+      [
+       1520.0,
+       3299.26
+      ],
+      [
+       1536.0,
+       3300.53
+      ],
+      [
+       1552.0,
+       3301.76
+      ],
+      [
+       1568.0,
+       3302.95
+      ],
+      [
+       1584.0,
+       3304.1
+      ],
+      [
+       1600.0,
+       3305.21
+      ],
+      [
+       1616.0,
+       3306.27
+      ],
+      [
+       1632.0,
+       3307.29
+      ],
+      [
+       1648.0,
+       3308.26
+      ],
+      [
+       1664.0,
+       3309.19
+      ],
+      [
+       1680.0,
+       3310.08
+      ],
+      [
+       1696.0,
+       3310.92
+      ],
+      [
+       1712.0,
+       3311.72
+      ],
+      [
+       1728.0,
+       3312.47
+      ],
+      [
+       1744.0,
+       3313.17
+      ],
+      [
+       1760.0,
+       3313.83
+      ],
+      [
+       1776.0,
+       3314.44
+      ],
+      [
+       1792.0,
+       3315.0
+      ],
+      [
+       1808.0,
+       3315.52
+      ],
+      [
+       1824.0,
+       3315.99
+      ],
+      [
+       1840.0,
+       3316.4
+      ],
+      [
+       1856.0,
+       3316.78
+      ],
+      [
+       1872.0,
+       3317.1
+      ],
+      [
+       1888.0,
+       3317.37
+      ],
+      [
+       1904.0,
+       3317.6
+      ],
+      [
+       1920.0,
+       3317.77
+      ],
+      [
+       1936.0,
+       3317.9
+      ],
+      [
+       1952.0,
+       3317.99
+      ],
+      [
+       1968.0,
+       3318.02
+      ],
+      [
+       1984.0,
+       3318.01
+      ],
+      [
+       2000.0,
+       3317.95
+      ],
+      [
+       2016.0,
+       3317.84
+      ],
+      [
+       2032.0,
+       3317.68
+      ],
+      [
+       2048.0,
+       3317.48
+      ],
+      [
+       2064.0,
+       3317.23
+      ],
+      [
+       2080.0,
+       3316.94
+      ],
+      [
+       2096.0,
+       3316.6
+      ],
+      [
+       2112.0,
+       3316.21
+      ],
+      [
+       2128.0,
+       3315.77
+      ],
+      [
+       2144.0,
+       3315.29
+      ],
+      [
+       2160.0,
+       3314.77
+      ],
+      [
+       2176.0,
+       3314.2
+      ],
+      [
+       2192.0,
+       3313.58
+      ],
+      [
+       2208.0,
+       3312.92
+      ],
+      [
+       2224.0,
+       3312.21
+      ],
+      [
+       2240.0,
+       3311.46
+      ],
+      [
+       2256.0,
+       3310.66
+      ],
+      [
+       2272.0,
+       3309.81
+      ],
+      [
+       2288.0,
+       3308.93
+      ],
+      [
+       2304.0,
+       3307.99
+      ],
+      [
+       2320.0,
+       3307.02
+      ],
+      [
+       2336.0,
+       3306.0
+      ],
+      [
+       2352.0,
+       3304.93
+      ],
+      [
+       2368.0,
+       3303.82
+      ],
+      [
+       2384.0,
+       3302.67
+      ],
+      [
+       2400.0,
+       3301.47
+      ],
+      [
+       2416.0,
+       3300.23
+      ],
+      [
+       2432.0,
+       3298.95
+      ],
+      [
+       2448.0,
+       3297.62
+      ],
+      [
+       2464.0,
+       3296.25
+      ],
+      [
+       2480.0,
+       3294.83
+      ],
+      [
+       2496.0,
+       3293.38
+      ],
+      [
+       2512.0,
+       3291.88
+      ],
+      [
+       2528.0,
+       3290.34
+      ],
+      [
+       2544.0,
+       3288.75
+      ],
+      [
+       2560.0,
+       3287.13
+      ],
+      [
+       2576.0,
+       3285.46
+      ],
+      [
+       2592.0,
+       3283.75
+      ],
+      [
+       2608.0,
+       3281.99
+      ],
+      [
+       2624.0,
+       3280.2
+      ],
+      [
+       2640.0,
+       3278.36
+      ],
+      [
+       2656.0,
+       3276.49
+      ],
+      [
+       2672.0,
+       3274.57
+      ],
+      [
+       2688.0,
+       3272.61
+      ],
+      [
+       2704.0,
+       3270.61
+      ],
+      [
+       2720.0,
+       3268.57
+      ],
+      [
+       2736.0,
+       3266.48
+      ],
+      [
+       2752.0,
+       3264.36
+      ],
+      [
+       2768.0,
+       3262.2
+      ],
+      [
+       2784.0,
+       3259.99
+      ],
+      [
+       2800.0,
+       3257.75
+      ],
+      [
+       2816.0,
+       3255.47
+      ],
+      [
+       2832.0,
+       3253.16
+      ],
+      [
+       2848.0,
+       3250.8
+      ],
+      [
+       2864.0,
+       3248.41
+      ],
+      [
+       2880.0,
+       3245.99
+      ],
+      [
+       2896.0,
+       3243.53
+      ],
+      [
+       2912.0,
+       3241.04
+      ],
+      [
+       2928.0,
+       3238.51
+      ],
+      [
+       2944.0,
+       3235.95
+      ],
+      [
+       2960.0,
+       3233.36
+      ],
+      [
+       2976.0,
+       3230.74
+      ],
+      [
+       2992.0,
+       3228.09
+      ],
+      [
+       3008.0,
+       3225.42
+      ],
+      [
+       3024.0,
+       3222.71
+      ],
+      [
+       3040.0,
+       3219.97
+      ],
+      [
+       3056.0,
+       3217.21
+      ],
+      [
+       3072.0,
+       3214.42
+      ],
+      [
+       3088.0,
+       3211.61
+      ],
+      [
+       3104.0,
+       3208.77
+      ],
+      [
+       3120.0,
+       3205.91
+      ],
+      [
+       3136.0,
+       3203.02
+      ],
+      [
+       3152.0,
+       3200.11
+      ],
+      [
+       3168.0,
+       3197.18
+      ],
+      [
+       3184.0,
+       3194.23
+      ],
+      [
+       3200.0,
+       3191.26
+      ],
+      [
+       3216.0,
+       3188.27
+      ],
+      [
+       3232.0,
+       3185.26
+      ],
+      [
+       3248.0,
+       3182.23
+      ],
+      [
+       3264.0,
+       3179.19
+      ],
+      [
+       3280.0,
+       3176.12
+      ],
+      [
+       3296.0,
+       3173.05
+      ],
+      [
+       3312.0,
+       3169.95
+      ],
+      [
+       3328.0,
+       3166.84
+      ],
+      [
+       3344.0,
+       3163.72
+      ],
+      [
+       3360.0,
+       3160.59
+      ],
+      [
+       3376.0,
+       3157.44
+      ],
+      [
+       3392.0,
+       3154.28
+      ],
+      [
+       3408.0,
+       3151.12
+      ],
+      [
+       3424.0,
+       3147.94
+      ],
+      [
+       3440.0,
+       3144.75
+      ],
+      [
+       3456.0,
+       3141.55
+      ],
+      [
+       3472.0,
+       3138.35
+      ],
+      [
+       3488.0,
+       3135.14
+      ],
+      [
+       3504.0,
+       3131.92
+      ],
+      [
+       3520.0,
+       3128.7
+      ],
+      [
+       3536.0,
+       3125.47
+      ],
+      [
+       3552.0,
+       3122.24
+      ],
+      [
+       3568.0,
+       3119.0
+      ],
+      [
+       3584.0,
+       3115.76
+      ],
+      [
+       3600.0,
+       3112.52
+      ],
+      [
+       3616.0,
+       3109.28
+      ],
+      [
+       3632.0,
+       3106.04
+      ],
+      [
+       3648.0,
+       3102.8
+      ],
+      [
+       3664.0,
+       3099.56
+      ]
+     ],
+     "edge_rms_px": 1.5,
+     "inlier_fraction": 0.99,
+     "anchors": [
+      [
+       150,
+       3080
+      ],
+      [
+       600,
+       3170
+      ],
+      [
+       1300,
+       3276
+      ],
+      [
+       2500,
+       3292
+      ],
+      [
+       3300,
+       3170
+      ],
+      [
+       3550,
+       3123
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/glassblock_wall_A/mortar.png",
+   "size": [
+    4736,
+    3552
+   ],
+   "description": "mortar grid (joints + top/right perimeter strips), anti-aliased, rounded block corners (r=6 px)",
+   "suggested_use": "tint / emboss the mortar, separate glass from joints",
+   "anchors": {
+    "vertical_joint_centres_x": [
+     270.45,
+     874.66,
+     1461.15,
+     1974.57,
+     2381.39,
+     2760.37,
+     3152.59,
+     3564.85,
+     4155.32
+    ],
+    "horizontal_joint_centres_y": [
+     783.8,
+     1182.47,
+     1860.13,
+     2500.94,
+     2756.03
+    ],
+    "joint_width_px": {
+     "vertical_median": 20.2,
+     "horizontal_median": 15.72
+    }
+   }
+  },
+  {
+   "path": "assets/cut/geo/glassblock_wall_A/glass_blocks.png",
+   "size": [
+    4736,
+    3552
+   ],
+   "description": "all glass block faces (complement of mortar inside the wall)",
+   "suggested_use": "clip refraction / colour plays to the glass"
+  },
+  {
+   "path": "assets/cut/geo/glassblock_wall_A/base_sill.png",
+   "size": [
+    4736,
+    3552
+   ],
+   "description": "below the wall: grey frame + terrazzo sill",
+   "suggested_use": "separate the sill"
+  },
+  {
+   "path": "assets/cut/geo/glassblock_wall_A/block_labels.png",
+   "size": [
+    4736,
+    3552
+   ],
+   "description": "16-bit label map: 0 = mortar / non-glass, n = block id (row-major, row 0 at top, col 0 at left; see geometry.json blocks[])",
+   "suggested_use": "per-block colour variation / animation, picking single blocks",
+   "anchors": {
+    "n_blocks": 60,
+    "rows": 6,
+    "cols": 10
+   }
+  },
+  {
+   "path": "assets/cut/geo/glassblock_wall_A/geometry.json",
+   "size": [
+    4736,
+    3552
+   ],
+   "description": "joint lines (x / y, widths, edge polynomials) + every block rectangle (4 corners + axis-aligned rect)",
+   "suggested_use": "rebuild the grid procedurally at any scale"
+  },
+  {
+   "path": "assets/cut/geo/festoon_valance/valance_fabric.png",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "swag valance fabric only: straight top edge, scalloped hem, side tails, middle jabot tail; plaster wall, pendants and their cords excluded",
+   "suggested_use": "cut the linen valance out as a layer (hem anchors in geometry.json)",
+   "anchors": {
+    "top_y": 279.73,
+    "gather_x": [
+     993.5,
+     1669.5,
+     2332.5,
+     3001.5,
+     3683.5,
+     3840.5,
+     4764.5,
+     5404.5
+    ],
+    "hem_lowest_y": 1117.17
+   }
+  },
+  {
+   "path": "assets/cut/geo/festoon_valance/geometry.json",
+   "size": [
+    6256,
+    2688
+   ],
+   "description": "valance top line, gather x, hem curve every 16 px",
+   "suggested_use": "redraw festoon outlines / align line work"
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_A/pendants.png",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "all black pendant lamps (shade + lit bowl/rim) and their cords",
+   "suggested_use": "cut lamps out / keep them above colour washes",
+   "anchors": {
+    "n_lamps": 33
+   }
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_A/pendant_shades.png",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "lamp bodies only (shade + lit bowl)",
+   "suggested_use": "separate glow layers (screen the bowls)"
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_A/pendant_cords.png",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "cords only (anti-aliased capsules on the fitted cord lines)",
+   "suggested_use": "restore cords above effects"
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_A/geometry.json",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "per-lamp bbox, bowl rim ellipse, cord segment",
+   "suggested_use": "anchors for light beams / glows"
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_B/pendants.png",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "all black pendant lamps (shade + lit bowl/rim) and their cords",
+   "suggested_use": "cut lamps out / keep them above colour washes",
+   "anchors": {
+    "n_lamps": 11
+   }
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_B/pendant_shades.png",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "lamp bodies only (shade + lit bowl)",
+   "suggested_use": "separate glow layers (screen the bowls)"
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_B/pendant_cords.png",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "cords only (anti-aliased capsules on the fitted cord lines)",
+   "suggested_use": "restore cords above effects"
+  },
+  {
+   "path": "assets/cut/geo/ceiling_lookup_B/geometry.json",
+   "size": [
+    5456,
+    3072
+   ],
+   "description": "per-lamp bbox, bowl rim ellipse, cord segment",
+   "suggested_use": "anchors for light beams / glows"
+  }
+ ]
+}

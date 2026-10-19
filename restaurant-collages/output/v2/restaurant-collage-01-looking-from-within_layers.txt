@@ -1,0 +1,140 @@
+Restaurant - Atmosphere collage 01 - Looking from within
+3508 x 4961 px @ 300 ppi (A3 portrait), sRGB, 8-bit RGB
+134 layers/groups - top of the Layers panel first
+build stamp: sources+inputs 3f60243dcd499a18 - git fdf4a7a (clean)
+inputs: build/v2/render/view1.png efef4624528e, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/glass_block.png 45595a998cb2, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/olive_leaves.png ed8343addf19, build/v2/swatch/sheer_fabric.png e760fe78084f, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png bac33989f3f3, build/v2/swatch/wood_floor.png c37cbf21cfc4
+
+▾ !! READ ME - how this file is built   [hidden]
+  · READ ME - notes (hide group to view)
+▾ 90 - Title and key line
+  T EDIT - key line 2   [live type, hidden]
+  · TXT - key line 2
+  T EDIT - key line 1   [live type, hidden]
+  · TXT - key line 1
+  T EDIT - subtitle chosen area to outside views   [live type, hidden]
+  · TXT - subtitle chosen area to outside views
+  T EDIT - title 1. LOOKING FROM WITHIN   [live type, hidden]
+  · TXT - title 1. LOOKING FROM WITHIN
+▾ 60 - Notes (handwritten)
+  ▾ Sense - sound: street hum, muffled
+    T EDIT - sound: street hum, muffled   [live type, hidden]
+    · TXT - sound: street hum, muffled
+  ▾ Sense - smell + taste: warm bread, olive oil
+    T EDIT - smell + taste: warm bread, olive oil   [live type, hidden]
+    · TXT - smell + taste: warm bread, olive oil
+  ▾ Sense - colour: honey, linen, olive
+    T EDIT - colour: honey, linen, olive   [live type, hidden]
+    · TXT - colour: honey, linen, olive
+  ▾ Sense - sound: voices rise up the void
+    T EDIT - sound: voices rise up the void   [live type, hidden]
+    · TXT - sound: voices rise up the void
+  ▾ Note - concrete
+    · Arrow - concrete
+    T EDIT - concrete   [live type, hidden]
+    · TXT - concrete
+  ▾ Note - warm + intimate
+    · Arrow - warm + intimate
+    T EDIT - warm + intimate   [live type, hidden]
+    · TXT - warm + intimate
+  ▾ Note - split face stone
+    · Arrow - split face stone
+    T EDIT - split face stone   [live type, hidden]
+    · TXT - split face stone
+  ▾ Note - view out to the street
+    · Arrow - view out to the street
+    T EDIT - view out to the street   [live type, hidden]
+    · TXT - view out to the street
+  ▾ Note - glass brick
+    · Arrow - glass brick
+    T EDIT - glass brick   [live type, hidden]
+    · TXT - glass brick
+  ▾ Note - ceiling draping, soft linen
+    · Arrow - ceiling draping, soft linen
+    T EDIT - ceiling draping, soft linen   [live type, hidden]
+    · TXT - ceiling draping, soft linen
+  ▾ Note - filtered light, leaf shadows
+    · Arrow - filtered light, leaf shadows
+    T EDIT - filtered light, leaf shadows   [live type, hidden]
+    · TXT - filtered light, leaf shadows
+  ▾ Note - texture + shadow
+    · Arrow - texture + shadow
+    T EDIT - texture + shadow   [live type, hidden]
+    · TXT - texture + shadow
+  ▾ Note - olive tree
+    · Arrow - olive tree
+    T EDIT - olive tree   [live type, hidden]
+    · TXT - olive tree
+▾ 50 - Overlap intensity (colour where spaces overlap)
+  ■ Intensity - chosen area glow 2   [soft light, 30%, mask]
+  ■ Intensity - chosen area glow 1   [soft light, 25%, mask]
+  ■ Intensity - fragments over the view   [soft light, 25%, mask]
+▾ 45 - Print grain
+  · Print grain (soft light)   [soft light, 50%]
+▾ 40 - Fragments in front
+  ▾ Frag 15 - dark timber (cut)
+    ■ Tone - Frag 15 - dark timber (cut)   [multiply, 55%, clipped]
+    · Image - Frag 15 - dark timber (cut)   [mask]
+    · Shadow - Frag 15 - dark timber (cut)   [multiply, 20%]
+  ▾ Frag 14 - concrete (torn)
+    ■ Tone - Frag 14 - concrete (torn)   [color, 75%, clipped]
+    · Image - Frag 14 - concrete (torn)   [mask]
+    · Shadow - Frag 14 - concrete (torn)   [multiply, 20%]
+  ▾ Frag 13 - sheer fabric (torn)
+    ■ Tone - Frag 13 - sheer fabric (torn)   [multiply, 30%, clipped]
+    · Image - Frag 13 - sheer fabric (torn)   [mask]
+    · Shadow - Frag 13 - sheer fabric (torn)   [multiply, 20%]
+  ▾ Frag 12 - glass block (cut)
+    · Image - Frag 12 - glass block (cut)   [mask]
+    · Shadow - Frag 12 - glass block (cut)   [multiply, 20%]
+  ▾ Frag 11 - linen drape (torn TB)
+    · Image - Frag 11 - linen drape (torn TB)   [mask]
+    · Shadow - Frag 11 - linen drape (torn TB)   [multiply, 20%]
+  ▾ Frag 10 - velvet (cut)
+    ■ Tone - Frag 10 - velvet (cut)   [saturation, 32%, clipped]
+    · Image - Frag 10 - velvet (cut)   [mask]
+    · Shadow - Frag 10 - velvet (cut)   [multiply, 20%]
+  ▾ Frag 09 - brass (cut)
+    · Image - Frag 09 - brass (cut)   [mask]
+    · Shadow - Frag 09 - brass (cut)   [multiply, 20%]
+  ▾ Frag 08 - glass block (cut)
+    · Image - Frag 08 - glass block (cut)   [mask]
+    · Shadow - Frag 08 - glass block (cut)   [multiply, 20%]
+  ▾ Frag 07 - split face stone (torn)
+    · Image - Frag 07 - split face stone (torn)   [mask]
+    · Shadow - Frag 07 - split face stone (torn)   [multiply, 20%]
+  ▾ Frag 06 - wood floor (torn)
+    · Image - Frag 06 - wood floor (torn)   [mask]
+    · Shadow - Frag 06 - wood floor (torn)   [multiply, 20%]
+  ▾ Frag 05 - split face stone (torn)
+    · Image - Frag 05 - split face stone (torn)   [mask]
+    · Shadow - Frag 05 - split face stone (torn)   [multiply, 20%]
+  ▾ Frag 04 - concrete (torn)
+    ■ Tone - Frag 04 - concrete (torn)   [color, 75%, clipped]
+    · Image - Frag 04 - concrete (torn)   [mask]
+    · Shadow - Frag 04 - concrete (torn)   [multiply, 20%]
+  ▾ Frag 03 - olive leaves (torn)
+    · Image - Frag 03 - olive leaves (torn)   [mask]
+    · Shadow - Frag 03 - olive leaves (torn)   [multiply, 20%]
+▾ 30 - Echo patches (cut from the view)
+  ▾ Echo 01 - view patch x1.00
+    · Rim - Echo 01 - view patch x1.00
+    · Image - Echo 01 - view patch x1.00   [mask]
+    · Shadow - Echo 01 - view patch x1.00   [multiply, 26%]
+▾ 20 - Main view
+  ▾ Main view
+    ■ Tone - main view   [saturation, 35%, clipped]
+    · Main view - render   [mask]
+    · Shadow - main view   [multiply, 20%]
+▾ 10 - Fragments behind
+  ▾ Frag 02 - sheer fabric (torn BL)
+    ■ Tone - Frag 02 - sheer fabric (torn BL)   [multiply, 25%, clipped]
+    · Image - Frag 02 - sheer fabric (torn BL)   [mask]
+    · Shadow - Frag 02 - sheer fabric (torn BL)   [multiply, 14%]
+  ▾ Frag 01 - dark timber (cut)
+    ■ Tone - Frag 01 - dark timber (cut)   [multiply, 55%, clipped]
+    · Image - Frag 01 - dark timber (cut)   [mask]
+    · Shadow - Frag 01 - dark timber (cut)   [multiply, 14%]
+▾ 00 - Paper
+  ■ Paper - vignette   [multiply, 7%, mask, locked]
+  · Paper - fibre and mottle   [multiply, locked]
+  ■ Paper - cream #F6F0E4 (double-click to recolour)   [locked]

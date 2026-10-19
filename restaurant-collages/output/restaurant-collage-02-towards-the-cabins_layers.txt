@@ -1,0 +1,204 @@
+Restaurant - Atmosphere collage 02 - Towards the cabins
+4961 x 3508 px @ 300 ppi (A3), sRGB, 8-bit RGB
+199 layers/groups — top of the Layers panel first
+build stamp: sources 0ab7ff06ee9a2c1c - git ba5b348 (clean)
+
+▾ !! READ ME - how this file is built   [hidden]
+  · READ ME - notes (hide group to view)
+▾ 98 - Type - title & annotations
+  T EDIT - pointer to the void (01)   [live type, hidden]
+  · TXT - pointer to the void (01)
+  T EDIT - dim 2400 open above   [live type, hidden]
+  · TXT - dim 2400 open above
+  ■ Dim - partition height 2400   [90%, mask]
+  T EDIT - cabin number 04   [live type, hidden]
+  · TXT - cabin number 04
+  T EDIT - cabin number 03   [live type, hidden]
+  · TXT - cabin number 03
+  T EDIT - cabin number 02   [live type, hidden]
+  · TXT - cabin number 02
+  T EDIT - cabin number 01   [live type, hidden]
+  · TXT - cabin number 01
+  T EDIT - lens label cabin 04   [live type, hidden]
+  · TXT - lens label cabin 04
+  ▾ Card - Inside cabin 04
+    T EDIT - TEXTURE phrase   [live type, hidden]
+    T EDIT - TEXTURE label   [live type, hidden]
+    · TXT - TEXTURE
+    T EDIT - TASTE phrase   [live type, hidden]
+    T EDIT - TASTE label   [live type, hidden]
+    · TXT - TASTE
+    T EDIT - SMELL phrase   [live type, hidden]
+    T EDIT - SMELL label   [live type, hidden]
+    · TXT - SMELL
+    · Paper - card Inside cabin 04
+    · Shadow - card Inside cabin 04   [multiply, 38%]
+  ▾ Tag - SOUND - 03
+    · Leader - sound 03 to the table   [90%]
+    T EDIT - SOUND 03 phrase   [live type, hidden]
+    T EDIT - SOUND 03 label   [live type, hidden]
+    · TXT - SOUND 03
+    · Paper - tag SOUND - 03
+    · Shadow - tag SOUND - 03   [multiply, 38%]
+  ▾ Tag - COLOUR
+    · Colour - intensity scale, cabin 01 to 04
+    T EDIT - COLOUR phrase   [live type, hidden]
+    T EDIT - COLOUR label   [live type, hidden]
+    · TXT - COLOUR
+    · Paper - tag COLOUR
+    · Shadow - tag COLOUR   [multiply, 38%]
+  ▾ Tag - LIGHT
+    · Leader - light to pendant 3   [90%]
+    T EDIT - LIGHT phrase   [live type, hidden]
+    T EDIT - LIGHT label   [live type, hidden]
+    · TXT - LIGHT
+    · Paper - tag LIGHT
+    · Shadow - tag LIGHT   [multiply, 38%]
+  ▾ Tag - SOUND - 02
+    T EDIT - SOUND 02 phrase   [live type, hidden]
+    T EDIT - SOUND 02 label   [live type, hidden]
+    · TXT - SOUND 02
+    · Paper - tag SOUND - 02
+    · Shadow - tag SOUND - 02   [multiply, 38%]
+  ▾ Tag - SOUND - 01
+    · Leader - sound 01 to the arcs   [90%]
+    T EDIT - SOUND 01 phrase   [live type, hidden]
+    T EDIT - SOUND 01 label   [live type, hidden]
+    · TXT - SOUND 01
+    · Paper - tag SOUND - 01
+    · Shadow - tag SOUND - 01   [multiply, 38%]
+  ▾ Title block
+    T EDIT - subline   [live type, hidden]
+    · TXT - subline
+    T EDIT - title line 2   [live type, hidden]
+    · TXT - title line 2
+    T EDIT - title line 1   [live type, hidden]
+    · TXT - title line 1
+    T EDIT - kicker   [live type, hidden]
+    · TXT - kicker
+▾ 95 - Legend - key plan & palette
+  ▾ Key plan - ground floor
+    · Leader - key plan cabins   [70%]
+    · Leader - key plan void   [70%]
+    T EDIT - key plan label cabins   [live type, hidden]
+    · TXT - key plan label cabins
+    T EDIT - key plan label void   [live type, hidden]
+    · TXT - key plan label void
+    T EDIT - north point N   [live type, hidden]
+    · TXT - north point N
+    · Key plan - north point
+    · Key plan - view cone (this sheet)
+    ■ Key plan - 02 the cabins (tint)   [multiply, 75%, mask]
+    ■ Key plan - 01 the void (tint)   [multiply, 35%, mask]
+    · Key plan - ground floor (client)   [locked]
+  T EDIT - legend heading key plan   [live type, hidden]
+  · TXT - legend heading key plan
+  ▾ Swatch - glass block
+    T EDIT - swatch glass block   [live type, hidden]
+    · TXT - swatch glass block
+    · Chip rim - glass block
+    · Chip - glass block (material)
+  ▾ Swatch - sheer
+    T EDIT - swatch sheer   [live type, hidden]
+    · TXT - swatch sheer
+    · Chip rim - sheer
+    · Chip - sheer (material)
+  ▾ Swatch - fluted oak
+    T EDIT - swatch fluted oak   [live type, hidden]
+    · TXT - swatch fluted oak
+    · Chip rim - fluted oak
+    · Chip - fluted oak (material)
+  ▾ Swatch - velvet
+    T EDIT - swatch velvet   [live type, hidden]
+    · TXT - swatch velvet
+    · Chip rim - velvet
+    · Chip - velvet (material)
+  ▾ Swatch - oxblood
+    T EDIT - swatch oxblood   [live type, hidden]
+    · TXT - swatch oxblood
+    · Chip rim - oxblood
+    ■ Chip - oxblood #6B2430   [mask]
+  ▾ Swatch - terracotta
+    T EDIT - swatch terracotta   [live type, hidden]
+    · TXT - swatch terracotta
+    · Chip rim - terracotta
+    ■ Chip - terracotta #A9502F   [mask]
+  ▾ Swatch - amber
+    T EDIT - swatch amber   [live type, hidden]
+    · TXT - swatch amber
+    · Chip rim - amber
+    ■ Chip - amber #D98A3D   [mask]
+  ▾ Swatch - linen
+    T EDIT - swatch linen   [live type, hidden]
+    · TXT - swatch linen
+    · Chip rim - linen
+    ■ Chip - linen #EFE6D6   [mask]
+  T EDIT - legend heading palette   [live type, hidden]
+  · TXT - legend heading palette
+▾ 70 - Senses - sound & smell
+  · Smell - beeswax candle in the booth   [screen]
+  · Smell - sourdough & rosemary from the tray   [screen]
+  · Sound - a hush inside the booth   [85%]
+  · Sound - echo dissolving into the linen   [90%]
+  · Sound - cutlery, laughter at the table   [95%]
+  · Sound - conversation drifting into cabin 02
+▾ 60 - Light & colour intensity
+  ■ Intensity - amber across the cabins   [soft light, 40%, mask]
+  ■ Intensity - pale linen where we stand   [soft light, 45%, mask]
+  · Light - pendant glow, cabin 4   [screen, 80%]
+  · Light - pendant glow, cabin 3   [screen, 80%]
+  · Light - pendant glow, cabin 2   [screen, 80%]
+  · Light - pendant glow, cabin 1   [screen, 80%]
+▾ 50 - Into cabin 04 - up close
+  · Light - pendant pool over the table   [screen, 80%]
+  · Light - candle glow   [screen, 85%]
+  ■ Intensity - booth chroma   [saturation, 45%, clipped, mask]
+  ■ Intensity - deepest warmth in the booth   [soft light, 55%, clipped, mask]
+  ■ Grade - canopy to linen (colour)   [color, 25%, clipped, mask]
+  ■ Grade - canopy to linen (desaturate)   [saturation, 45%, clipped, mask]
+  · Cabin 04 - inside the booth (photo)   [mask]
+  · Lens - paper rim
+  · Shadow - lens   [multiply, 40%]
+  ■ Zoom - hairlines to the lens   [75%, mask]
+  ■ Zoom - cone onto the paper   [multiply, 10%, mask]
+  ■ Intensity - oxblood, approach to cabin 04   [soft light, 50%, mask]
+▾ 40 - Foreground - diners, sheer, glass brick
+  ■ Grade - screen cooler   [soft light, 35%, clipped, mask]
+  · Screen - glass-brick screen (photo)   [mask]
+  · Shadow - glass-brick screen   [multiply, 50%]
+  · Sheer - client drape as a veil (client)   [40%, mask]
+  ■ Diners - couple at a table   [mask]
+  ■ Diners - waiter crossing to cabin 03   [82%, mask]
+▾ 30 - The cabins - seen across the room
+  · Pendants - four dome shades (photo)   [mask]
+  · Shadow - pendants   [multiply, 35%]
+  ■ Grade - cabins warm lift   [soft light, 18%, clipped, mask]
+  ■ Grade - lift booth shadows 03-04   [screen, 16%, clipped, mask]
+  ■ Intensity - cabin 4 oxblood hue (hue)   [hue, 70%, clipped, mask]
+  ■ Intensity - cabin 4 oxblood (soft light)   [soft light, 90%, clipped, mask]
+  ■ Intensity - cabin 3 vermilion (saturation)   [saturation, 22%, clipped, mask]
+  ■ Intensity - cabin 3 terracotta (soft light)   [soft light, 70%, clipped, mask]
+  ■ Intensity - cabin 2 amber (soft light)   [soft light, 45%, clipped, mask]
+  ■ Intensity - cabin 1 linen (screen)   [screen, 20%, clipped, mask]
+  · Cabins - four oak cabins, open above (photo)   [mask]
+  · Shadow - cabins on the floor and wall   [multiply, 42%]
+▾ 20 - Floor - terrazzo receding to the cabins
+  ■ Floor - warm spill from the cabins   [multiply, 20%, mask]
+  ■ Drawing - cabin plan on the floor   [multiply, 24%, mask]
+  ■ Floor - joints towards cabin 04   [multiply, 50%, mask]
+  ■ Grade - terrazzo desaturate   [saturation, 45%, clipped, mask]
+  · Floor - cream terrazzo (perspective)   [42%, mask]
+▾ 15 - Festoon swags above the cabins
+  ■ Grade - swags lift   [screen, 14%, clipped, mask]
+  ■ Grade - swags to linen (colour)   [color, 25%, clipped, mask]
+  ■ Grade - swags desaturate   [saturation, 42%, clipped, mask]
+  · Festoon - ivory linen swags (photo, fabric mask)   [mask]
+  ■ Pendants - cords from the ceiling   [mask]
+  · Shadow - swags on the ceiling and wall   [multiply, 34%]
+▾ 10 - Ceiling - festoon drapery overhead
+  ■ Atmosphere - linen haze   [42%, clipped, mask]
+  ■ Grade - ceiling lift   [screen, 16%, clipped, mask]
+  ■ Grade - ceiling to linen (colour)   [color, 30%, clipped, mask]
+  · Ceiling - linen swags overhead (photo)   [mask]
+▾ 00 - Paper
+  · Paper - warm linen ground   [locked]

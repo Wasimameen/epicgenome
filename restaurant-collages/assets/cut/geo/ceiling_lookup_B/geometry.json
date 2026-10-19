@@ -1,0 +1,353 @@
+{
+ "source": "assets/gen/ceiling_lookup_B.png",
+ "size": [
+  5456,
+  3072
+ ],
+ "n_lamps": 11,
+ "lamps": [
+  {
+   "bbox": [
+    1766,
+    2430,
+    224,
+    217
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 23149,
+   "cord": {
+    "x0": 1879.68,
+    "y0": 2430.47,
+    "x1": 1930.8,
+    "y1": 1913.99,
+    "width": 5.75,
+    "angle_deg": 5.75,
+    "contrast": 78.86,
+    "rms": 0.29
+   },
+   "top": [
+    1880.0,
+    2430.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     1858.0,
+     2660.5
+    ],
+    "axes": [
+     121.5,
+     23.0
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    2995,
+    2360,
+    255,
+    212
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 22753,
+   "cord": {
+    "x0": 3122.05,
+    "y0": 2360.61,
+    "x1": 3098.24,
+    "y1": 1852.16,
+    "width": 5.25,
+    "angle_deg": -2.68,
+    "contrast": 88.12,
+    "rms": 0.29
+   },
+   "top": [
+    3119.5,
+    2360.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     3133.5,
+     2578.5
+    ],
+    "axes": [
+     116.0,
+     31.0
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    4267,
+    2290,
+    210,
+    234
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 24510,
+   "cord": {
+    "x0": 4347.55,
+    "y0": 2290.49,
+    "x1": 4266.56,
+    "y1": 1709.11,
+    "width": 6.0,
+    "angle_deg": -7.93,
+    "contrast": 110.16,
+    "rms": 0.31
+   },
+   "top": [
+    4347.5,
+    2290.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     4385.5,
+     2531.0
+    ],
+    "axes": [
+     124.75,
+     26.25
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    3313,
+    2755,
+    147,
+    162
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 12544,
+   "cord": {
+    "x0": 3376.66,
+    "y0": 2755.47,
+    "x1": 3350.04,
+    "y1": 2267.19,
+    "width": 4.75,
+    "angle_deg": -3.12,
+    "contrast": 63.48,
+    "rms": 0.36
+   },
+   "top": [
+    3375.92,
+    2755.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     3397.5,
+     2906.0
+    ],
+    "axes": [
+     88.75,
+     26.25
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    4105,
+    2728,
+    164,
+    162
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 11345,
+   "cord": {
+    "x0": 4184.38,
+    "y0": 2728.67,
+    "x1": 4133.31,
+    "y1": 2311.78,
+    "width": 4.75,
+    "angle_deg": -6.99,
+    "contrast": 115.13,
+    "rms": 0.37
+   },
+   "top": [
+    4185.64,
+    2728.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     4206.5,
+     2885.0
+    ],
+    "axes": [
+     82.0,
+     16.5
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    3602,
+    2882,
+    97,
+    98
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 3914,
+   "top": [
+    3641.5,
+    2882.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     3649.0,
+     2982.5
+    ],
+    "axes": [
+     58.0,
+     8.5
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    4248,
+    2890,
+    115,
+    128
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 8077,
+   "cord": {
+    "x0": 4290.32,
+    "y0": 2890.93,
+    "x1": 4239.19,
+    "y1": 2527.5,
+    "width": 4.25,
+    "angle_deg": -8.3,
+    "contrast": 16.73,
+    "rms": 0.59
+   },
+   "top": [
+    4293.0,
+    2890.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     4312.5,
+     3019.0
+    ],
+    "axes": [
+     72.0,
+     9.5
+    ],
+    "angle_deg": 0.0
+   }
+  },
+  {
+   "bbox": [
+    1353,
+    2999,
+    97,
+    73
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 1913,
+   "cord": {
+    "x0": 1398.45,
+    "y0": 2999.45,
+    "x1": 1431.32,
+    "y1": 2767.77,
+    "width": 4.25,
+    "angle_deg": 8.07,
+    "contrast": 47.6,
+    "rms": 0.37
+   },
+   "top": [
+    1398.82,
+    2999.5
+   ]
+  },
+  {
+   "bbox": [
+    2008,
+    2946,
+    127,
+    126
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 8727,
+   "cord": {
+    "x0": 2082.37,
+    "y0": 2946.49,
+    "x1": 2103.55,
+    "y1": 2718.47,
+    "width": 4.25,
+    "angle_deg": 5.31,
+    "contrast": 91.88,
+    "rms": 0.25
+   },
+   "top": [
+    2082.46,
+    2946.5
+   ]
+  },
+  {
+   "bbox": [
+    2658,
+    2975,
+    93,
+    97
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 4676,
+   "cord": {
+    "x0": 2702.46,
+    "y0": 2975.5,
+    "x1": 2703.82,
+    "y1": 2880.51,
+    "width": 3.75,
+    "angle_deg": 0.95,
+    "contrast": 47.18,
+    "rms": 0.22
+   },
+   "top": [
+    2703.5,
+    2975.5
+   ]
+  },
+  {
+   "bbox": [
+    925,
+    2860,
+    119,
+    128
+   ],
+   "enclosed_bowl_px": 0,
+   "shade_area_px": 6570,
+   "cord": {
+    "x0": 1005.56,
+    "y0": 2860.4,
+    "x1": 1054.36,
+    "y1": 2581.64,
+    "width": 3.75,
+    "angle_deg": 9.81,
+    "contrast": 107.96,
+    "rms": 0.27
+   },
+   "top": [
+    998.17,
+    2860.5
+   ],
+   "bowl_rim_ellipse": {
+    "centre": [
+     981.5,
+     2990.5
+    ],
+    "axes": [
+     70.0,
+     12.0
+    ],
+    "angle_deg": 0.0
+   }
+  }
+ ],
+ "note": "bbox = dark-shade core [x, y, w, h]; cord = fitted straight segment (x0,y0 at the lamp, x1,y1 upper end) with measured width"
+}
