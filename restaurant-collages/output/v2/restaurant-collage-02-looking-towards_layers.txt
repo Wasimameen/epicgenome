@@ -1,7 +1,7 @@
 Restaurant - Atmosphere collage 02 - Looking towards
 3508 x 4961 px @ 300 ppi (A3 portrait), sRGB, 8-bit RGB
 116 layers/groups - top of the Layers panel first
-build stamp: sources+inputs 8c7b0dac1e5027f5 - git fdf4a7a (clean)
+build stamp: sources+inputs e079e0108988dcca - git 5f26c33 + 1 uncommitted source files
 inputs: build/v2/render/view2.png 6a6a5b96e64e, build/v2/swatch/brass.png a5e2c3a9e662, build/v2/swatch/concrete.png 8acae36a64c9, build/v2/swatch/dark_timber.png b26b52c935cc, build/v2/swatch/fluted_oak.png 5361f6d63299, build/v2/swatch/glass_block.png 45595a998cb2, build/v2/swatch/linen_drape.png eaeaa1e86ccf, build/v2/swatch/split_face_stone.png c854ac414705, build/v2/swatch/velvet.png bac33989f3f3, build/v2/swatch/white_brick.png f0bc786e1e9b, build/v2/swatch/wood_floor.png c37cbf21cfc4
 
 ▾ !! READ ME - how this file is built   [hidden]
@@ -19,9 +19,9 @@ inputs: build/v2/render/view2.png 6a6a5b96e64e, build/v2/swatch/brass.png a5e2c3
   ▾ Sense - taste: red wine smell: candle wax
     T EDIT - taste: red wine smell: candle wax   [live type, hidden]
     · TXT - taste: red wine smell: candle wax
-  ▾ Sense - colour: linen, amber, terracotta
-    T EDIT - colour: linen, amber, terracotta   [live type, hidden]
-    · TXT - colour: linen, amber, terracotta
+  ▾ Sense - colour: linen, stone, dark oak
+    T EDIT - colour: linen, stone, dark oak   [live type, hidden]
+    · TXT - colour: linen, stone, dark oak
   ▾ Sense - sound: murmur sinks into the linen
     T EDIT - sound: murmur sinks into the linen   [live type, hidden]
     · TXT - sound: murmur sinks into the linen

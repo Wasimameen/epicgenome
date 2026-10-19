@@ -194,7 +194,7 @@ SHEET2 = {
     'notes': [
         ('layered ceiling: linen swags', (1120, 455), -1.0, (1500, 1550), 0.25, {'from': 'below'}),
         ('concrete',              (2420, 330),       1.5,  (2830, 470),   -0.30, {'from': 'right'}),
-        ('private cabins',        (1580, 3460),     -1.0,  (1900, 3020),   0.20, {'from': 'above', 'size': 72}),
+        ('private cabins',        (1560, 2450),     -1.0,  (1700, 2790),   0.20, {'from': 'below', 'size': 66}),
         ('white\nbrick\nwall',    (3325, 2300),     -2.5,  (3300, 2180),   0.35, {'from': 'above', 'gap': 14, 'size': 66}),
         ('glass\nbrick\nscreen',  (3335, 2860),     -2.0,  (2860, 3000),   0.30, {'from': 'left', 'size': 64}),
         ('a path from the\nvoid to the cabins', (200, 4690), 1.0, (1000, 3700), -0.30,
@@ -203,7 +203,7 @@ SHEET2 = {
         ('fluted oak\ncurve wall', (2560, 4760),     1.2,  (2980, 4580),   0.30, {'from': 'right'}),
         # the senses
         ('sound:\nmurmur\nsinks into\nthe linen', (30, 1520), 2.0, None,  0.0,  {'style': 'sense', 'size': 52}),
-        ('colour:\nlinen,\namber,\nterracotta', (30, 1830), 1.5, None,   0.0,  {'style': 'sense', 'size': 52}),
+        ('colour:\nlinen,\nstone,\ndark oak', (30, 1830), 1.5, None,   0.0,  {'style': 'sense', 'size': 52}),
         ('taste:\nred wine\nsmell:\ncandle\nwax', (3310, 3150), -1.5, None, 0.0, {'style': 'sense', 'size': 52}),
     ],
 
