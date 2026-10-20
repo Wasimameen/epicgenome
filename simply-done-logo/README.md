@@ -17,6 +17,7 @@ is real Montserrat type.
 | `simply-done-logo.psd` | Layered Photoshop file, one layer per group, 5000 × 4035 px, 300 DPI |
 | `preview/comparison.png` | Original vs previous version vs this version |
 | `preview/qa-zoom-400.png` | 400 % zoom checks (roof, valley, S + glint, sparkle, chimney, fist) |
+| `preview/fist-comparison.png` | The fist next to the client's reference image (dark background) |
 | `preview/transparent-and-dark.png` | The logo over a transparent and a dark background (glints are see-through glows) |
 
 ## Groups / layers (bottom to top)
@@ -24,7 +25,7 @@ is real Montserrat type.
 | Group | Contents |
 |---|---|
 | Background | hidden, empty |
-| Hand & Tools | squeegee, glove cuff + fist, broom; white faces with a dark extruded side to the lower left |
+| Hand & Tools | squeegee, glove cuff + fist (pointed knuckle, two fingers split by a slit), broom; white faces with a dark extruded side to the lower left |
 | Roof | pink roof + chimney, dark-pink underside, white bevel (with the open gap on the steep slopes), grey shadow line |
 | Windows | two arched windows (dark frame, graded glass, sill) |
 | Sparkles | 8 pink 4-point stars, one shared path reused with `<use>` |
