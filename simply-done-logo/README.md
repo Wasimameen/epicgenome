@@ -17,6 +17,7 @@ is real Montserrat type.
 | `simply-done-logo.psd` | Layered Photoshop file, one layer per group, 5000 × 4035 px, 300 DPI |
 | `preview/comparison.png` | Original vs previous version vs this version |
 | `preview/qa-zoom-400.png` | 400 % zoom checks (roof, valley, S + glint, sparkle, chimney, fist) |
+| `preview/transparent-and-dark.png` | The logo over a transparent and a dark background (glints are see-through glows) |
 
 ## Groups / layers (bottom to top)
 
@@ -28,7 +29,7 @@ is real Montserrat type.
 | Windows | two arched windows (dark frame, graded glass, sill) |
 | Sparkles | 8 pink 4-point stars, one shared path reused with `<use>` |
 | Text – Simply Done | SIMPLY / DONE, Montserrat Bold 104.2 pt, horizontal scale 113.7 % |
-| Glints | 14 lens-flare glints (glow + thin rays), clipped to the letters |
+| Glints | 14 glints: white 4-point star + soft white glow with transparency (normal blend mode, no clipping masks) |
 | Tagline | NO MESS. NO STRESS., Montserrat ExtraBold 29.7 pt on an editable arc (`#tagline-arc`) |
 
 Sparkles, Text, Glints and Tagline sit inside a parent group `Lettering`
@@ -49,6 +50,20 @@ rotated −10.7°, the tilt measured on the original.
 
 The files are RGB. Ask the wrap printer for their CMYK or vinyl match for the
 pink before printing.
+
+## Glints in the EPS
+
+EPS (PostScript) can't store transparency. In the EPS only, each glint glow is a white-to-letter-colour
+gradient trimmed to the letter, which prints the same. Every other file uses the transparent white glow.
+
+## Which file to open where
+
+- **Photoshop**: open `simply-done-logo.psd` (layered) or `simply-done-logo-outlined.svg`.
+  Opening `simply-done-logo.svg` in Photoshop without Montserrat installed swaps the lettering to a
+  default font (Arial-like).
+- **Illustrator / Inkscape / Affinity**: `simply-done-logo.svg` if you want to edit the text (needs the
+  fonts below), otherwise the outlined SVG or the PDF.
+- **Printer / wrap shop**: `simply-done-logo.pdf` (or the EPS if they ask for it).
 
 ## Fonts (only for the live-text SVG)
 
