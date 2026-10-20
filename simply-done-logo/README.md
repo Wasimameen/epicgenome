@@ -13,6 +13,7 @@ is real Montserrat type.
 | `simply-done-logo.pdf` | Vector, made from the outlined SVG. Send this one to the wrap printer |
 | `simply-done-logo.eps` | Vector, made from the outlined SVG. For legacy sign/print software |
 | `simply-done-logo-300dpi.png` | 5000 × 4035 px, transparent, 300 DPI |
+| `simply-done-logo-white-300dpi.jpg` | 5000 × 4035 px, white background, 300 DPI |
 | `simply-done-logo.psd` | Layered Photoshop file, one layer per group, 5000 × 4035 px, 300 DPI |
 | `preview/comparison.png` | Original vs previous version vs this version |
 | `preview/qa-zoom-400.png` | 400 % zoom checks (roof, valley, S + glint, sparkle, chimney, fist) |
