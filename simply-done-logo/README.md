@@ -15,6 +15,10 @@ is real Montserrat type.
 | `simply-done-logo-300dpi.png` | 5000 × 4035 px, transparent, 300 DPI |
 | `simply-done-logo-white-300dpi.jpg` | 5000 × 4035 px, white background, 300 DPI |
 | `simply-done-logo.psd` | Layered Photoshop file, one layer per group, 5000 × 4035 px, 300 DPI |
+| `simply-done-logo-white-variant.svg` | White variant for pink backgrounds (all pink → white, roof underside dark grey), live text |
+| `simply-done-logo-white-variant-outlined.svg` | White variant, text as shapes |
+| `simply-done-logo-white-variant.pdf` | White variant, vector |
+| `simply-done-logo-white-variant.png` | White variant, 5000 × 4035 px, transparent, 300 DPI (white parts are invisible on a white viewer) |
 | `preview/comparison.png` | Original vs previous version vs this version |
 | `preview/qa-zoom-400.png` | 400 % zoom checks (roof, valley, S + glint, sparkle, chimney, fist) |
 | `preview/fist-comparison.png` | The fist next to the client's reference image (dark background) |
