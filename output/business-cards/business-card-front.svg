@@ -132,13 +132,13 @@
   <g id="Details" data-name="Details">
     <text id="name" font-family="'Zilla Slab', 'Zilla Slab SemiBold', serif" font-weight="600" font-size="3.881" fill="#333333" x="29.685" y="36.1">Simone Lebherz-Kann</text>
     <text id="title" font-family="Montserrat, 'Montserrat Regular', sans-serif" font-weight="400" font-size="2.117" letter-spacing="0.381" fill="#6B6B6B" x="34.29" y="39.85">OWNER / OPERATOR</text>
-    <text id="phone" font-family="Montserrat, 'Montserrat Regular', sans-serif" font-weight="400" font-size="2.381" fill="#333333" x="39.689" y="43.85">0468 434 411</text>
+    <text id="phone" font-family="Montserrat, 'Montserrat Regular', sans-serif" font-weight="400" font-size="2.381" fill="#333333" x="39.331" y="43.85">0468 434 041</text>
     <text id="email" font-family="Montserrat, 'Montserrat Regular', sans-serif" font-weight="400" font-size="2.381" fill="#333333" x="22.992" y="47">simone@simplydonecleaningco.com.au</text>
     <text id="web" font-family="Montserrat, 'Montserrat Regular', sans-serif" font-weight="400" font-size="2.381" fill="#333333" x="25.338" y="50.15">www.simplydonecleaningco.com.au</text>
     <text id="abn" font-family="Montserrat, 'Montserrat Regular', sans-serif" font-weight="400" font-size="2.381" fill="#333333" x="35.206" y="53.3">ABN 26 506 891 953</text>
   </g>
   <g id="Icons" data-name="Icons">
-    <g id="icon-phone" transform="translate(56.479 43.017) scale(0.23)" fill="none" stroke="#333333" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"><rect x="-2.6" y="-4.4" width="5.2" height="8.8" rx="0.9"/><path d="M-0.8 3.0 H0.8"/></g>
+    <g id="icon-phone" transform="translate(56.838 43.017) scale(0.23)" fill="none" stroke="#333333" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"><rect x="-2.6" y="-4.4" width="5.2" height="8.8" rx="0.9"/><path d="M-0.8 3.0 H0.8"/></g>
     <g id="icon-email" transform="translate(72.848 46.167) scale(0.23)" fill="none" stroke="#333333" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"><rect x="-4.3" y="-3.0" width="8.6" height="6.0" rx="0.6"/><path d="M-3.9 -2.5 L0 0.7 L3.9 -2.5"/></g>
     <g id="icon-web" transform="translate(70.544 49.317) scale(0.23)" fill="none" stroke="#333333" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"><circle r="4.3"/><ellipse rx="1.9" ry="4.3"/><path d="M-4.3 0 H4.3 M-3.6 -2.2 H3.6 M-3.6 2.2 H3.6"/></g>
     <g id="icon-abn" transform="translate(60.622 52.467) scale(0.23)" fill="none" stroke="#333333" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"><rect x="-4.6" y="-3.2" width="9.2" height="6.4" rx="0.7"/><circle cx="-2.0" cy="-0.75" r="1.05"/><path d="M-3.55 2.0 C-3.55 0.55 -0.45 0.55 -0.45 2.0 M1.0 -1.2 H3.4 M1.0 0.3 H3.4 M1.0 1.8 H2.6"/></g>

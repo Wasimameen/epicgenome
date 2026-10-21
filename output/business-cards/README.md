@@ -13,6 +13,7 @@ old cards; the artwork and all details are new.
 | `business-card-front.svg` | Front, editable with live text (Illustrator / Inkscape / Affinity) |
 | `business-card-front-outlined.svg` | Front with text as shapes; use this if the fonts aren't installed (e.g. Photoshop) |
 | `business-card-back.svg` | Back, editable (it has no text of its own; the logo is outlined) |
+| `business-card-front.psd`, `business-card-back.psd` | Layered Photoshop files, 300 DPI with bleed (1146 × 720 px). Name, title and contact lines are editable text layers; logo, icons and background on their own layers; hidden Guides group plus Photoshop guides at the trim and 4 mm safe zone |
 | `business-card-front.png`, `business-card-back.png` | 300 DPI previews at trim size, 1075 × 650 px |
 | `business-card-mockup.png` | Both cards together, for presenting to the client |
 | `qa-zoom-400.png` | 400 % zoom check rendered from the print PDF |
@@ -50,7 +51,7 @@ hard proof from the printer is recommended.
 | OWNER / OPERATOR | Montserrat Regular, tracking 180 | 6 pt |
 | Phone, email, website, ABN | Montserrat Regular | 6.75 pt |
 
-To edit `business-card-front.svg`, install **Zilla Slab** and **Montserrat**
+To edit `business-card-front.svg` or the text layers in `business-card-front.psd`, install **Zilla Slab** (SemiBold) and **Montserrat** (Regular)
 from Google Fonts. The print PDF and `business-card-front-outlined.svg` need no
 fonts.
 
@@ -63,3 +64,7 @@ fonts.
 - On the cards, the glint glows are stacked semi-transparent circles and the
   window glass is a flat grey, so the CMYK conversion stays 100 % vector (no
   rasterised gradients). They look the same at card size.
+
+## Changes
+
+- Phone number corrected to **0468 434 041**.
